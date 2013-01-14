@@ -1,0 +1,122 @@
+\section{Formulation 5 (CAPTURE POINT)}\label{sec.form05}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Description}
+\begin{itemize}
+    \item The same as Formulation 1, but with terminal constraints on capture point.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Terminal equality constraints}
+\begin{equation*}
+    \M{I}_{a} \cstate_N =
+        \begin{bmatrix}
+            0 \\
+            0 \\
+        \end{bmatrix}
+    \quad
+    \M{I}_{a} =
+        \begin{bmatrix}
+            0 & 0 & 1 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 1 \\
+        \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    \cstate_N = \M{S}_e \cstate_0     +   \M{U}_e \cJerk
+\end{equation*}
+
+\begin{equation*}
+    \M{I}_{a} \M{U}_e \cJerk = - \M{I}_{a} \M{S}_e \cstate_0
+\end{equation*}
+
+\begin{equation*}
+    \begin{bmatrix}
+        \M{I}_{a} \M{U}_e  & \M{0}\\
+    \end{bmatrix}
+    \V{X} 
+    = 
+    - \M{I}_{a} \M{S}_e \cstate_0
+\end{equation*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Terminal inequality constraints}
+
+\begin{equation*}
+    \underbar{\V{b}}_N 
+    \le 
+    \M{R}_N^T
+    \left(
+        \cpos_N
+        +
+        \sqrt{\frac{c^z}{g}}
+        \cvel_N
+        - 
+        \fp_M
+    \right) 
+    \le
+    \bar{\V{b}}_N
+\end{equation*}
+
+\begin{equation*}
+    \cpos_N = \M{I}_p \M{S}_e \cstate_0     +   \M{I}_p \M{U}_e \cJerk
+\end{equation*}
+
+\begin{equation*}
+    \cvel_N = \M{I}_v \M{S}_e \cstate_0     +   \M{I}_v \M{U}_e \cJerk
+\end{equation*}
+
+\begin{equation*}
+    \fp_M = \fp_0 + \begin{bmatrix} \M{I} & \dots & \M{I} \end{bmatrix} \FD
+\end{equation*}
+
+
+\begin{align*}
+    \underbar{\V{b}}_N 
+    \le &
+      \M{R}_N^T \M{I}_p \M{S}_e \cstate_0   +  \M{R}_N^T \M{I}_p \M{U}_e \cJerk & \\
+    & \sqrt{\frac{c^z}{g}} \M{R}_N^T \M{I}_v \M{S}_e \cstate_0   +  \sqrt{\frac{c^z}{g}} \M{R}_N^T \M{I}_v \M{U}_e \cJerk & \\
+    & - \M{R}_N^T \fp_0   -   \M{R}_N^T  \begin{bmatrix} \M{I} & \dots & \M{I} \end{bmatrix} \FD  & 
+    \le
+    \bar{\V{b}}_N
+\end{align*}
+
+
+\begin{align*}
+    \underbar{\V{b}}_N  
+    -  
+    \M{R}_N^T \M{I}_p \M{S}_e \cstate_0   
+    -   
+    \sqrt{\frac{c^z}{g}} \M{R}_N^T \M{I}_v \M{S}_e \cstate_0 
+    +
+    \M{R}_N^T \fp_0 
+    \le \\
+       \left( \M{R}_N^T \M{I}_p \M{U}_e  +  \sqrt{\frac{c^z}{g}} \M{R}_N^T \M{I}_v \M{U}_e \right) \cJerk
+      -  \M{R}_N^T  \begin{bmatrix} \M{I} & \dots & \M{I} \end{bmatrix} \FD  \\ 
+    \le
+    \bar{\V{b}}_N
+    -  
+    \M{R}_N^T \M{I}_p \M{S}_e \cstate_0   
+    -   
+    \sqrt{\frac{c^z}{g}} \M{R}_N^T \M{I}_v \M{S}_e \cstate_0 
+    +
+    \M{R}_N^T \fp_0 
+\end{align*}
+
+
+\begin{align*}
+    \underbar{\V{b}}_t  
+    \le 
+        \begin{bmatrix}
+            \M{R}_N^T \M{I}_p \M{U}_e  +  \sqrt{\frac{c^z}{g}} \M{R}_N^T \M{I}_v \M{U}_e &
+            -  \M{R}_N^T  \begin{bmatrix} \M{I} & \dots & \M{I} \end{bmatrix}
+        \end{bmatrix} 
+        \V{X} 
+    \le
+    \bar{\V{b}}_t
+\end{align*}

@@ -1,0 +1,84 @@
+\ProvidesPackage{mymath}[]
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% bold matrices and vectors (deprecated, compatibility)
+\newcommand{\mbm}[1]{\mbox{\boldmath $#1$}}
+% new vector/matrix notation 
+\newcommand{\V}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\M}[1]{\mbox{\boldmath $#1$}}
+
+% set of the real numbers
+\newcommand{\RR}{\mathbb{R}}
+
+% add \argmin command
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{arg}\,\operatorname{min}}\;}
+
+% optimization
+\newcommand{\minimize}[1]{\underset{#1}{\operatorname{minimize}}\quad}
+\newcommand{\subjectto}{{\operatorname{subject\;to}}\quad}
+
+% norm
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+% fix font in \dddot and \ddddot
+% might be necessary, if the fonts are changed
+\makeatletter
+\renewcommand{\dddot}[1]{%
+{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@
+\hbox{$...$}\vss}}}}
+\renewcommand{\ddddot}[1]{%
+{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@
+\hbox{$....$}\vss}}}}
+\makeatother
+
+%%%%
+%% ???
+\newcommand{\diag}[2]{\underset{#1}{\operatorname{diag}}\left(#2\right)\;}
+%%%%
+
+%%%%
+%% DD's stuff
+
+\usepackage{color}
+
+%COLORS
+\definecolor{gray}{rgb}{0.8,0.8,0.8}\newcommand{\gray}{\color{gray}}
+\definecolor{darkgray}{rgb}{0.6,0.6,0.6}\newcommand{\darkgray}{\color{darkgray}}
+\definecolor{white}{rgb}{1.0,1.0,1.0}\newcommand{\white}{\color{white}}
+
+% gray box
+\newcommand{\gbox}[1]{
+  \begin{center}
+    \fcolorbox{black}{gray}{
+      \begin{minipage}[b]{0.98\textwidth}
+        \begin{center}
+          %\vspace{2mm}
+          \begin{minipage}{0.97\textwidth}
+            #1 
+          \end{minipage}
+          \vspace{2mm}
+        \end{center}
+      \end{minipage}
+    }
+  \end{center}
+}
+
+\newcommand{\wbox}[1]{
+  \begin{center}
+    \fcolorbox{black}{white}{
+      \begin{minipage}[b]{0.98\textwidth}
+        \begin{center}
+          %\vspace{2mm}
+          \begin{minipage}{0.97\textwidth}
+            #1
+          \end{minipage}
+          \vspace{2mm}
+        \end{center}
+      \end{minipage}
+    }
+  \end{center}
+}
+

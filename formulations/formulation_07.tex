@@ -1,0 +1,74 @@
+\section{Formulation 7 (CAPTURE POINT + FEET CONSTRAINT)}\label{sec.form07}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Description}
+\begin{itemize}
+    \item Formulation 5 + additional constraint.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Constraint on feet placement}
+
+\begin{equation*}
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \left(
+        \begin{bmatrix}
+            \M{I} \\
+            \vdots \\
+            \M{I}\\
+        \end{bmatrix} 
+        \fp_0
+        +
+        \M{I}_{\FD}
+        \FD
+    \right)
+    \le
+    \M{1} c
+\end{equation*}
+
+
+\begin{equation*}
+    \M{I}_{\FD} =
+    \begin{bmatrix}
+        \M{I}   &   0   &  \dots  &   0\\
+        \M{I}   & \M{I} &  \dots  &   0\\
+        \vdots  & \vdots&  \ddots &  \vdots\\
+        \M{I}   & \M{I} &  \dots  &   \M{I}\\
+    \end{bmatrix}
+\end{equation*}
+
+
+\begin{equation*}
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \M{I}_{\FD}
+    \FD
+    \le
+    \M{1} c -
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \begin{bmatrix}
+        \M{I} \\
+        \vdots \\
+        \M{I}\\
+    \end{bmatrix} 
+    \fp_0
+\end{equation*}
+
+
+\begin{equation*}
+    \begin{bmatrix}
+        \M{0} & \diag{M}{\begin{bmatrix} a & b \end{bmatrix}} \M{I}_{\FD}
+    \end{bmatrix}
+    \M{X}
+    \le
+    \M{1} c -
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \begin{bmatrix}
+        \M{I} \\
+        \vdots \\
+        \M{I}\\
+    \end{bmatrix} 
+    \fp_0
+\end{equation*}

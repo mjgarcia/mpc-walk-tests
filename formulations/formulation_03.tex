@@ -1,0 +1,251 @@
+\section{Formulation 3 (ALT.VEL.TRACKING)}\label{sec.form03}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Description}
+\begin{itemize}
+    \item Use displacement of the feet to compute velocity instead of using velocity of the CoM.
+    \item The same as Formulation 1 (\ref{sec.form01}), except the objective function.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Objective}
+\begin{equation*}
+\begin{split}
+    \minimize{\cJerk, \FD}  & \frac{\alpha}{2} \norm{\frac{1}{\tau}\left(\FD - \V{W}\right) - \cVel_{ref}}^2 + 
+                              \frac{\beta}{2} \norm{\cJerk}^2 +
+                              \frac{\gamma}{2} \norm{\ZMP - \FP}^2 +
+                              \frac{\mu}{2} \norm{\cVel}^2
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\V{W} = 
+\begin{bmatrix}
+    0 \\
+    -w \\
+    0 \\
+    w \\
+    \vdots \\
+    0 \\
+    w \\
+\end{bmatrix}
+\end{equation*}
+$w$ - default (at rest) distance between left and right foot (negative when displacement of the right foot
+with respect to the left is used).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Reference velocity}
+\begin{equation*}
+\begin{split}
+    &\norm{\frac{1}{\tau} \FD - \frac{1}{\tau} \M{R}_{fd}^T \V{W} - \cVel_{ref}}^2 = \\
+%    \frac{1}{\tau}\FD^T 
+%        - \frac{1}{\tau}\V{W}^T \M{R}_{fd}
+%            - \cVel_{ref}^T
+%    \frac{1}{\tau}\FD 
+%        - \frac{1}{\tau} \M{R}_{fd}^T \V{W} 
+%            - \cVel_{ref} 
+    &
+    \frac{1}{\tau^2} \FD^T \FD
+    - \frac{1}{\tau^2} \V{W}^T \M{R}_{fd} \FD
+    - \frac{1}{\tau} \cVel_{ref}^T \FD\\
+    &
+    - \frac{1}{\tau^2} \FD^T \M{R}_{fd}^T \V{W}
+    + \cancel{\frac{1}{\tau^2} \V{W}^T \M{R}_{fd} \M{R}_{fd}^T \V{W}}
+    + \cancel{\frac{1}{\tau} \cVel_{ref}^T \M{R}_{fd}^T \V{W}}\\
+    &
+    - \frac{1}{\tau} \FD^T \cVel_{ref}
+    + \cancel{\frac{1}{\tau} \V{W}^T \M{R}_{fd} \cVel_{ref}}
+    + \cancel{\cVel_{ref}^T \cVel_{ref}}\\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\alpha}{2} \frac{1}{\tau^2} \FD^T \FD
+    -  
+    \alpha 
+    \left(
+        \frac{1}{\tau^2} \V{W}^T \M{R}_{fd}
+        +
+        \frac{1}{\tau} \cVel_{ref}^T
+    \right)
+    \FD
+\end{equation*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Displacement from the reference ZMP}
+\begin{equation*}
+\begin{split}
+    &\norm{\ZMP - \FP}^2 = 
+    \norm{\M{S}_{zmp} \cstate_0 + \M{U}_{zmp} \cJerk  -  \M{V}_p \fp_0 - \M{V} \FD} ^ 2 = \\
+%
+%    \cstate_0^T \M{S}_{zmp}^T  
+%        + \cJerk^T \M{U}_{zmp}^T  
+%            -  \fp_0^T \M{V}_p^T 
+%                - \FD^T \M{V}^T
+%    \M{S}_{zmp} \cstate_0 
+%        + \M{U}_{zmp} \cJerk  
+%            -  \M{V}_p \fp_0 
+%                - \M{V} \FD
+%
+    &
+    \cancel{\cstate_0^T \M{S}_{zmp}^T \M{S}_{zmp} \cstate_0} 
+    + \cJerk^T \M{U}_{zmp}^T \M{S}_{zmp} \cstate_0
+    - \cancel{\fp_0^T \M{V}_p^T \M{S}_{zmp} \cstate_0}
+    - \FD^T \M{V}^T \M{S}_{zmp} \cstate_0 \\
+    &
+    + \cstate_0^T \M{S}_{zmp}^T \M{U}_{zmp} \cJerk 
+    + \cJerk^T \M{U}_{zmp}^T \M{U}_{zmp} \cJerk
+    - \fp_0^T \M{V}_p^T \M{U}_{zmp} \cJerk
+    - \FD^T \M{V}^T \M{U}_{zmp} \cJerk\\
+    &
+    - \cancel{\cstate_0^T \M{S}_{zmp}^T \M{V}_p \fp_0}
+    - \cJerk^T \M{U}_{zmp}^T \M{V}_p \fp_0
+    + \cancel{\fp_0^T \M{V}_p^T \M{V}_p \fp_0}
+    + \FD^T \M{V}^T \M{V}_p \fp_0\\
+    &
+    - \cstate_0^T \M{S}_{zmp}^T \M{V} \FD
+    - \cJerk^T \M{U}_{zmp}^T \M{V} \FD
+    + \fp_0^T \M{V}_p^T \M{V} \FD
+    + \FD^T \M{V}^T \M{V} \FD\\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+    &
+    \frac{\gamma}{2} \cJerk^T \M{U}_{zmp}^T \M{U}_{zmp} \cJerk
+    + 
+    \gamma 
+    \left(
+        \cstate_0^T \M{S}_{zmp}^T \M{U}_{zmp}
+        - 
+        \fp_0^T \M{V}_p^T \M{U}_{zmp} 
+    \right)
+    \cJerk\\
+    &
+    \frac{\gamma}{2} \FD^T \M{V}^T \M{V} \FD
+    + 
+    \gamma 
+    \left(
+        \fp_0^T \M{V}_p^T \M{V}
+        - 
+        \cstate_0^T \M{S}_{zmp}^T \M{V}
+    \right)
+    \FD\\
+    &
+    - \gamma \cJerk^T \M{U}_{zmp}^T \M{V} \FD
+\end{split}
+\end{equation*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Jerk}
+\begin{equation*}
+    \frac{\beta}{2}  \norm{\cJerk}^2 = \frac{\beta}{2} \cJerk^T \cJerk
+\end{equation*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Velocity}
+\begin{equation*}
+    \norm{\cVel}^2 = 
+%
+%    \cstate_0^T \M{S}_{vel}^T 
+%        + \cJerk^T \M{U}_{vel}^T
+%    \M{S}_{vel} \cstate_0 
+%        + \M{U}_{vel} \cJerk
+%
+    \cancel{\cstate_0^T \M{S}_{vel}^T \M{S}_{vel} \cstate_0}
+    +    \cJerk^T \M{U}_{vel}^T \M{S}_{vel} \cstate_0
+    +    \cstate_0^T \M{S}_{vel}^T \M{U}_{vel} \cJerk
+    +    \cJerk^T \M{U}_{vel}^T \M{U}_{vel} \cJerk
+\end{equation*}
+
+\begin{equation*}
+    \frac{\mu}{2}  \norm{\cVel}^2 = 
+        \frac{\mu}{2} \cJerk^T \M{U}_{vel}^T \M{U}_{vel} \cJerk
+        +
+        \mu \cstate_0^T \M{S}_{vel}^T \M{U}_{vel} \cJerk
+\end{equation*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Objective in the matrix form}
+\begin{equation*}
+\begin{split}
+    \minimize{\V{X}}    & \frac{1}{2} \V{X}^T\M{H}\V{X} + \V{q} \V{X}
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\M{H} = 
+    \begin{bmatrix}
+        \M{H}_{jerk}        &   \M{H}_{jerk,fp}\\
+        \M{H}_{jerk,fp}^T   &   \M{H}_{fp}
+    \end{bmatrix}
+\quad
+\V{q} = 
+    \begin{bmatrix}
+        \V{q}_{jerk}\\
+        \V{q}_{fp}
+    \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+& \M{H}_{jerk} = 
+    \gamma \M{U}_{zmp}^T \M{U}_{zmp}
+    +
+    \beta \M{I}
+    +
+    \mu \M{U}_{vel}^T \M{U}_{vel}\\
+& \M{H}_{fp} = 
+    \frac{\alpha}{\tau^2} \M{I}
+    +
+    \gamma \M{V}^T \M{V}\\
+& \M{H}_{jerk,fp} = 
+    - \gamma \M{U}_{zmp}^T \M{V}
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+& \V{q}_{jerk} = 
+    \gamma 
+    \left(
+        \cstate_0^T \M{S}_{zmp}^T \M{U}_{zmp}
+        - 
+        \fp_0^T \M{V}_p^T \M{U}_{zmp} 
+    \right)
+    +
+    \mu \cstate_0^T \M{S}_{vel}^T \M{U}_{vel}\\
+& \V{q}_{fp} =
+    -
+    \alpha 
+    \left(
+        \frac{1}{\tau^2} \V{W}^T \M{R}_{fd}
+        +
+        \frac{1}{\tau} \cVel_{ref}^T
+    \right)
+    +
+    \gamma 
+    \left(
+        \fp_0^T \M{V}_p^T \M{V}
+        - 
+        \cstate_0^T \M{S}_{zmp}^T \M{V}
+    \right)
+\end{split}
+\end{equation*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{QP}
+\begin{equation*}
+\begin{split}
+    \minimize{\V{X}}    & \frac{1}{2} \V{X}^T\M{H}\V{X} + \V{q} \V{X}\\
+    \subjectto          & \underbar{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}\\
+                        & \underbar{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
+\end{split}
+\end{equation*}

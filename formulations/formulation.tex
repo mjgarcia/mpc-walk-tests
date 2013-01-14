@@ -1,0 +1,116 @@
+\documentclass[12pt,a4paper]{article}
+
+
+\usepackage{graphicx,color,psfrag}
+\usepackage{tabularx,colortbl}
+
+\usepackage{cancel}
+
+\usepackage{epsfig}
+
+\usepackage{bm}    % need for subequations
+
+\usepackage{verbatim}   % useful for program listings
+\usepackage{color}      % use if color is used in text
+\usepackage{subfigure}  % use for side-by-side figures
+\usepackage{hyperref}   % use for hypertext links, including those to external documents and URLs
+
+\usepackage{scalefnt}
+
+\usepackage{theorem}
+
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+
+\usepackage{./mymath}
+\usepackage{./lipm_notation}
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{General definitions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Variables}
+\begin{align*}
+\cpos = \begin{bmatrix} c^x & c^y \end{bmatrix}^T
+\quad&
+\cPos = \begin{bmatrix} \cpos_1 \\ \vdots \\ \cpos_N \end{bmatrix}
+\quad&
+\cPos^x,\; \cPos^y
+\quad\quad\quad&
+\cvel = \begin{bmatrix} \dot{c}^x & \dot{c}^y \end{bmatrix}^T
+\quad&
+\cVel = \begin{bmatrix} \cvel_1 \\ \vdots \\ \cvel_N \end{bmatrix}
+\quad&
+\cVel^x,\; \cVel^y\\
+%
+\cacc = \begin{bmatrix} \ddot{c}^x & \ddot{c}^y \end{bmatrix}^T
+\quad&
+\cAcc = \begin{bmatrix} \cacc_1 \\ \vdots \\ \cacc_N \end{bmatrix}
+\quad&
+\cAcc^x,\; \cAcc^y
+\quad\quad\quad&
+\cjerk = \begin{bmatrix} \dddot{c}^x & \dddot{c}^y \end{bmatrix}^T
+\quad&
+\cJerk = \begin{bmatrix} \cjerk_0 \\ \vdots \\ \cjerk_{N-1} \end{bmatrix}
+\quad&
+\cJerk^x,\; \cJerk^y\\
+%
+\zmp = \begin{bmatrix} z^x & z^y \end{bmatrix}^T
+\quad &
+\ZMP = \begin{bmatrix} \zmp_1 \\ \vdots \\ \zmp_N \end{bmatrix}
+\quad&
+\ZMP^x,\; \ZMP^y
+\quad\quad\quad&
+\fp = \begin{bmatrix} p^x & p^y \end{bmatrix}^T
+\quad &
+\FP = \begin{bmatrix} \fp_1 \\ \vdots \\ \fp_N \end{bmatrix}
+\quad&
+\FP^x,\; \FP^y\\
+\fd = \begin{bmatrix} f^x & f^y \end{bmatrix}^T
+\quad &
+\FD = \begin{bmatrix} \fd_1 \\ \vdots \\ \fd_M \end{bmatrix}
+\quad&
+\FD^x,\; \FD^y
+\quad\quad\quad&
+\end{align*}
+
+\begin{equation*}
+\cstate = \begin{bmatrix} \cstate^x \\ \cstate^y \end{bmatrix} =
+          \begin{bmatrix} c^x \\ \dot{c}^x \\ \ddot{c}^x \\ c^y \\ \dot{c}^y \\ \ddot{c}^y \end{bmatrix}^T
+\quad\quad
+\cState = \begin{bmatrix} \cstate_1 \\ \vdots \\ \cstate_N \end{bmatrix}\\
+\end{equation*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{other}
+\begin{equation*}
+\M{R}_k = 
+\begin{bmatrix}
+    \cos{\theta_k}  &   -\sin{\theta_k} \\
+    \sin{\theta_k}  &   \cos{\theta_k} \\
+\end{bmatrix}
+\end{equation*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{formulation_01}
+\input{formulation_02}
+\input{formulation_03}
+\input{formulation_04}
+\input{formulation_05}
+\input{formulation_06}
+\input{formulation_07}
+\input{formulation_08}
+\input{formulation_09}
+
+\end{document}
