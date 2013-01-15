@@ -1,6 +1,8 @@
 %%
 % walk
 clear walk;
+load_constants
+
 walk.ss_len = 8; % duration of one SS (iterations)
 walk.theta_inc = 0.2;
 walk.velocity = [0.2; 0.0];
