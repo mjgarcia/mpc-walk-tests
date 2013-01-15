@@ -1,4 +1,4 @@
-function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, exec_time, simdata)
+function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, lambda, lambda_mask, exec_time, simdata)
 % V0c, V
 %
 %
@@ -50,6 +50,9 @@ function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, exec
         simstep.plannedSteps = [];
     end
 
+% lambda
+    load_constants;
+    simstep.lambda_zmp = lambda(find(lambda_mask == CONSTR_ZMP));
 
     simdata.simstep(mpc_state.counter + 1) = simstep;
 

@@ -1,4 +1,4 @@
-function [G_lb, G, G_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U)
+function [G, G_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U)
     load_constants
 
 
@@ -31,4 +31,7 @@ function [G_lb, G, G_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state,
 % matrix
 
     G = [R * Ip * Ue   +   omega * R * Iv * Ue,   repmat(-R, 1, Nfp/mpc.Nz)];
+
+    G = [G; -G];
+    G_ub = [G_ub; -G_lb];
 end

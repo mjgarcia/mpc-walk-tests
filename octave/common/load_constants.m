@@ -1,3 +1,8 @@
 DS = 1;
 LSS = 2;
 RSS = 3;
+
+CONSTR_EQ = 0;
+CONSTR_ZMP = 1;
+CONSTR_FD = 2;
+CONSTR_TC = 3;
