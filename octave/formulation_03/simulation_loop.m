@@ -3,7 +3,7 @@ simdata = init_simdata(mpc, mpc_state);
 figure
 while (1)
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
-    [S0, S0v, S0z, U, Uv, Uz] = form_condensing_matrices(mpc, mpc_state);
+    [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
 
 
     tau = mpc.T * walk.ss_len;

@@ -1,9 +1,6 @@
 [simdata] = init_simdata(mpc, mpc_state);
 
-QP_stab_fail_iter = [];
-iter = 1;
-
-constr = init_constraint_01();
+constr = init_constraint_02();
 
 figure
 while (1)
@@ -15,18 +12,15 @@ while (1)
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
-    [Gt, Gt_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U);
-    [Gte gte] = form_equality_constraints_05 (mpc, S0, U, Nfp);
-    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gt, Gt_ub, Gte, gte);
-    [Gb, Gb_ub] = form_feet_constraint(mpc, mpc_state, constr, Nfp);
+    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
+    [Gb, Gb_ub] = form_com_constraint(mpc, mpc_state, constr, S0p, Up, Nfp);
 
     tic;
     [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], [G; Gb], [G_ub; Gb_ub]);
     exec_time = toc();
 
     if (INFO.info != 0);
-        printf("QP with terminal constraints failed\n");
-        QP_stab_fail_iter = [QP_stab_fail_iter iter];
+        printf("QP failed\n");
         keyboard
     end
 
@@ -35,28 +29,16 @@ while (1)
 
 
 % plot
-%    cla
-%    hold on
-%    set(gca(), 'xlim', [-0.1, 0.6])
-%    set(gca(), 'ylim', [-0.3, 0.1])
-%    plot_fixed_all(robot, simdata);
-%    plot_planned_current(robot, simdata);
-%    plot_com_zmp_current(mpc, simdata);
-%    plot_cp_current(simdata);
-%    draw_line(constr, 'r', 3);
-%    print_video_frame(mpc_state.counter + 1);
-%    hold off
-%
     hold on
     plot_fixed_current(robot, simdata);
     plot_planned_current(robot, simdata);
     plot_com_zmp_current(mpc, simdata);
-    plot_cp_current(simdata);
+%    plot_cp_current(simdata);
     draw_line(constr, 'r', 3);
     hold off
-    
 
-% next
+
+%next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);
         printf("Not enough data to form preview window\n");
@@ -64,8 +46,6 @@ while (1)
     end
     sleep(0.1);
 end
-
-%QP_stab_fail_iter
 
 %hold on
 %plot_fixed_all(robot, simdata)

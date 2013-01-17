@@ -3,7 +3,7 @@
 QP_stab_fail_iter = [];
 iter = 1;
 
-constr = init_constraint_01();
+constr = init_constraint_02();
 
 figure
 while (1)
@@ -18,7 +18,7 @@ while (1)
     [Gt, Gt_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U);
     [Gte gte] = form_equality_constraints_05 (mpc, S0, U, Nfp);
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gt, Gt_ub, Gte, gte);
-    [Gb, Gb_ub] = form_feet_constraint(mpc, mpc_state, constr, Nfp);
+    [Gb, Gb_ub] = form_com_constraint(mpc, mpc_state, constr, S0p, Up, Nfp);
 
     tic;
     [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], [G; Gb], [G_ub; Gb_ub]);

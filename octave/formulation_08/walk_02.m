@@ -1,4 +1,4 @@
-addpath('../common/')
+addpath(strcat(pwd,'/../common/'))
 
 parameters_robot
 parameters_mpc6

@@ -5,7 +5,7 @@ constr = init_constraint_01();
 figure
 while (1)
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
-    [S0, S0v, S0z, U, Uv, Uz] = form_condensing_matrices(mpc, mpc_state);
+    [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
 
 
     [H, q] = form_objective (mpc, mpc_state, S0v, Uv, S0z, Uz, V0c, V, Nfp);
@@ -29,13 +29,13 @@ while (1)
 
 
 % plot
-    hold on
-    plot_fixed_current(robot, simdata);
-    plot_planned_current(robot, simdata);
-    plot_com_zmp_current(mpc, simdata);
-    plot_cp_current(simdata);
-    draw_line(constr, 'r', 3);
-    hold off
+%    hold on
+%    plot_fixed_current(robot, simdata);
+%    plot_planned_current(robot, simdata);
+%    plot_com_zmp_current(mpc, simdata);
+%    plot_cp_current(simdata);
+%    draw_line(constr, 'r', 3);
+%    hold off
 
 
 %next
@@ -44,5 +44,12 @@ while (1)
         printf("Not enough data to form preview window\n");
         break;
     end
-    sleep(0.1);
+%    sleep(0.1);
 end
+
+hold on
+plot_fixed_all(robot, simdata)
+plot_com_zmp_all(simdata)
+draw_line(constr, 'r', 3);
+hold off
+

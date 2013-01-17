@@ -6,7 +6,7 @@ iter = 1;
 figure
 while (1)
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
-    [S0, S0v, S0z, U, Uv, Uz] = form_condensing_matrices(mpc, mpc_state);
+    [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
 
 
     [H, q] = form_objective (mpc, mpc_state, S0v, Uv, S0z, Uz, V0c, V, Nfp);
