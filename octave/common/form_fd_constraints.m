@@ -13,7 +13,6 @@ function [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp)
         Gfd_ub(ind) = mpc_state.pwin(Ni + 1).f_bounds(:,2);
 
         Rfp = blkdiag (Rfp, mpc_state.pwin(Ni + 1).R');
-
         Ni = Ni + mpc_state.pwin(Ni + 1).support_len;
     end
 

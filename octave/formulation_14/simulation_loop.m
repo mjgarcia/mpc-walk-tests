@@ -1,19 +1,12 @@
-simdata = init_simdata(mpc, mpc_state);
+[simdata] = init_simdata(mpc, mpc_state);
+
+QP_stab_fail_iter = [];
+iter = 1;
+
+constr = init_constraint_01();
 
 figure
 while (1)
-    if (mpc_state.counter == disturb_iter)
-        mpc_state.cstate += disturbance;
-        com_position = mpc_state.cstate([1,4]);
-        zmp_position = mpc_state.cstate([1,4]) - mpc_state.pwin(mpc_state.counter + 1).hg * mpc_state.cstate([3,6]);
-
-        hold on
-        plot (zmp_position(1), zmp_position(2), 'oc', 'linewidth', 3);
-        plot (com_position(1), com_position(2), 'ob', 'linewidth', 3);
-        hold off
-    end
-
-
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
     [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
 
@@ -25,21 +18,16 @@ while (1)
     [Gt, Gt_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U);
     [Gte gte] = form_equality_constraints_05 (mpc, S0, U, Nfp);
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gt, Gt_ub, Gte, gte);
+    [Gb, Gb_ub] = form_feet_constraint_14(robot, mpc, mpc_state, constr, Nfp);
 
     tic;
-    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub);
+    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], [G; Gb], [G_ub; Gb_ub]);
     exec_time = toc();
 
     if (INFO.info != 0);
         printf("QP with terminal constraints failed\n");
-        QP_fail_iter = [QP_fail_iter disturb_iter];
-        break;
-%        [X, OBJ, INFO, LAMBDA] = qp ([], H, q, [], [], [], [], G_lb, G, G_ub);
-%
-%        if (INFO.info != 0);
-%            printf("QP failed\n");
-%            keyboard;
-%        end
+        QP_stab_fail_iter = [QP_stab_fail_iter iter];
+        keyboard
     end
 
 
@@ -47,16 +35,26 @@ while (1)
 
 
 % plot
+%    cla
+%    hold on
+%    set(gca(), 'xlim', [-0.1, 0.6])
+%    set(gca(), 'ylim', [-0.3, 0.1])
+%    plot_fixed_all(robot, simdata);
+%    plot_planned_current(robot, simdata);
+%    plot_com_zmp_current(mpc, simdata);
+%    plot_cp_current(simdata);
+%    draw_line(constr, 'r', 3);
+%    print_video_frame(mpc_state.counter + 1);
+%    hold off
+%
     hold on
     plot_fixed_current(robot, simdata);
     plot_planned_current(robot, simdata);
     plot_com_zmp_current(mpc, simdata);
     plot_cp_current(simdata);
+    draw_line(constr, 'r', 3);
     hold off
     
-    if (mpc_state.counter == disturb_iter)
-        break;
-    end
 
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
@@ -67,11 +65,11 @@ while (1)
 %    sleep(0.1);
 end
 
+%QP_stab_fail_iter
 
-%figure
 %hold on
 %plot_fixed_all(robot, simdata)
 %plot_com_zmp_all(simdata)
-%title (num2str(disturb_iter))
-%plot_cp_all(simdata)
+%draw_line(constr, 'r', 3);
 %hold off
+

@@ -1,0 +1,90 @@
+\section{Formulation 14-15 (FEET CONSTRAINT 2)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Description}
+\begin{itemize}
+    \item Formulation 14: Formulation 5 (CAPTURE POINT) + additional constraint.
+    \item Formulation 15: Formulation 1 + additional constraint.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Constraint on feet placement}
+All vertices of $k$-th support rectangle must satisfy constraint:
+
+\begin{equation*}
+    \V{b}^{\bar{x},\underline{y}}_k
+    \quad
+    \V{b}^{\bar{x},\bar{y}}_k
+    \quad
+    \V{b}^{\underline{x},\underline{y}}_k
+    \quad
+    \V{b}^{\underline{x},\bar{y}}_k
+\end{equation*}
+
+\begin{equation*}
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \left(
+        \diag{k = 1..M}{\M{R}_k}
+        \V{b}^{\bar{x},\underline{y}}
+        +
+        \begin{bmatrix}
+            \M{I} \\
+            \vdots \\
+            \M{I}\\
+        \end{bmatrix} 
+        \fp_0
+        +
+        \M{I}_{\FD}
+        \FD
+    \right)
+    \le
+    \M{1} c
+\end{equation*}
+
+
+\begin{equation*}
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \M{I}_{\FD}
+    \FD
+    \le
+    \M{1} c 
+    -
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \left(
+        \diag{k = 1..M}{\M{R}_k}
+        \V{b}^{\bar{x},\underline{y}}
+        +
+        \begin{bmatrix}
+            \M{I} \\
+            \vdots \\
+            \M{I}\\
+        \end{bmatrix} 
+        \fp_0
+    \right)
+\end{equation*}
+
+
+\begin{equation*}
+    \begin{bmatrix}
+        \M{0} & \diag{M}{\begin{bmatrix} a & b \end{bmatrix}} \M{I}_{\FD}
+    \end{bmatrix}
+    \M{X}
+    \le
+    \M{1} c 
+    -
+    \diag{M}{\begin{bmatrix} a & b \end{bmatrix}}
+    \left(
+        \diag{k = 1..M}{\M{R}_k}
+        \V{b}^{\bar{x},\underline{y}}
+        +
+        \begin{bmatrix}
+            \M{I} \\
+            \vdots \\
+            \M{I}\\
+        \end{bmatrix} 
+        \fp_0
+    \right)
+\end{equation*}

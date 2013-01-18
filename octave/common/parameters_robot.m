@@ -63,7 +63,7 @@ robot.right_foot_position_fixed_ss = [
 %    -robot.feet_dist_default,   -robot.feet_dist_default];
 
 %%%%
-% With respect to the center of preceding DS (fixed_position)
+% With respect to the center of preceding SS (fixed_position)
 robot.left_foot_position_fixed_ds = [
     0,    0;
     robot.feet_dist_default/2,    robot.feet_dist_default/2];

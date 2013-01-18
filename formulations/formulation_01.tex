@@ -183,7 +183,7 @@ h_k = h = \frac{c^z}{g},
 \end{equation*}
 
 \begin{equation*}
-    \underbar{\V{b}} 
+    \underline{\V{b}} 
     \le 
     \diag{k = 1..N}{\M{R}_k^T}
     \left(
@@ -207,7 +207,7 @@ h_k = h = \frac{c^z}{g},
 \end{equation*}
 
 \begin{equation*}
-    \underbar{\V{b}} 
+    \underline{\V{b}} 
     -
     \M{R}_{zmp}
     \left(
@@ -228,21 +228,21 @@ h_k = h = \frac{c^z}{g},
 \end{equation*}
 
 \begin{equation*}
-    \underbar{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}
+    \underline{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}
 \end{equation*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Foot placement}
 \begin{equation*}
-\underbar{\V{d}}_l \le \M{R}_l^T \fd_l \le \bar{\V{d}_l}
+\underline{\V{d}}_l \le \M{R}_l^T \fd_l \le \bar{\V{d}_l}
 \end{equation*}
 
 \begin{equation*}
-\underbar{\V{d}} \le \begin{bmatrix} \M{0} & \M{R}_{fd} \end{bmatrix} \V{X} \le \bar{\V{d}}
+\underline{\V{d}} \le \begin{bmatrix} \M{0} & \M{R}_{fd} \end{bmatrix} \V{X} \le \bar{\V{d}}
 \end{equation*}
 
 \begin{equation*}
-\underbar{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
+\underline{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
 \end{equation*}
 
 
@@ -439,7 +439,7 @@ h_k = h = \frac{c^z}{g},
 \begin{equation*}
 \begin{split}
     \minimize{\V{X}}    & \frac{1}{2} \V{X}^T\M{H}\V{X} + \V{q} \V{X}\\
-    \subjectto          & \underbar{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}\\
-                        & \underbar{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
+    \subjectto          & \underline{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}\\
+                        & \underline{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
 \end{split}
 \end{equation*}

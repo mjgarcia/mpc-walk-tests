@@ -245,7 +245,7 @@ with respect to the left is used).
 \begin{equation*}
 \begin{split}
     \minimize{\V{X}}    & \frac{1}{2} \V{X}^T\M{H}\V{X} + \V{q} \V{X}\\
-    \subjectto          & \underbar{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}\\
-                        & \underbar{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
+    \subjectto          & \underline{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}\\
+                        & \underline{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
 \end{split}
 \end{equation*}
