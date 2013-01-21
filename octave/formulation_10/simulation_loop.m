@@ -39,19 +39,19 @@ while (1)
 %    hold on
 %    set(gca(), 'xlim', [-0.1, 0.6])
 %    set(gca(), 'ylim', [-0.3, 0.1])
-%    plot_fixed_all(robot, simdata);
-%    plot_planned_current(robot, simdata);
-%    plot_com_zmp_current(mpc, simdata);
-%    plot_cp_current(simdata);
+%    plot_steps_fixed_all(robot, simdata);
+%    plot_steps_planned(robot, simdata);
+%    plot_com_zmp_planned(mpc, simdata);
+%    plot_cp_planned(simdata);
 %    draw_line(constr, 'r', 3);
 %    print_video_frame(mpc_state.counter + 1);
 %    hold off
 %
     hold on
-    plot_fixed_current(robot, simdata);
-    plot_planned_current(robot, simdata);
-    plot_com_zmp_current(mpc, simdata);
-    plot_cp_current(simdata);
+    plot_steps_fixed_current(robot, simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    plot_cp_planned(simdata);
     draw_line(constr, 'r', 3);
     hold off
     
@@ -68,7 +68,7 @@ end
 %QP_stab_fail_iter
 
 %hold on
-%plot_fixed_all(robot, simdata)
+%plot_steps_fixed_all(robot, simdata)
 %plot_com_zmp_all(simdata)
 %draw_line(constr, 'r', 3);
 %hold off

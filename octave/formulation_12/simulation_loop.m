@@ -4,12 +4,9 @@ figure
 while (1)
     if (mpc_state.counter == disturb_iter)
         mpc_state.cstate += disturbance;
-        com_position = mpc_state.cstate([1,4]);
-        zmp_position = mpc_state.cstate([1,4]) - mpc_state.pwin(mpc_state.counter + 1).hg * mpc_state.cstate([3,6]);
 
         hold on
-        plot (zmp_position(1), zmp_position(2), 'oc', 'linewidth', 3);
-        plot (com_position(1), com_position(2), 'ob', 'linewidth', 3);
+        plot_com_zmp_current(mpc_state);
         hold off
     end
 
@@ -32,14 +29,16 @@ while (1)
 
     if (INFO.info != 0);
         printf("QP with terminal constraints failed\n");
-        QP_fail_iter = [QP_fail_iter disturb_iter];
-        break;
-%        [X, OBJ, INFO, LAMBDA] = qp ([], H, q, [], [], [], [], G_lb, G, G_ub);
-%
-%        if (INFO.info != 0);
-%            printf("QP failed\n");
+        QP_fail_iter = [QP_fail_iter, mpc_state.counter+1];
+%        QP_fail_iter = [QP_fail_iter, disturb_iter];
+        [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
+        [X, OBJ, INFO, LAMBDA] = qp ([], H, q, [], [], [], [], [], G, G_ub);
+
+        if (INFO.info != 0);
+            printf("QP failed\n");
 %            keyboard;
-%        end
+            break;
+        end
     end
 
 
@@ -48,15 +47,15 @@ while (1)
 
 % plot
     hold on
-    plot_fixed_current(robot, simdata);
-    plot_planned_current(robot, simdata);
-    plot_com_zmp_current(mpc, simdata);
-    plot_cp_current(simdata);
+    plot_steps_fixed_current(robot, simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    plot_cp_planned(simdata);
     hold off
     
-    if (mpc_state.counter == disturb_iter)
-        break;
-    end
+%    if (mpc_state.counter == disturb_iter)
+%        break;
+%    end
 
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
@@ -70,7 +69,7 @@ end
 
 %figure
 %hold on
-%plot_fixed_all(robot, simdata)
+%plot_steps_fixed_all(robot, simdata)
 %plot_com_zmp_all(simdata)
 %title (num2str(disturb_iter))
 %plot_cp_all(simdata)

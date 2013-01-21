@@ -30,10 +30,10 @@ while (1)
 
 % plot
     hold on
-    plot_fixed_current(robot, simdata);
-    plot_planned_current(robot, simdata);
-    plot_com_zmp_current(mpc, simdata);
-    plot_cp_current(simdata);
+    plot_steps_fixed_current(robot, simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    plot_cp_planned(simdata);
     hold off
 
 
