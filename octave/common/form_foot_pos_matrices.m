@@ -30,12 +30,9 @@ end
 function [Nfp] = get_fp_num (mpc, mpc_state)
     Nfp = 0;
 
-    i = 1;
-    while(1)
-        i = i + mpc_state.pwin(mpc_state.counter + i).support_len;
-        if (i > mpc.N)
-            break;
-        end
+    i = mpc_state.pwin(mpc_state.counter + 1).support_len;
+    while(i < mpc.N)
+        i = i + mpc_state.pwin(mpc_state.counter + i + 1).support_len;
         Nfp = Nfp + mpc.Nz;
     end
 end

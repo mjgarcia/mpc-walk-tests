@@ -41,7 +41,7 @@ function draw_line(coef, color, width)
     end
 
 
-    hold on
+%    hold on
 
     p = round(p*1000)/1000;
     p = unique(p', 'rows')';
@@ -55,5 +55,5 @@ function draw_line(coef, color, width)
         plot(p(1,1:2), p(2,1:2), color, 'linewidth', width)
     end
 
-    hold off
+%    hold off
 end

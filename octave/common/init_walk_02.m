@@ -30,6 +30,7 @@ clear mpc_state;
 % state
 mpc_state.counter = 0; % Number of iterations
 mpc_state.cstate = [0; 0; 0; -robot.feet_dist_default/2; 0; 0]; % CoM state
+% - robot.foot_width/2
 mpc_state.p = [0; -robot.feet_dist_default/2];
 mpc_state.stop = 0;
 %%
