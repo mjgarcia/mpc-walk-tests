@@ -3,7 +3,7 @@
 QP_stab_fail_iter = [];
 iter = 1;
 
-constr = init_constraint_01();
+constr = init_constraint_03();
 
 figure
 while (1)

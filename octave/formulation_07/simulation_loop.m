@@ -3,7 +3,7 @@
 QP_stab_fail_iter = [];
 iter = 1;
 
-constr = init_constraint_01();
+constr = init_constraint_02();
 
 figure
 while (1)
@@ -62,7 +62,7 @@ while (1)
         printf("Not enough data to form preview window\n");
         break;
     end
-    sleep(0.1);
+%    sleep(0.1);
 end
 
 %QP_stab_fail_iter

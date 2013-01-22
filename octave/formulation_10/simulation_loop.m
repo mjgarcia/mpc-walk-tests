@@ -62,14 +62,14 @@ while (1)
         printf("Not enough data to form preview window\n");
         break;
     end
-    sleep(0.1);
+%    sleep(0.1);
 end
 
 %QP_stab_fail_iter
-
+%
 %hold on
 %plot_steps_fixed_all(robot, simdata)
 %plot_com_zmp_all(simdata)
 %draw_line(constr, 'r', 3);
 %hold off
-
+%
