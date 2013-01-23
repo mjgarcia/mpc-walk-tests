@@ -16,7 +16,7 @@
 \begin{split}
     \minimize{\cJerk, \FD}  & \frac{\alpha}{2} \norm{\frac{1}{\tau}\left(\FD - \V{W}\right) - \cVel_{ref}}^2 + 
                               \frac{\beta}{2} \norm{\cJerk}^2 +
-                              \frac{\gamma}{2} \norm{\ZMP - \FP}^2 +
+                              \frac{\gamma}{2} \norm{\ZMP - \FPh}^2 +
                               \frac{\mu}{2} \norm{\cVel}^2
 \end{split}
 \end{equation*}
@@ -40,24 +40,24 @@ with respect to the left is used).
 \subsubsection{Reference velocity}
 \begin{equation*}
 \begin{split}
-    &\norm{\frac{1}{\tau} \FD - \frac{1}{\tau} \M{R}_{fd}^T \V{W} - \cVel_{ref}}^2 = \\
+    &\norm{\frac{1}{\tau} \FD - \frac{1}{\tau} \M{R} \V{W} - \cVel_{ref}}^2 = \\
 %    \frac{1}{\tau}\FD^T 
-%        - \frac{1}{\tau}\V{W}^T \M{R}_{fd}
+%        - \frac{1}{\tau}\V{W}^T \M{R}^T
 %            - \cVel_{ref}^T
 %    \frac{1}{\tau}\FD 
-%        - \frac{1}{\tau} \M{R}_{fd}^T \V{W} 
+%        - \frac{1}{\tau} \M{R} \V{W} 
 %            - \cVel_{ref} 
     &
     \frac{1}{\tau^2} \FD^T \FD
-    - \frac{1}{\tau^2} \V{W}^T \M{R}_{fd} \FD
+    - \frac{1}{\tau^2} \V{W}^T \M{R}^T \FD
     - \frac{1}{\tau} \cVel_{ref}^T \FD\\
     &
-    - \frac{1}{\tau^2} \FD^T \M{R}_{fd}^T \V{W}
-    + \cancel{\frac{1}{\tau^2} \V{W}^T \M{R}_{fd} \M{R}_{fd}^T \V{W}}
-    + \cancel{\frac{1}{\tau} \cVel_{ref}^T \M{R}_{fd}^T \V{W}}\\
+    - \frac{1}{\tau^2} \FD^T \M{R} \V{W}
+    + \cancel{\frac{1}{\tau^2} \V{W}^T \M{R}^T \M{R} \V{W}}
+    + \cancel{\frac{1}{\tau} \cVel_{ref}^T \M{R} \V{W}}\\
     &
     - \frac{1}{\tau} \FD^T \cVel_{ref}
-    + \cancel{\frac{1}{\tau} \V{W}^T \M{R}_{fd} \cVel_{ref}}
+    + \cancel{\frac{1}{\tau} \V{W}^T \M{R}^T \cVel_{ref}}
     + \cancel{\cVel_{ref}^T \cVel_{ref}}\\
 \end{split}
 \end{equation*}
@@ -67,7 +67,7 @@ with respect to the left is used).
     -  
     \alpha 
     \left(
-        \frac{1}{\tau^2} \V{W}^T \M{R}_{fd}
+        \frac{1}{\tau^2} \V{W}^T \M{R}^T
         +
         \frac{1}{\tau} \cVel_{ref}^T
     \right)
@@ -78,36 +78,36 @@ with respect to the left is used).
 \subsubsection{Displacement from the reference ZMP}
 \begin{equation*}
 \begin{split}
-    &\norm{\ZMP - \FP}^2 = 
-    \norm{\M{S}_{zmp} \cstate_0 + \M{U}_{zmp} \cJerk  -  \M{V}_p \fp_0 - \M{V} \FD} ^ 2 = \\
+    &\norm{\ZMP - \FPh}^2 = 
+    \norm{\M{S}_z \cstate_0 + \M{U}_z \cJerk  -  \M{V}_p \fp_0 - \M{V} \FD} ^ 2 = \\
 %
-%    \cstate_0^T \M{S}_{zmp}^T  
-%        + \cJerk^T \M{U}_{zmp}^T  
+%    \cstate_0^T \M{S}_z^T  
+%        + \cJerk^T \M{U}_z^T  
 %            -  \fp_0^T \M{V}_p^T 
 %                - \FD^T \M{V}^T
-%    \M{S}_{zmp} \cstate_0 
-%        + \M{U}_{zmp} \cJerk  
+%    \M{S}_z \cstate_0 
+%        + \M{U}_z \cJerk  
 %            -  \M{V}_p \fp_0 
 %                - \M{V} \FD
 %
     &
-    \cancel{\cstate_0^T \M{S}_{zmp}^T \M{S}_{zmp} \cstate_0} 
-    + \cJerk^T \M{U}_{zmp}^T \M{S}_{zmp} \cstate_0
-    - \cancel{\fp_0^T \M{V}_p^T \M{S}_{zmp} \cstate_0}
-    - \FD^T \M{V}^T \M{S}_{zmp} \cstate_0 \\
+    \cancel{\cstate_0^T \M{S}_z^T \M{S}_z \cstate_0} 
+    + \cJerk^T \M{U}_z^T \M{S}_z \cstate_0
+    - \cancel{\fp_0^T \M{V}_p^T \M{S}_z \cstate_0}
+    - \FD^T \M{V}^T \M{S}_z \cstate_0 \\
     &
-    + \cstate_0^T \M{S}_{zmp}^T \M{U}_{zmp} \cJerk 
-    + \cJerk^T \M{U}_{zmp}^T \M{U}_{zmp} \cJerk
-    - \fp_0^T \M{V}_p^T \M{U}_{zmp} \cJerk
-    - \FD^T \M{V}^T \M{U}_{zmp} \cJerk\\
+    + \cstate_0^T \M{S}_z^T \M{U}_z \cJerk 
+    + \cJerk^T \M{U}_z^T \M{U}_z \cJerk
+    - \fp_0^T \M{V}_p^T \M{U}_z \cJerk
+    - \FD^T \M{V}^T \M{U}_z \cJerk\\
     &
-    - \cancel{\cstate_0^T \M{S}_{zmp}^T \M{V}_p \fp_0}
-    - \cJerk^T \M{U}_{zmp}^T \M{V}_p \fp_0
+    - \cancel{\cstate_0^T \M{S}_z^T \M{V}_p \fp_0}
+    - \cJerk^T \M{U}_z^T \M{V}_p \fp_0
     + \cancel{\fp_0^T \M{V}_p^T \M{V}_p \fp_0}
     + \FD^T \M{V}^T \M{V}_p \fp_0\\
     &
-    - \cstate_0^T \M{S}_{zmp}^T \M{V} \FD
-    - \cJerk^T \M{U}_{zmp}^T \M{V} \FD
+    - \cstate_0^T \M{S}_z^T \M{V} \FD
+    - \cJerk^T \M{U}_z^T \M{V} \FD
     + \fp_0^T \M{V}_p^T \M{V} \FD
     + \FD^T \M{V}^T \M{V} \FD\\
 \end{split}
@@ -116,13 +116,13 @@ with respect to the left is used).
 \begin{equation*}
 \begin{split}
     &
-    \frac{\gamma}{2} \cJerk^T \M{U}_{zmp}^T \M{U}_{zmp} \cJerk
+    \frac{\gamma}{2} \cJerk^T \M{U}_z^T \M{U}_z \cJerk
     + 
     \gamma 
     \left(
-        \cstate_0^T \M{S}_{zmp}^T \M{U}_{zmp}
+        \cstate_0^T \M{S}_z^T \M{U}_z
         - 
-        \fp_0^T \M{V}_p^T \M{U}_{zmp} 
+        \fp_0^T \M{V}_p^T \M{U}_z 
     \right)
     \cJerk\\
     &
@@ -132,11 +132,11 @@ with respect to the left is used).
     \left(
         \fp_0^T \M{V}_p^T \M{V}
         - 
-        \cstate_0^T \M{S}_{zmp}^T \M{V}
+        \cstate_0^T \M{S}_z^T \M{V}
     \right)
     \FD\\
     &
-    - \gamma \cJerk^T \M{U}_{zmp}^T \M{V} \FD
+    - \gamma \cJerk^T \M{U}_z^T \M{V} \FD
 \end{split}
 \end{equation*}
 
@@ -152,22 +152,22 @@ with respect to the left is used).
 \begin{equation*}
     \norm{\cVel}^2 = 
 %
-%    \cstate_0^T \M{S}_{vel}^T 
-%        + \cJerk^T \M{U}_{vel}^T
-%    \M{S}_{vel} \cstate_0 
-%        + \M{U}_{vel} \cJerk
+%    \cstate_0^T \M{S}_v^T 
+%        + \cJerk^T \M{U}_v^T
+%    \M{S}_v \cstate_0 
+%        + \M{U}_v \cJerk
 %
-    \cancel{\cstate_0^T \M{S}_{vel}^T \M{S}_{vel} \cstate_0}
-    +    \cJerk^T \M{U}_{vel}^T \M{S}_{vel} \cstate_0
-    +    \cstate_0^T \M{S}_{vel}^T \M{U}_{vel} \cJerk
-    +    \cJerk^T \M{U}_{vel}^T \M{U}_{vel} \cJerk
+    \cancel{\cstate_0^T \M{S}_v^T \M{S}_v \cstate_0}
+    +    \cJerk^T \M{U}_v^T \M{S}_v \cstate_0
+    +    \cstate_0^T \M{S}_v^T \M{U}_v \cJerk
+    +    \cJerk^T \M{U}_v^T \M{U}_v \cJerk
 \end{equation*}
 
 \begin{equation*}
     \frac{\mu}{2}  \norm{\cVel}^2 = 
-        \frac{\mu}{2} \cJerk^T \M{U}_{vel}^T \M{U}_{vel} \cJerk
+        \frac{\mu}{2} \cJerk^T \M{U}_v^T \M{U}_v \cJerk
         +
-        \mu \cstate_0^T \M{S}_{vel}^T \M{U}_{vel} \cJerk
+        \mu \cstate_0^T \M{S}_v^T \M{U}_v \cJerk
 \end{equation*}
 
 
@@ -196,17 +196,17 @@ with respect to the left is used).
 \begin{equation*}
 \begin{split}
 & \M{H}_{jerk} = 
-    \gamma \M{U}_{zmp}^T \M{U}_{zmp}
+    \gamma \M{U}_z^T \M{U}_z
     +
     \beta \M{I}
     +
-    \mu \M{U}_{vel}^T \M{U}_{vel}\\
+    \mu \M{U}_v^T \M{U}_v\\
 & \M{H}_{fp} = 
     \frac{\alpha}{\tau^2} \M{I}
     +
     \gamma \M{V}^T \M{V}\\
 & \M{H}_{jerk,fp} = 
-    - \gamma \M{U}_{zmp}^T \M{V}
+    - \gamma \M{U}_z^T \M{V}
 \end{split}
 \end{equation*}
 
@@ -215,12 +215,12 @@ with respect to the left is used).
 & \V{q}_{jerk} = 
     \gamma 
     \left(
-        \cstate_0^T \M{S}_{zmp}^T \M{U}_{zmp}
+        \cstate_0^T \M{S}_z^T \M{U}_z
         - 
-        \fp_0^T \M{V}_p^T \M{U}_{zmp} 
+        \fp_0^T \M{V}_p^T \M{U}_z 
     \right)
     +
-    \mu \cstate_0^T \M{S}_{vel}^T \M{U}_{vel}\\
+    \mu \cstate_0^T \M{S}_v^T \M{U}_v\\
 & \V{q}_{fp} =
     -
     \alpha 
@@ -234,7 +234,7 @@ with respect to the left is used).
     \left(
         \fp_0^T \M{V}_p^T \M{V}
         - 
-        \cstate_0^T \M{S}_{zmp}^T \M{V}
+        \cstate_0^T \M{S}_z^T \M{V}
     \right)
 \end{split}
 \end{equation*}
@@ -245,7 +245,7 @@ with respect to the left is used).
 \begin{equation*}
 \begin{split}
     \minimize{\V{X}}    & \frac{1}{2} \V{X}^T\M{H}\V{X} + \V{q} \V{X}\\
-    \subjectto          & \underline{\V{g}}_{zmp}  \le  \M{G}_{zmp} \V{X}  \le  \bar{\V{g}}_{zmp}\\
+    \subjectto          & \underline{\V{g}}_z  \le  \M{G}_z \V{X}  \le  \bar{\V{g}}_z\\
                         & \underline{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
 \end{split}
 \end{equation*}
