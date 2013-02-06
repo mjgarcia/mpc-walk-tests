@@ -1,6 +1,6 @@
 [simdata] = init_simdata(mpc, mpc_state);
 
-constr = init_constraint_03();
+constr = init_constraint_02();
 
 figure
 while (1)
@@ -29,14 +29,14 @@ while (1)
 
 
 % plot
-    hold on
-    plot_steps_fixed_current(robot, simdata);
-    plot_steps_planned(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
+%    hold on
+%    plot_steps_fixed_current(robot, simdata);
+%    plot_steps_planned(robot, simdata);
+%    plot_com_zmp_planned(mpc, simdata);
 %    plot_cp_planned(simdata);
 %    plot_com_zmp_current(mpc_state)
-    draw_line(constr, 'r', 3);
-    hold off
+%    draw_line(constr, 'r', 3);
+%    hold off
 
 
 %next
@@ -45,12 +45,17 @@ while (1)
         printf("Not enough data to form preview window\n");
         break;
     end
-    sleep(0.1);
+%    sleep(0.1);
 end
 
-%hold on
-%plot_steps_fixed_all(robot, simdata)
-%plot_com_zmp_all(simdata)
-%draw_line(constr, 'r', 3);
-%hold off
+
+hold on
+plot_steps_fixed_all(robot, simdata)
+plot_com_zmp_all(simdata)
+set(gca(), 'xlim', [-0.1, 0.6])
+draw_line(constr, 'r', 3);
+hold off
+axis equal
+xlabel('x (meter)')
+ylabel('y (meter)')
 

@@ -5,7 +5,7 @@ load_constants
 
 walk.ss_len = 8; % duration of one SS (iterations)
 walk.velocity0 = [0.0; 0.0];
-walk.velocity1 = [0.2; 0.0];
+walk.velocity1 = [0.1; 0.0];
 walk.velocity = walk.velocity0;
 
 walk.steps(1).type = DS;
@@ -30,12 +30,19 @@ for i = 3:20
 
     if (i == 3)
         walk.velocity = walk.velocity1;
-    elseif (i == 7)
-        walk.velocity = walk.velocity1([2,1]);
-    elseif (i == 11)
-        walk.velocity = -walk.velocity1;
-    elseif (i == 15)
-        walk.velocity = -walk.velocity1([2,1]);
+    elseif (i == 8)
+        walk.velocity = 2*walk.velocity1;
+    elseif (i == 14)
+        walk.velocity = 6*walk.velocity1;
+%    elseif (i == 8)
+%%        walk.velocity = walk.velocity1([2,1]);
+%        walk.velocity = 2*walk.velocity1;
+%    elseif (i == 11)
+%        walk.velocity = -walk.velocity1;
+%        walk.velocity = 3*walk.velocity1;
+%    elseif (i == 14)
+%        walk.velocity = 4*walk.velocity1;
+%        walk.velocity = -walk.velocity1([2,1]);
     end
 end
 

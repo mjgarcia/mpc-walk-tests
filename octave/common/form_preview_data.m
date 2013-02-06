@@ -9,7 +9,7 @@ function [mpc_state] = form_preview_data(robot, mpc_state, mpc, walk)
 
             mpc_state.pwin(k).T = mpc.T;                    % duration of the iteration;
             mpc_state.pwin(k).hg = robot.h/9.8;             % Height of the CoM / gravitational acceleration
-            mpc_state.pwin(k).omega = sqrt(mpc_state.pwin(k).hg);
+            mpc_state.pwin(k).omega = sqrt(1/mpc_state.pwin(k).hg);
 
             mpc_state.pwin(k).R = [
                     cos(walk.steps(i).theta), -sin(walk.steps(i).theta);

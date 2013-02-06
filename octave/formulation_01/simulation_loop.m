@@ -38,7 +38,7 @@ while (1)
         break;
     end
 
-    sleep(0.1);
+%    sleep(0.1);
 end
 
 %figure

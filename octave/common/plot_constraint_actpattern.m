@@ -7,6 +7,6 @@ function plot_constraint_actpattern(simdata)
         binmat = [binmat, (simdata.simstep(i).lambda_zmp != 0)];
     end
 
-    spy(binmat);
+    spy(binmat, 15);
     axis equal;
 end

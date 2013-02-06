@@ -8,8 +8,8 @@ max_state_val = [];
 disturbance = [0.0; 
                0.0;
                0.0;
-               0.02;
                0.0;
+               0.05;
                0.0];
 for disturb_iter = 1:20
     init_walk_01

@@ -1,8 +1,13 @@
 [simdata] = init_simdata(mpc, mpc_state);
 
+figure
 while (1)
     if (mpc_state.counter == disturb_iter)
         mpc_state.cstate += disturbance;
+
+        hold on
+        plot_com_zmp_current(mpc_state);
+        hold off
     end
 
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
@@ -31,12 +36,12 @@ while (1)
 
 
 % plot
-%    hold on
-%    plot_steps_fixed_current(robot, simdata);
-%    plot_steps_planned(robot, simdata);
-%    plot_com_zmp_planned(mpc, simdata);
-%%    plot_cp_planned(simdata);
-%    hold off
+    hold on
+    plot_steps_fixed_current(robot, simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+%    plot_cp_planned(simdata);
+    hold off
 
 
 %next

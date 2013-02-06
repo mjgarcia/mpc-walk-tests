@@ -99,7 +99,7 @@ $M$ -- number of variable steps in the preview window.
 
 \begin{equation*}
 \cstate = \begin{bmatrix} \cstate^x \\ \cstate^y \end{bmatrix} =
-          \begin{bmatrix} c^x \\ \dot{c}^x \\ \ddot{c}^x \\ c^y \\ \dot{c}^y \\ \ddot{c}^y \end{bmatrix}^T
+          \begin{bmatrix} c^x \\ \dot{c}^x \\ \ddot{c}^x \\ c^y \\ \dot{c}^y \\ \ddot{c}^y \end{bmatrix}
 \quad\quad
 \cState = \begin{bmatrix} \cstate_1 \\ \vdots \\ \cstate_N \end{bmatrix}\\
 \end{equation*}
@@ -111,7 +111,7 @@ $M$ -- number of variable steps in the preview window.
 \subsection{Model of the system}
 \begin{align*}
 \cstate_{k+1} =& \M{A}_k \cstate_k + \M{B}_k \cjerk_k\\
-z_{k+1} =& \M{D}_{k+1} \cstate_{k+1}
+\zmp_{k+1} =& \M{D}_{k+1} \cstate_{k+1}
 \end{align*}
 
 \begin{equation*}
@@ -139,11 +139,11 @@ z_{k+1} =& \M{D}_{k+1} \cstate_{k+1}
 \begin{equation*}
 \M{D}_{k} = 
 \begin{bmatrix}
-    1       & 0     & -h_k      & 0 & 0 & 0\\
-    0 & 0 & 0                   & 1       & 0     & -h_k  \\
+    1       & 0     & -\frac{1}{\omega_k^2} & 0 & 0 & 0\\
+    0 & 0 & 0                               & 1       & 0     & -\frac{1}{\omega_k^2}  \\
 \end{bmatrix}
 \quad
-h_k = \frac{c^z_k}{g}
+\omega_k = \sqrt{\frac{g}{c^z_k}}
 \end{equation*}
 
 \begin{equation*}
@@ -171,7 +171,7 @@ T_k = T:&
 \M{B}_k = \M{B}\\
 c^z_k = c^z:& 
 \quad
-h_k = h = \frac{c^z}{g},
+\omega_k = \omega = \sqrt{\frac{g}{c^z}},
 \quad
 \M{D}_k = \M{D}
 \end{align*}
@@ -233,6 +233,19 @@ h_k = h = \frac{c^z}{g},
         \diag{N}{\M{I}_{p}} \left(\M{S} \cstate_0  +  \M{U} \cJerk \right) = 
         \M{S}_{p} \cstate_0 + \M{U}_{p} \cJerk
 \end{equation*}
+
+\begin{equation*}
+    \M{S}_e =
+        \begin{bmatrix}
+        \M{A}^{N}\\
+        \end{bmatrix}
+    \quad
+    \M{U}_e =
+        \begin{bmatrix}
+        \M{A}^{N-1}\M{B}    & \M{A}^{N-2}\M{B}  & \dots & \M{B} \\
+        \end{bmatrix}
+\end{equation*}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -355,5 +368,6 @@ Rotation matrices for each iteration of the preview window:
 \input{formulation_10-11}
 \input{formulation_12-13}
 \input{formulation_14-15}
+\input{formulation_16-17}
 
 \end{document}

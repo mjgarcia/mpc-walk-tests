@@ -13,9 +13,8 @@ while (1)
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
-    [Gt, Gt_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U);
-    [Gte gte] = form_equality_constraints_05 (mpc, S0, U, Nfp);
-    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gt, Gt_ub, Gte, gte);
+    [Ge ge] = form_equality_constraints_05 (mpc, mpc_state, S0, U, Nfp);
+    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
 
     tic;
     [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub);
@@ -24,12 +23,12 @@ while (1)
     if (INFO.info != 0);
         printf("QP with terminal constraints failed\n");
         QP_stab_fail_iter = [QP_stab_fail_iter iter];
-%        [X, OBJ, INFO, LAMBDA] = qp ([], H, q, [], [], [], [], G_lb, G, G_ub);
-%
-%        if (INFO.info != 0);
-%            printf("QP failed\n");
+%        [X, OBJ, INFO, LAMBDA] = qp ([], H, q, [], [], [], [], [], G, G_ub);
+
+        if (INFO.info != 0);
+            printf("QP failed\n");
             keyboard;
-%        end
+        end
     end
 
 
@@ -37,12 +36,12 @@ while (1)
 
 
 % plot
-    hold on
-    plot_steps_fixed_current(robot, simdata);
-    plot_steps_planned(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
-    plot_cp_planned(simdata);
-    hold off
+%    hold on
+%    plot_steps_fixed_current(robot, simdata);
+%    plot_steps_planned(robot, simdata);
+%    plot_com_zmp_planned(mpc, simdata);
+%    plot_cp_planned(simdata);
+%    hold off
     
 
 % next

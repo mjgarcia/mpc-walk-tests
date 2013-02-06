@@ -12,9 +12,8 @@ while (1)
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
-    [Gt, Gt_ub] = form_term_ineq_constraints_05 (robot, mpc, mpc_state, Nfp, S0, U);
-    [Gte gte] = form_equality_constraints_05 (mpc, S0, U, Nfp);
-    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gt, Gt_ub, Gte, gte);
+    [Ge ge] = form_equality_constraints_05 (mpc, mpc_state, S0, U, Nfp);
+    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
     [Gb, Gb_ub] = form_feet_constraint(mpc, mpc_state, constr, Nfp);
 
     tic;
@@ -44,14 +43,14 @@ while (1)
 %    hold off
 
 
-%    hold on
-%    plot_steps_fixed_current(robot, simdata);
-%    plot_steps_planned(robot, simdata);
-%    plot_com_zmp_planned(mpc, simdata);
-%    plot_cp_planned(simdata);
-%    draw_line(constr, 'r', 3);
-%    hold off
-%
+    hold on
+    plot_steps_fixed_current(robot, simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    plot_cp_planned(simdata);
+    draw_line(constr, 'r', 3);
+    hold off
+
 
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
