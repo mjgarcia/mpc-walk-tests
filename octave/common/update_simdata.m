@@ -51,9 +51,11 @@ function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, lamb
     end
 
 % lambda
-    load_constants;
-    simstep.lambda_zmp = lambda(find(lambda_mask == CONSTR_ZMP));
-    simstep.lambda_fd =  lambda(find(lambda_mask == CONSTR_FD));
+    if !isempty(lambda_mask)
+        load_constants;
+        simstep.lambda_zmp = lambda(find(lambda_mask == CONSTR_ZMP));
+        simstep.lambda_fd =  lambda(find(lambda_mask == CONSTR_FD));
+    end
 
     simdata.simstep(mpc_state.counter + 1) = simstep;
 

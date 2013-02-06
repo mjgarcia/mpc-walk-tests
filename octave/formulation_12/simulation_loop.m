@@ -52,10 +52,9 @@ while (1)
     plot_cp_planned(simdata);
     hold off
     
-%    if (mpc_state.counter == disturb_iter)
-%        break;
-%    end
-
+    if (mpc_state.counter == disturb_iter)
+        break;
+    end
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);

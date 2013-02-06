@@ -1,7 +1,7 @@
 addpath(strcat(pwd,'/../common/'))
 
 parameters_robot
-parameters_mpc6
+parameters_mpc6_18
 
 QP_fail_iter = [];
 max_state_val = [];
