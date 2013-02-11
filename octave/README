@@ -1,6 +1,0 @@
-* The position of a SS following a DS is fixed, as well as the position of a
-DS following a SS. In these situations constraints on foot displacement are 
-actually equality constraints. 
-
-* Some formulations require qpOASES solver, since the default one does not
-work well with positive semidefinite problems.

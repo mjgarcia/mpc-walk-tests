@@ -1,88 +1,19 @@
-\section{Formulation 1 (A. Herdt)}\label{sec.form01}
+\section{Formulation 1 (A. Herdt)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Description}
+The problem is defined similarly to the formulation used by A. Herdt, with the following
+differences:
 \begin{itemize}
-    \item The constraints on feet placement are simplified (replaced by rectangles)
-    \item The term, which keeps the mean CoM speed close to the reference, is dropped. The preview window,
-    which is currently used, is shorter than required anyway. Also, it seems that this term is dropped
-    in mpc-walkgen as well.
+    \item Positions of the variable footsteps are defined using displacement instead
+        of absolute positions.
+    \item The constraints on foot positions are simplified (replaced by rectangles).
+    \item The term, which penalized difference between the mean velocity and the reference
+        velocity in order to improve tracking during lateral movement, is omitted.
+        The preview window, which is currently used, is shorter than required. Also, it
+        seems that this term is dropped in mpc-walkgen as well.
 \end{itemize}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Constraints}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{ZMP position}
-\begin{equation*}
-    \underline{\V{b}}_k \le \hat{\M{R}}_k^T \left( \zmp_k - \fph_k \right) \le \bar{\V{b}}_k\\
-\end{equation*}
-
-\begin{equation*}
-    \underline{\V{b}} 
-    \le 
-    \hat{\M{R}}^T
-    \left(
-        \ZMP
-        -
-        \FPh
-    \right) 
-    \le
-    \bar{\V{b}}
-\end{equation*}
-
-
-\begin{equation*}
-    \ZMP - \FP 
-    =
-    \M{S}_z \cstate_0  +  \M{U}_z \cJerk - \M{V}_p \fp_0 - \M{V} \FD\
-    =
-    \M{S}_z \cstate_0 - \M{V}_p \fp_0
-    +
-    \M{U}_z \cJerk - \M{V} \FD
-\end{equation*}
-
-\begin{equation*}
-    \underline{\V{b}} 
-    -
-    \hat{\M{R}}^T
-    \left(
-        \M{S}_z \cstate_0 - \M{V}_p \fp_0
-    \right)
-    \le 
-    \begin{bmatrix}
-        \hat{\M{R}}^T \M{U}_z & - \hat{\M{R}}^T \M{V} \\
-    \end{bmatrix}
-    \V{X}
-    \le
-    \bar{\V{b}}
-    -
-    \hat{\M{R}}^T
-    \left(
-        \M{S}_z \cstate_0 - \M{V}_p \fp_0
-    \right)
-\end{equation*}
-
-\begin{equation*}
-    \underline{\V{g}}_z  \le  \M{G}_z \V{X}  \le  \bar{\V{g}}_z
-\end{equation*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Foot placement}
-\begin{equation*}
-    \underline{\V{d}}_l \le \M{R}_l^T \fd_l \le \bar{\V{d}_l}
-\end{equation*}
-
-\begin{equation*}
-    \underline{\V{d}} \le \begin{bmatrix} \M{0} & \M{R}^T \end{bmatrix} \V{X} \le \bar{\V{d}}
-\end{equation*}
-
-\begin{equation*}
-    \underline{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
-\end{equation*}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,6 +26,16 @@
                               \frac{\gamma}{2} \norm{\ZMP - \FPh}^2
 \end{split}
 \end{equation*}
+
+Decision variables:
+\begin{equation*}
+\V{X} = 
+\begin{bmatrix} 
+    \cJerk \\ 
+    \FD
+\end{bmatrix}
+\end{equation*}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Reference velocity}
@@ -271,6 +212,81 @@
     \right)
 \end{split}
 \end{equation*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Constraints}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{ZMP position}
+\begin{equation*}
+    \underline{\V{b}}_k \le \hat{\M{R}}_k^T \left( \zmp_k - \fph_k \right) \le \bar{\V{b}}_k\\
+\end{equation*}
+
+\begin{equation*}
+    \underline{\V{b}} 
+    \le 
+    \hat{\M{R}}^T
+    \left(
+        \ZMP
+        -
+        \FPh
+    \right) 
+    \le
+    \bar{\V{b}}
+\end{equation*}
+
+
+\begin{equation*}
+    \ZMP - \FP 
+    =
+    \M{S}_z \cstate_0  +  \M{U}_z \cJerk - \M{V}_p \fp_0 - \M{V} \FD\
+    =
+    \M{S}_z \cstate_0 - \M{V}_p \fp_0
+    +
+    \M{U}_z \cJerk - \M{V} \FD
+\end{equation*}
+
+\begin{equation*}
+    \underline{\V{b}} 
+    -
+    \hat{\M{R}}^T
+    \left(
+        \M{S}_z \cstate_0 - \M{V}_p \fp_0
+    \right)
+    \le 
+    \begin{bmatrix}
+        \hat{\M{R}}^T \M{U}_z & - \hat{\M{R}}^T \M{V} \\
+    \end{bmatrix}
+    \V{X}
+    \le
+    \bar{\V{b}}
+    -
+    \hat{\M{R}}^T
+    \left(
+        \M{S}_z \cstate_0 - \M{V}_p \fp_0
+    \right)
+\end{equation*}
+
+\begin{equation*}
+    \underline{\V{g}}_z  \le  \M{G}_z \V{X}  \le  \bar{\V{g}}_z
+\end{equation*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Foot placement}
+\begin{equation*}
+    \underline{\V{d}}_l \le \M{R}_l^T \fd_l \le \bar{\V{d}_l}
+\end{equation*}
+
+\begin{equation*}
+    \underline{\V{d}} \le \begin{bmatrix} \M{0} & \M{R}^T \end{bmatrix} \V{X} \le \bar{\V{d}}
+\end{equation*}
+
+\begin{equation*}
+    \underline{\V{g}}_{fp}  \le  \M{G}_{fp} \V{X}  \le  \bar{\V{g}}_{fp}
+\end{equation*}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

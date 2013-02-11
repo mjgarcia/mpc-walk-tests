@@ -54,9 +54,12 @@
 
 \section{General definitions}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $N$ be the length of the preview window, $M$ -- the number of variable
+footsteps in the preview window.
 
-\subsection{Variables}
+\subsection{Model of the system}
+
+Position, velocity, acceleration and jerk of CoM respectively:
 \begin{align*}
 \cpos = \begin{bmatrix} c^x & c^y \end{bmatrix}^T
 \quad&
@@ -74,29 +77,16 @@
 \cjerk = \begin{bmatrix} \dddot{c}^x & \dddot{c}^y \end{bmatrix}^T
 \quad&
 \cJerk = \begin{bmatrix} \cjerk_0 \\ \vdots \\ \cjerk_{N-1} \end{bmatrix}
-\\
-%
+\end{align*}
+
+Position of the ZMP:
+\begin{align*}
 \zmp = \begin{bmatrix} z^x & z^y \end{bmatrix}^T
 \quad &
 \ZMP = \begin{bmatrix} \zmp_1 \\ \vdots \\ \zmp_N \end{bmatrix}
-\quad\quad\quad&
-\fph = \begin{bmatrix} \hat{p}^x & \hat{p}^y \end{bmatrix}^T
-\quad &
-\FPh = \begin{bmatrix} \fph_1 \\ \vdots \\ \fph_N \end{bmatrix}
-\\
-%
-\fp = \begin{bmatrix} p^x & p^y \end{bmatrix}^T
-\quad &
-\FP = \begin{bmatrix} \fp_1 \\ \vdots \\ \fp_M \end{bmatrix}
-\quad\quad\quad&
-\fd = \begin{bmatrix} f^x & f^y \end{bmatrix}^T
-\quad &
-\FD = \begin{bmatrix} \fd_0 \\ \vdots \\ \fd_{M-1} \end{bmatrix}
 \end{align*}
 
-$N$ -- length of the preview window.
-$M$ -- number of variable steps in the preview window.
-
+State of the system:
 \begin{equation*}
 \cstate = \begin{bmatrix} \cstate^x \\ \cstate^y \end{bmatrix} =
           \begin{bmatrix} c^x \\ \dot{c}^x \\ \ddot{c}^x \\ c^y \\ \dot{c}^y \\ \ddot{c}^y \end{bmatrix}
@@ -105,87 +95,43 @@ $M$ -- number of variable steps in the preview window.
 \end{equation*}
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Model of the system}
+Model of the system:
 \begin{align*}
-\cstate_{k+1} =& \M{A}_k \cstate_k + \M{B}_k \cjerk_k\\
-\zmp_{k+1} =& \M{D}_{k+1} \cstate_{k+1}
+\cstate_{k+1} =& \M{A} \cstate_k + \M{B} \cjerk_k & k = 0..N-1\\
+\zmp_{k+1} =& \M{D} \cstate_{k+1}, &
 \end{align*}
-
+where
 \begin{equation*}
-\M{A}_k = 
+\M{A} = 
 \begin{bmatrix}
-    1       & T_k   & T_k^2/2   & 0 & 0 & 0\\
-    0       & 1     & T_k       & 0 & 0 & 0\\
+    1       & T   & T^2/2   & 0 & 0 & 0\\
+    0       & 1     & T       & 0 & 0 & 0\\
     0       & 0     & 1         & 0 & 0 & 0\\
-    0 & 0 & 0                   & 1       & T_k   & T_k^2/2   \\
-    0 & 0 & 0                   & 0       & 1     & T_k       \\
+    0 & 0 & 0                   & 1       & T   & T^2/2   \\
+    0 & 0 & 0                   & 0       & 1     & T       \\
     0 & 0 & 0                   & 0       & 0     & 1         \\
 \end{bmatrix}
 \quad
-\M{B}_k =
+\M{B} =
 \begin{bmatrix}
-    T_k^3/6 & 0\\
-    T_k^2/2 & 0\\
+    T^3/6 & 0\\
+    T^2/2 & 0\\
     T       & 0\\
-    0       & T_k^3/6 \\
-    0       & T_k^2/2 \\
+    0       & T^3/6 \\
+    0       & T^2/2 \\
     0       & T       \\
 \end{bmatrix}
 \end{equation*}
-
 \begin{equation*}
-\M{D}_{k} = 
+\M{D} = 
 \begin{bmatrix}
-    1       & 0     & -\frac{1}{\omega_k^2} & 0 & 0 & 0\\
-    0 & 0 & 0                               & 1       & 0     & -\frac{1}{\omega_k^2}  \\
+    1       & 0     & -\frac{1}{\omega^2} & 0 & 0 & 0\\
+    0 & 0 & 0                             & 1       & 0     & -\frac{1}{\omega^2}  \\
 \end{bmatrix}
 \quad
-\omega_k = \sqrt{\frac{g}{c^z_k}}
+\omega = \sqrt{\frac{g}{c^z}}
 \end{equation*}
 
-\begin{equation*}
-\M{I}_{p} = 
-\begin{bmatrix} 
-    1 & 0 & 0 & 0 & 0 & 0 \\
-    0 & 0 & 0 & 1 & 0 & 0 
-\end{bmatrix}
-\quad
-\M{I}_{v} = 
-\begin{bmatrix} 
-    0 & 1 & 0 & 0 & 0 & 0 \\
-    0 & 0 & 0 & 0 & 1 & 0 
-\end{bmatrix}
-\end{equation*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Parameters}
-\begin{align*}
-T_k = T:&
-\quad
-\M{A}_k = \M{A},
-\quad
-\M{B}_k = \M{B}\\
-c^z_k = c^z:& 
-\quad
-\omega_k = \omega = \sqrt{\frac{g}{c^z}},
-\quad
-\M{D}_k = \M{D}
-\end{align*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Decision variables}
-\begin{equation*}
-\V{X} = 
-\begin{bmatrix} 
-    \cJerk \\ 
-    \FD
-\end{bmatrix}
-\end{equation*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -246,10 +192,79 @@ c^z_k = c^z:&
         \end{bmatrix}
 \end{equation*}
 
+\begin{equation*}
+\M{I}_{p} = 
+\begin{bmatrix} 
+    1 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 & 0 
+\end{bmatrix}
+\quad
+\M{I}_{v} = 
+\begin{bmatrix} 
+    0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 0 
+\end{bmatrix}
+\end{equation*}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Foot positions and displacement}
+Absolute positions of the variable footsteps and their displacements from
+preceding footsteps:
+\begin{align*}
+\fp = \begin{bmatrix} p^x & p^y \end{bmatrix}^T
+\quad &
+\FP = \begin{bmatrix} \fp_1 \\ \vdots \\ \fp_M \end{bmatrix}
+\quad\quad\quad&
+\fd = \begin{bmatrix} f^x & f^y \end{bmatrix}^T
+\quad &
+\FD = \begin{bmatrix} \fd_0 \\ \vdots \\ \fd_{M-1} \end{bmatrix}
+\end{align*}
+$\fp_0$ -- position of the only fixed step in the preview window.
+
+
+\begin{equation*}
+    \fp_{l+1} = \fp_l + \fd_{l}
+    \quad
+    l = 0..M-1
+    \quad
+    \mbox{or}
+    \quad
+    \FP = 
+    \M{I}_{fp0}
+    \fp_0 
+    + 
+    \M{I}_{\FD}
+    \FD,
+\end{equation*}
+where
+\begin{equation*}
+    \M{I}_{fp0} = 
+    \begin{bmatrix}
+        \M{I}\\
+        \vdots\\
+        \M{I}\\
+    \end{bmatrix}
+    \quad
+    \M{I}_{\FD} = 
+    \begin{bmatrix}
+        \V{I}   &   \V{0}   & \dots     & \V{0} \\
+        \vdots  &   \vdots  & \ddots    & \vdots \\
+        \V{I}   &   \V{I}   & \dots     & \V{I} \\
+    \end{bmatrix}
+\end{equation*}
+
+
+
+Foot positions for each sampling interval in the preview window:
+\begin{align*}
+\fph = \begin{bmatrix} \hat{p}^x & \hat{p}^y \end{bmatrix}^T
+\quad &
+\FPh = \begin{bmatrix} \fph_1 \\ \vdots \\ \fph_N \end{bmatrix}
+\end{align*}
+
+
 \begin{equation*}
     \FPh = \hat{\M{I}}_{fp} 
     \begin{bmatrix}
@@ -271,37 +286,6 @@ c^z_k = c^z:&
     \end{bmatrix}
 \end{equation*}
 
-
-\begin{equation*}
-    \fp_{l+1} = \fp_l + \fd_{l}
-    \quad
-    l = 0..M-1
-\end{equation*}
-
-\begin{equation*}
-    \FP = 
-    \M{I}_{fp0}
-    \fp_0 
-    + 
-    \M{I}_{\FD}
-    \FD
-\end{equation*}
-
-\begin{equation*}
-    \M{I}_{fp0} = 
-    \begin{bmatrix}
-        \M{I}\\
-        \vdots\\
-        \M{I}\\
-    \end{bmatrix}
-    \quad
-    \M{I}_{\FD} = 
-    \begin{bmatrix}
-        \V{I}   &   \V{0}   & \dots     & \V{0} \\
-        \vdots  &   \vdots  & \ddots    & \vdots \\
-        \V{I}   &   \V{I}   & \dots     & \V{I} \\
-    \end{bmatrix}
-\end{equation*}
 
 \begin{equation*}
     \FPh = 
@@ -328,6 +312,7 @@ c^z_k = c^z:&
     \M{V}
     \FD
 \end{equation*}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -360,15 +345,5 @@ Rotation matrices for each iteration of the preview window:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{formulation_01}
-\input{formulation_03}
-\input{formulation_04}
-\input{formulation_05}
-\input{formulation_06}
-\input{formulation_07-09}
-\input{formulation_10-11}
-\input{formulation_12-13}
-\input{formulation_14-15}
-\input{formulation_16-17}
-\input{formulation_18}
 
 \end{document}
