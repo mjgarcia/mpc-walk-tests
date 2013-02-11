@@ -3,6 +3,8 @@ addpath(strcat(pwd,'/../common/'))
 parameters_robot
 parameters_mpc6
 
+enabled_steps_plot = false;
+
 QP_fail_iter = [];
 max_state_val = [];
 disturbance = [0.0;

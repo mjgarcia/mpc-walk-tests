@@ -1,0 +1,68 @@
+\section{Formulation 18 (CAPTURE POINT RELAXATION)}\label{sec.form05}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Description}
+\begin{itemize}
+    \item Formulation 5 with relaxed terminal constraints on capture point.
+    \item Two QP problems with different objective functions are solved sequentially.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{First QP}
+
+Decision variables:
+\begin{equation*}
+    \V{X} = 
+    \begin{bmatrix}
+        \cJerk \\
+        \FD \\
+        \V{w} \\
+    \end{bmatrix}
+\end{equation*}
+
+Objective function:
+\begin{equation*}
+\begin{split}
+    \minimize{\V{X}}    & \norm{\V{w}}^2
+\end{split}
+\end{equation*}
+
+Inequality constraints are the same as in Formulation 5.
+
+The terminal equality constraints for the capture point are defined as:
+\begin{equation*}
+    \zmp_N = \cp - \V{w}
+\end{equation*}
+
+\begin{align*}
+    \begin{bmatrix}
+        \frac{1}{\omega}\M{D}_{cpt} \M{U}_e     &   \M{0}   &   -\M{I}\\
+    \end{bmatrix}
+    \V{X}
+    = -\frac{1}{\omega}\M{D}_{cpt} \M{S}_e \cstate_0
+\end{align*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Second QP}
+The decision variables, objective function, and inequality constraints are
+the same as in the Formulation 5.
+
+The terminal equality constraints are
+\begin{equation*}
+    \zmp_N = \cp - \V{w}^{*},
+\end{equation*}
+where $\V{w}^{*}$ is taken from the solution of the first QP.
+
+Consequently
+\begin{align*}
+    \begin{bmatrix}
+        \frac{1}{\omega}\M{D}_{cpt} \M{U}_e     &   \M{0}   &   -\M{I}\V{w}^{*}\\
+    \end{bmatrix}
+    \V{X}
+    = -\frac{1}{\omega}\M{D}_{cpt} \M{S}_e \cstate_0
+\end{align*}

@@ -1,6 +1,8 @@
-simdata = init_simdata(mpc, mpc_state);
+if (flag_first_run)
+    simdata = init_simdata(mpc, mpc_state);
+end
 
-addpath('../../qpOASES');
+addpath('../qpOASES');
 options = qpOASES_options( 'MPC' );
 
 if !exist('QP_fail_iter', 'var')
@@ -9,14 +11,24 @@ end
 
 iter = 1;
 
-figure
+if (enabled_steps_plot)
+    figure
+end
 while (1)
     if (mpc_state.counter == disturb_iter)
+        if (flag_first_run)
+            simdata_copy = simdata;
+            mpc_state_copy = mpc_state;
+            flag_first_run = false;
+        end
+
         mpc_state.cstate += disturbance;
 
-        hold on
-        plot_com_zmp_current(mpc_state);
-        hold off
+        if (enabled_steps_plot)
+            hold on
+            plot_com_zmp_current(mpc_state);
+            hold off
+        end
     end
 
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
@@ -70,14 +82,16 @@ while (1)
 
 
 % plot
-    hold on
-    plot_steps_fixed_current(robot, simdata);
-    plot_steps_planned(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
-    plot_cp_planned(simdata);
-    hold off
+    if (enabled_steps_plot)
+%        hold on
+%        plot_steps_fixed_current(robot, simdata);
+%        plot_steps_planned(robot, simdata);
+%        plot_com_zmp_planned(mpc, simdata);
+%        plot_cp_planned(simdata);
+%        hold off
+    end
     
-    if (mpc_state.counter == disturb_iter)
+    if (mpc_state.counter == stop_iter)
         break;
     end
 
@@ -89,4 +103,19 @@ while (1)
     end
     iter = iter + 1;
 %    sleep(0.1);
+end
+
+
+if (enabled_steps_plot)
+    hold on
+    plot_steps_fixed_all(robot, simdata)
+    plot_com_zmp_all(simdata)
+%    title (num2str(disturb_iter))
+%    plot_cp_all(simdata)
+    plot_cp_planned(simdata);
+    plot_cp_all_planned(simdata);
+    plot_steps_planned(robot, simdata);
+    plot_steps_planned_convhull(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    hold off
 end

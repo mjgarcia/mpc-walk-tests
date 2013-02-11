@@ -21,10 +21,13 @@ function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, lamb
     Ni = mpc_state.counter + mpc.N;
     omega = mpc_state.pwin(Ni).omega;
 
-    ind = (mpc.N-1)*mpc.Ns + 1 : mpc.N*mpc.Ns;
-    cstate_N = cState (ind, :);
-
-    simdata.cpProfile = [simdata.cpProfile, (cstate_N([1,4]) + cstate_N([2,5]) / omega)];
+    Dcp = [1, 1/omega, 0,   0, 0,       0;
+           0, 0,       0,   1, 1/omega, 0];
+    DcpN = [];
+    for (i = 1:mpc.N)
+        DcpN = blkdiag(DcpN, Dcp);
+    end
+    simdata.cpProfile = [simdata.cpProfile, DcpN * cState];
 
 
 % planned steps
@@ -55,6 +58,9 @@ function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, lamb
         load_constants;
         simstep.lambda_zmp = lambda(find(lambda_mask == CONSTR_ZMP));
         simstep.lambda_fd =  lambda(find(lambda_mask == CONSTR_FD));
+    else
+        simstep.lambda_zmp = [];
+        simstep.lambda_fd =  [];
     end
 
     simdata.simstep(mpc_state.counter + 1) = simstep;

@@ -1,13 +1,25 @@
-simdata = init_simdata(mpc, mpc_state);
+if (flag_first_run)
+    simdata = init_simdata(mpc, mpc_state);
+end
 
-figure
+if (enabled_steps_plot)
+    figure
+end
 while (1)
     if (mpc_state.counter == disturb_iter)
+        if (flag_first_run)
+            simdata_copy = simdata;
+            mpc_state_copy = mpc_state;
+            flag_first_run = false;
+        end
+
         mpc_state.cstate += disturbance;
 
-        hold on
-        plot_com_zmp_current(mpc_state);
-        hold off
+        if (enabled_steps_plot)
+            hold on
+            plot_com_zmp_current(mpc_state);
+            hold off
+        end
     end
 
 
@@ -29,7 +41,6 @@ while (1)
     if (INFO.info != 0);
         printf("QP with terminal constraints failed\n");
         QP_fail_iter = [QP_fail_iter, disturb_iter];
-%        QP_fail_iter = [QP_fail_iter, disturb_iter];
 %        [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
 %        [X, OBJ, INFO, LAMBDA] = qp ([], H, q, [], [], [], [], [], G, G_ub);
 
@@ -45,16 +56,19 @@ while (1)
 
 
 % plot
-    hold on
-    plot_steps_fixed_current(robot, simdata);
-    plot_steps_planned(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
-    plot_cp_planned(simdata);
-    hold off
+    if (enabled_steps_plot)
+%        hold on
+%        plot_steps_fixed_current(robot, simdata);
+%        plot_steps_planned(robot, simdata);
+%        plot_com_zmp_planned(mpc, simdata);
+%        plot_cp_planned(simdata);
+%        hold off
+    end
     
-    if (mpc_state.counter == disturb_iter)
+    if (mpc_state.counter == stop_iter)
         break;
     end
+
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);
@@ -65,10 +79,15 @@ while (1)
 end
 
 
-%figure
-%hold on
-%plot_steps_fixed_all(robot, simdata)
-%plot_com_zmp_all(simdata)
-%title (num2str(disturb_iter))
-%plot_cp_all(simdata)
-%hold off
+if (enabled_steps_plot)
+    hold on
+    plot_steps_fixed_all(robot, simdata)
+    plot_com_zmp_all(simdata)
+%    title (num2str(disturb_iter))
+%    plot_cp_all(simdata)
+    plot_cp_planned(simdata);
+    plot_cp_all_planned(simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    hold off
+end
