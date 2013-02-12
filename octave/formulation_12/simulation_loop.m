@@ -35,7 +35,8 @@ while (1)
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
 
     tic;
-    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub);
+    OPTIONS.MaxIter = 5000;
+    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub, OPTIONS);
     exec_time = toc();
 
     if (INFO.info != 0);
@@ -86,7 +87,7 @@ if (enabled_steps_plot)
 %    title (num2str(disturb_iter))
 %    plot_cp_all(simdata)
     plot_cp_planned(simdata);
-    plot_cp_all_planned(simdata);
+%    plot_cp_all_planned(simdata);
     plot_steps_planned(robot, simdata);
     plot_com_zmp_planned(mpc, simdata);
     hold off

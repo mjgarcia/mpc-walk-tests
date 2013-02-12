@@ -64,7 +64,8 @@ while (1)
 
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
 
-    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub);
+    OPTIONS.MaxIter = 5000;
+    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub, OPTIONS);
 
 %    [G_lb, G, G_ub, lambda_mask] = combine_constraints_18 (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
 %    [X, OBJ, INFO.info, INFO.solveiter, LAMBDA] = qpOASES(H, q, G, [], [], G_lb, G_ub, [], options);
