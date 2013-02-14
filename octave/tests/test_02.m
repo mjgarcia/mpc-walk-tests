@@ -1,13 +1,16 @@
-stop_after_iter = [10,15,20,25]; %0:7;
+%stop_after_iter = [10,15,20,25]; %0:7;
+stop_after_iter = 0:7;
 more off
 for disturb_multiplier = 4:5;
     cd ../formulation_13
     walk_01_03;
     comDist_13 = comDist;
+    cpVelProfile_13 = cpVelProfile;
 
     cd ../formulation_18
     walk_01_03;
     comDist_18 = comDist;
+    cpVelProfile_18 = cpVelProfile;
 
     figure
     hold on
@@ -28,5 +31,15 @@ for disturb_multiplier = 4:5;
     print (plotfilename, '-deps', '-color', '-F:18');
     system(strcat('epstopdf ./', plotfilename));
     system(strcat('rm ./', plotfilename));
+
+    figure
+    hold on
+    plot(stop_after_iter, cpVelProfile_13, 'b');
+    plot(stop_after_iter, cpVelProfile_13, 'bd');
+    plot(stop_after_iter, cpVelProfile_18, 'k');
+    plot(stop_after_iter, cpVelProfile_18, 'kx');
+    xlabel ('disturbance (meter/second)')
+    ylabel ('divergence (meter)')
+    hold off
 end
 more on

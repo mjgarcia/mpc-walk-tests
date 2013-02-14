@@ -16,6 +16,7 @@ max_state_val = [];
 cpProfile = [];
 comDist = [];
 disturbProfile = [];
+cpVelProfile = [];
 
 disturbance = disturbance + disturb_multiplier*delta_dist;
 
@@ -40,6 +41,11 @@ for stop_after_iter_ind = stop_after_iter;
     if (INFO.info == 0)
         comDist = [comDist, norm(simdata.cstateProfile([end-5, end-2],end) - simdata.simstep(end).plannedSteps(end).p)];
         cpProfile = [cpProfile, norm(simdata.cpProfile(end-1:end,end) - simdata.zmpProfile(end-1:end, end))];
+
+        omega = mpc_state.pwin(1).omega;
+        Dcpv = [0, 1, 1/omega,   0, 0,       0;
+                0, 0,       0,   0, 1, 1/omega];
+        cpVelProfile = [cpVelProfile, norm(Dcpv * simdata.cstateProfile(end-5:end,end))];
     end
 end
 

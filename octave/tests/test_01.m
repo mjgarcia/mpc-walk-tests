@@ -1,56 +1,81 @@
 more off
-for stop_after_iter = [15];
+for stop_after_iter = [10];
     cd ../formulation_12
     walk_01_02;
     comDist_12 = comDist;
-    cpProfile_12 = cpProfile;
+    wProfile_12 = wProfile;
 
     cd ../formulation_13
     walk_01_02;
     comDist_13 = comDist;
-    cpProfile_13 = cpProfile;
+    wProfile_13 = wProfile;
 
     cd ../formulation_18
     walk_01_02;
     comDist_18 = comDist;
-    cpProfile_18 = cpProfile;
+    wProfile_18 = wProfile;
 
     cd ../tests
 
+
     figure
     hold on
-    plot(disturbProfile(1:length(comDist_12)), comDist_12, 'r')
-    plot(disturbProfile(1:length(comDist_12)), comDist_12, 'ro')
-    plot(disturbProfile, comDist_13, 'b');
-    plot(disturbProfile, comDist_13, 'bd');
-    plot(disturbProfile, comDist_18, 'k');
-    plot(disturbProfile, comDist_18, 'kx');
-    xlabel ('disturbance (meter/second)')
-    ylabel ('divergence (meter)')
+    plot(disturbProfile, comDist_18, 'kx-', 'linewidth', 3);
+    plot(disturbProfile(1:length(comDist_12)), comDist_12, 'ro-', 'linewidth', 3)
+    xlabel ('change of CoM velocity (m/s)')
+    ylabel ('distance between CoM and support (m)')
     hold off
 
     set(gca(),'xtick', get(gca(),'xtick') )
     set(gca(),'position', [0.15,0.15,0.75,0.75]);
-    plotfilename = strcat('./divcom_vs_dist_', num2str(stop_after_iter), '.eps');
+    plotfilename = strcat('./divcom_vs_dist_', num2str(stop_after_iter), '_tc.eps');
     print (plotfilename, '-deps', '-color', '-F:18');
     system(strcat('epstopdf ./', plotfilename));
     system(strcat('rm ./', plotfilename));
 
+
     figure
     hold on
-    plot(disturbProfile(1:length(cpProfile_12)), cpProfile_12, 'r')
-    plot(disturbProfile(1:length(cpProfile_12)), cpProfile_12, 'ro')
-    plot(disturbProfile, cpProfile_13, 'b');
-    plot(disturbProfile, cpProfile_13, 'bd');
-    plot(disturbProfile, cpProfile_18, 'k');
-    plot(disturbProfile, cpProfile_18, 'kx');
-    xlabel ('disturbance (meter/second)')
-    ylabel ('divergence (meter)')
+    plot(disturbProfile, comDist_13, 'bd-', 'linewidth', 3);
+    xlabel ('change of CoM velocity (m/s)')
+    ylabel ('distance between CoM and support (m)')
     hold off
 
     set(gca(),'xtick', get(gca(),'xtick') )
     set(gca(),'position', [0.15,0.15,0.75,0.75]);
-    plotfilename = strcat('./divcp_vs_dist_', num2str(stop_after_iter), '.eps');
+    plotfilename = strcat('./divcom_vs_dist_', num2str(stop_after_iter), '_ntc.eps');
+    print (plotfilename, '-deps', '-color', '-F:18');
+    system(strcat('epstopdf ./', plotfilename));
+    system(strcat('rm ./', plotfilename));
+
+
+
+    figure
+    hold on
+    plot(disturbProfile, wProfile_18, 'kx-', 'linewidth', 3);
+    plot(disturbProfile(1:length(wProfile_12)), wProfile_12, 'ro-', 'linewidth', 3)
+    xlabel ('change of CoM velocity (m/s)')
+    ylabel ('velocity of capture point (m/s)')
+    hold off
+
+    set(gca(),'xtick', get(gca(),'xtick') )
+    set(gca(),'position', [0.17,0.15,0.75,0.75]);
+    plotfilename = strcat('./divw_vs_dist_', num2str(stop_after_iter), '_tc.eps');
+    print (plotfilename, '-deps', '-color', '-F:18');
+    system(strcat('epstopdf ./', plotfilename));
+    system(strcat('rm ./', plotfilename));
+
+
+    figure
+    hold on
+    plot(disturbProfile, wProfile_13, 'bd-', 'linewidth', 3);
+    xlabel ('change of CoM velocity (m/s)')
+    ylabel ('velocity of capture point (m/s)')
+    hold off
+
+    set(gca(),'xtick', get(gca(),'xtick') )
+    set(gca(),'position', [0.17,0.15,0.75,0.75]);
+    plotfilename = strcat('./divw_vs_dist_', num2str(stop_after_iter), '_ntc.eps');
     print (plotfilename, '-deps', '-color', '-F:18');
     system(strcat('epstopdf ./', plotfilename));
     system(strcat('rm ./', plotfilename));
