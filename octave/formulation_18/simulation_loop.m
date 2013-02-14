@@ -116,7 +116,7 @@ if (enabled_steps_plot)
     plot_cp_planned(simdata);
     plot_cp_all_planned(simdata);
     plot_steps_planned(robot, simdata);
-    plot_steps_planned_convhull(robot, simdata);
+%    plot_steps_planned_convhull(robot, simdata);
     plot_com_zmp_planned(mpc, simdata);
     hold off
 end

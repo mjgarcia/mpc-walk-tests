@@ -5,6 +5,7 @@ function [simdata] = init_simdata(mpc, mpc_state)
     simdata.zmpProfile = repmat([mpc_state.cstate(1); mpc_state.cstate(4)], mpc.N, 1);
 
     simdata.cpProfile = [];
+    simdata.cpvProfile = [];
 
     simdata.execTime = [];
 

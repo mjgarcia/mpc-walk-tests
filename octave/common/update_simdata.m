@@ -29,6 +29,15 @@ function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, lamb
     end
     simdata.cpProfile = [simdata.cpProfile, DcpN * cState];
 
+% velocity of the capture point    
+    Dcpv = [0, 1, 1/omega,   0, 0,       0;
+            0, 0,       0,   0, 1, 1/omega];
+    DcpvN = [];
+    for (i = 1:mpc.N)
+        DcpvN = blkdiag(DcpvN, Dcpv);
+    end
+    simdata.cpvProfile = [simdata.cpvProfile, DcpvN * cState];
+
 
 % planned steps
     if (Nfp > 0)

@@ -1,19 +1,21 @@
 more off
 for stop_after_iter = [10];
+    disturb_iter = 16;
+
     cd ../formulation_12
     walk_01_04;
     comDist_12 = comDist;
-    wProfile_12 = wProfile;
+    cpvProfile_12 = cpvProfile;
 
     cd ../formulation_13
     walk_01_04;
     comDist_13 = comDist;
-    wProfile_13 = wProfile;
+    cpvProfile_13 = cpvProfile;
 
     cd ../formulation_18
     walk_01_04;
     comDist_18 = comDist;
-    wProfile_18 = wProfile;
+    cpvProfile_18 = cpvProfile;
 
     cd ../tests
 
@@ -26,7 +28,7 @@ for stop_after_iter = [10];
     ylabel ('distance between CoM and support (m)')
     hold off
 
-    print_plot(cstrcat('./divcom_vs_dist_03_', num2str(stop_after_iter), '_tc'));
+    print_plot(cstrcat('./divcom_vs_dist_03_stop', num2str(stop_after_iter), '_dist', num2str(disturb_iter), '_tc'));
 
 
     figure
@@ -36,27 +38,27 @@ for stop_after_iter = [10];
     ylabel ('distance between CoM and support (m)')
     hold off
 
-    print_plot(cstrcat('./divcom_vs_dist_03_', num2str(stop_after_iter), '_ntc'));
+    print_plot(cstrcat('./divcom_vs_dist_03_stop', num2str(stop_after_iter), '_dist', num2str(disturb_iter), '_ntc'));
 
 
 
     figure
     hold on
-    plot(disturbProfile, wProfile_18, 'kx-', 'linewidth', 3);
-    plot(disturbProfile(1:length(wProfile_12)), wProfile_12, 'ro-', 'linewidth', 3)
+    plot(disturbProfile, cpvProfile_18, 'kx-', 'linewidth', 3);
+    plot(disturbProfile(1:length(cpvProfile_12)), cpvProfile_12, 'ro-', 'linewidth', 3)
     xlabel ('norm of CoM velocity change (m/s)')
     ylabel ('velocity of capture point (m/s)')
     hold off
 
-    print_plot(cstrcat('./divw_vs_dist_03_', num2str(stop_after_iter), '_tc'));
+    print_plot(cstrcat('./divw_vs_dist_03_stop', num2str(stop_after_iter), '_dist', num2str(disturb_iter), '_tc'));
 
 
     figure
     hold on
-    plot(disturbProfile, wProfile_13, 'bd-', 'linewidth', 3);
+    plot(disturbProfile, cpvProfile_13, 'bd-', 'linewidth', 3);
     xlabel ('norm of CoM velocity change (m/s)')
     ylabel ('velocity of capture point (m/s)')
     hold off
 
-    print_plot(cstrcat('./divw_vs_dist_03_', num2str(stop_after_iter), '_ntc'));
+    print_plot(cstrcat('./divw_vs_dist_03_stop', num2str(stop_after_iter), '_dist', num2str(disturb_iter), '_ntc'));
 end

@@ -9,7 +9,7 @@ end
 
 QP_fail_iter = [];
 max_state_val = [];
-wProfile = [];
+cpvProfile = [];
 comDist = [];
 disturbProfile = [];
 
@@ -20,11 +20,21 @@ for disturb_counter = 1:10
 
 
     if (flag_first_run == true)
-%        init_walk_01;
-        load ../data/state_form12_counter16.dat;
-        mpc_state = mpc_state_copy;
-        simdata = simdata_copy;
-        flag_first_run = false;
+        if (disturb_iter == 16)
+            load ../data/state_form12_counter16.dat;
+            mpc_state = mpc_state_copy;
+            simdata = simdata_copy;
+            flag_first_run = false;
+        elseif (disturb_iter == 9)
+            load ../data/state_form12_counter9.dat;
+            mpc_state = mpc_state_copy;
+            simdata = simdata_copy;
+            flag_first_run = false;
+        else
+            printf('Attention! The walk is initialized starting from the initial DS.\n')
+            printf('Different formulations may be at different states, when disturbance is applied.\n');
+            init_walk_01;
+        end
     else
         mpc_state = mpc_state_copy;
         simdata = simdata_copy;
@@ -35,16 +45,10 @@ for disturb_counter = 1:10
     if (INFO.info == 0)
         comDist = [comDist, norm(mpc_state.cstate([1,4]) - mpc_state.p)];
 
-        omega = mpc_state.pwin(1).omega;
-        Dcp = [1, 1/omega, 0,   0, 0,       0;
-               0, 0,       0,   1, 1/omega, 0];
-        D   = [1, 0, -1/omega^2, 0,   0, 0;
-               0, 0, 0,         1,   0, -1/omega^2];
-        wProfile = [wProfile, norm(simdata.cpProfile(end-1:end,end) - simdata.zmpProfile(end-1:end, end))];
-
+        cpvProfile = [cpvProfile, norm(simdata.cpvProfile(end-1:end,end))];
         %comDist = [comDist, norm(simdata.cstateProfile([end-5, end-2],end) - simdata.simstep(end).plannedSteps(end).p)];
-        %wProfile = [wProfile, norm(omega*(Dcp-D) * mpc_state.cstate)];
     end
+%    plot_cp_velocity(simdata);
 end
 
 %QP_fail_iter
