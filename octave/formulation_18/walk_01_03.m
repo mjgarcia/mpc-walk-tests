@@ -26,11 +26,7 @@ for stop_after_iter_ind = stop_after_iter;
 
 
     if (flag_first_run == true)
-%        init_walk_01
-        load ../data/state_12.dat;
-        flag_first_run = false;
-        mpc_state = mpc_state_copy;
-        simdata = simdata_copy;
+        init_walk_01
     else
         mpc_state = mpc_state_copy;
         simdata = simdata_copy;

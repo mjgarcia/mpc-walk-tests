@@ -14,32 +14,20 @@ for disturb_multiplier = 4:5;
 
     figure
     hold on
-    plot(stop_after_iter, comDist_13, 'b');
-    plot(stop_after_iter, comDist_13, 'bd');
-    plot(stop_after_iter, comDist_18, 'k');
-    plot(stop_after_iter, comDist_18, 'kx');
+    plot(stop_after_iter, comDist_13, 'bd-');
+    plot(stop_after_iter, comDist_18, 'kx-');
     xlabel ('iteration after disturbance')
     ylabel ('divergence (meter)')
     hold off
 
     cd ../tests
-    set(gca(),'xtick', get(gca(),'xtick') )
-    %axpos = get(gca(),'position');
-    %set(gca(),'position', axpos);
-    set(gca(),'position', [0.15,0.15,0.75,0.75]);
-    plotfilename = strcat('./div_iter_', num2str(disturb_multiplier), '.eps');
-    print (plotfilename, '-deps', '-color', '-F:18');
-    system(strcat('epstopdf ./', plotfilename));
-    system(strcat('rm ./', plotfilename));
+    print_plot(xstrcat('./div_iter_', num2str(disturb_multiplier));
 
     figure
     hold on
-    plot(stop_after_iter, cpVelProfile_13, 'b');
-    plot(stop_after_iter, cpVelProfile_13, 'bd');
-    plot(stop_after_iter, cpVelProfile_18, 'k');
-    plot(stop_after_iter, cpVelProfile_18, 'kx');
+    plot(stop_after_iter, cpVelProfile_13, 'bd-');
+    plot(stop_after_iter, cpVelProfile_18, 'kx-');
     xlabel ('disturbance (meter/second)')
     ylabel ('divergence (meter)')
     hold off
 end
-more on

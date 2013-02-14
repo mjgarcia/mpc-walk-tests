@@ -1,17 +1,17 @@
 more off
 for stop_after_iter = [10];
     cd ../formulation_12
-    walk_01_02;
+    walk_01_05;
     comDist_12 = comDist;
     wProfile_12 = wProfile;
 
     cd ../formulation_13
-    walk_01_02;
+    walk_01_05;
     comDist_13 = comDist;
     wProfile_13 = wProfile;
 
     cd ../formulation_18
-    walk_01_02;
+    walk_01_05;
     comDist_18 = comDist;
     wProfile_18 = wProfile;
 
@@ -26,7 +26,7 @@ for stop_after_iter = [10];
     ylabel ('distance between CoM and support (m)')
     hold off
 
-    print_plot(cstrcat('./divcom_vs_dist_01_', num2str(stop_after_iter), '_tc'));
+    print_plot(cstrcat('./divcom_vs_dist_05_', num2str(stop_after_iter), '_tc'));
 
 
     figure
@@ -36,7 +36,8 @@ for stop_after_iter = [10];
     ylabel ('distance between CoM and support (m)')
     hold off
 
-    print_plot(cstrcat('./divcom_vs_dist_01_', num2str(stop_after_iter), '_ntc'));
+    print_plot(cstrcat('./divcom_vs_dist_05_', num2str(stop_after_iter), '_ntc'));
+
 
 
     figure
@@ -47,7 +48,7 @@ for stop_after_iter = [10];
     ylabel ('velocity of capture point (m/s)')
     hold off
 
-    print_plot(cstrcat('./divw_vs_dist_01_', num2str(stop_after_iter), '_tc'));
+    print_plot(cstrcat('./divw_vs_dist_05_', num2str(stop_after_iter), '_tc'));
 
 
     figure
@@ -57,5 +58,5 @@ for stop_after_iter = [10];
     ylabel ('velocity of capture point (m/s)')
     hold off
 
-    print_plot(cstrcat('./divw_vs_dist_01_', num2str(stop_after_iter), '_ntc'));
+    print_plot(cstrcat('./divw_vs_dist_05_', num2str(stop_after_iter), '_ntc'));
 end
