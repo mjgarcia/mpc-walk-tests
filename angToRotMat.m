@@ -1,0 +1,19 @@
+function rotMat = angToRotMat(ang)
+
+sx = sind(ang(1)); cx = cosd(ang(1)); 
+sy = sind(ang(2)); cy = cosd(ang(2)); 
+sz = sind(ang(3)); cz = cosd(ang(3)); 
+
+rx = [  1,   0,   0; ... 
+        0,   cx, -sx;... 
+        0,   sx, cx]; 
+    
+ry = [  cy,  0,  sy; ... 
+         0,  1,  0; ... 
+       -sy,  0,  cy]; 
+   
+rz = [  cz,  -sz,  0; ... 
+        sz,  cz,  0; ... 
+         0,   0,  1]; 
+
+rotMat = rx*ry*rz;
