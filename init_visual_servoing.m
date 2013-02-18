@@ -2,7 +2,7 @@
 Olm_w = [[5; -0.1; 1.5] [5; 0.1; 1.5] [5; 0.1; 1.7] [5; -0.1; 1.7]];
 %Olm_w = [5; -0.1; 1.5];
 Nlm = 4;
-cm_height = 0.8;
+cm_height = 0.26;
 
 fig3DSim = figure;
 plot3(Olm_w(1,:),Olm_w(2,:),Olm_w(3,:),'+r');
@@ -13,7 +13,7 @@ hold on;
 axis([0 6 -3 3 0 6]);
 
 % Center of mass desired position
-Odcm_w = [1; 1; cm_height; 0; 0; 0];
+Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 drawAxis(Tdcm_w);
 

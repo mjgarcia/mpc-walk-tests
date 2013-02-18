@@ -32,10 +32,10 @@ while (1)
     plot(lm_proj(1,:),lm_proj(2,:),'.b','MarkerSize',5);
     
     % Linearize projection around current landmark positions
-    matProjLin = linearizeProjection(Olm_cam);
+    matProjLin = linearizeProjection(Olm_cam,Nlm);
           
     % Compute visual servoing matrices
-    [Du Dv Cu Cv vs_params] = visual_servoing_matrices(mpc,matProjLin,Tcm_cam,Tcm_w,Tw_cam,Olm_w);
+    [Du Dv Cu Cv vs_params] = visual_servoing_matrices(mpc,matProjLin,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
     
     %lm_proj_lin = matProjLin*Olm_cam;
     %plot(lm_proj_lin(2,:),-lm_proj_lin(1,:),'.r');
@@ -43,13 +43,13 @@ while (1)
     sv = zeros(Nlm);
 
     for l=1:Nlm
-        su(l) = vs_params.au*Tcm_w(1,4) + vs_params.bu*Tcm_w(2,4) + vs_params.cu(l);
-        sv(l) = vs_params.av*Tcm_w(1,4) + vs_params.bv*Tcm_w(2,4) + vs_params.cv(l);
+        su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
+        sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
     end
-    plot(su,sv,'.r','MarkerSize',3);
+    plot(su,sv,'.r','MarkerSize',4);
     
     % Add visual servoing parameters to the objective
-    [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up);
+    [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm);
     
     % TODO: Visual servoing contraints
     
@@ -96,7 +96,6 @@ while (1)
     plot_steps_planned(robot, simdata);
     plot_com_zmp_planned(mpc, simdata);
     hold off
-
 
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);

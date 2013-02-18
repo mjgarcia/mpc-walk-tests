@@ -1,10 +1,11 @@
-function matLinProj = linearizeProjection(Olm_cam)
+function matLinProj = linearizeProjection(Olm_cam,Nlm)
 
-matLinProj = zeros(2,4);
-m = mean(Olm_cam(1:3,:),2);
-matLinProj(1,1) = 1/m(3);
-matLinProj(2,2) = matLinProj(1,1);
-matLinProj(1,3) = -m(1)/(m(3)*m(3));
-matLinProj(2,3) = -m(2)/(m(3)*m(3));
-matLinProj(1,4) = m(1)/m(3);
-matLinProj(2,4) = m(2)/m(3);
+matLinProj = zeros(2,4,Nlm);
+for l = 1:Nlm
+    matLinProj(1,1,l) = 1/Olm_cam(3,l);
+    matLinProj(2,2,l) = matLinProj(1,1,l);
+    matLinProj(1,3,l) = -Olm_cam(1,l)/(Olm_cam(3,l)*Olm_cam(3,l));
+    matLinProj(2,3,l) = -Olm_cam(2,l)/(Olm_cam(3,l)*Olm_cam(3,l));
+    matLinProj(1,4,l) = Olm_cam(1,l)/Olm_cam(3,l);
+    matLinProj(2,4,l) = Olm_cam(2,l)/Olm_cam(3,l);
+end

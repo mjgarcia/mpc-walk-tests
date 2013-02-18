@@ -8,6 +8,6 @@ su = zeros(mpc.N, Nlm);
 sv = zeros(mpc.N, Nlm);
 
 for l=1:Nlm
-    su(:,l) = vs_params.au*x + vs_params.bu*y + vs_params.cu(l);
-    sv(:,l) = vs_params.av*x + vs_params.bv*y + vs_params.cv(l);
+    su(:,l) = vs_params.au(l)*x + vs_params.bu(l)*y + vs_params.cu(l);
+    sv(:,l) = vs_params.av(l)*x + vs_params.bv(l)*y + vs_params.cv(l);
 end
