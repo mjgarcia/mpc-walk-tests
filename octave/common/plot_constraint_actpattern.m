@@ -8,5 +8,9 @@ function plot_constraint_actpattern(simdata)
     end
 
     spy(binmat, 15);
-    axis equal;
+    xlabel('iteration of simulation');
+    ylabel('number of constraint');
+    axis('xy');
+    grid on;
+%    axis equal;
 end

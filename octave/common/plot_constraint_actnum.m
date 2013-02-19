@@ -16,14 +16,13 @@ function plot_constraint_actnum(simdata)
     X_deact = - sum (binmat_diff == -1);
 
     hold on
-    plot (X, 'b');
-    plot (X_act, 'r');
-    plot (X_deact, 'k');
+    plot (X, 'bo-');
+    plot (X_act, 'ro-');
+    plot (X_deact, 'ko-');
     hold off
-%    X = [];
-%    for i=1:length(simdata.simstep)
-%        X = [X, sum(simdata.simstep(i).lambda_zmp != 0)];
-%    end
-%
-%    plot (X);
+
+    xlabel('iteration of simulation');
+    ylabel('number of constraints');
+
+    grid on;
 end

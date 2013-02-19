@@ -4,6 +4,7 @@ end
 
 addpath('../qpOASES');
 options = qpOASES_options( 'MPC' );
+options.enableDriftCorrection = 1;
 
 if !exist('QP_fail_iter', 'var')
     QP_fail_iter = [];
@@ -74,8 +75,8 @@ while (1)
     if (INFO.info != 0);
         printf("QP with terminal constraints failed\n");
         QP_fail_iter = [QP_fail_iter, disturb_iter];
-        break;
-%        keyboard;
+%        break;
+        keyboard;
     end
 
 

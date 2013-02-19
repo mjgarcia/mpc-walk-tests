@@ -8,7 +8,7 @@ walk.theta_inc = 0.2;
 walk.velocity = [0.2; 0.0];
 
 walk.steps(1).type = DS;
-walk.steps(1).len = 1;
+walk.steps(1).len = 2;
 walk.steps(1).theta = 0.0;
 walk.steps(1).cvel_ref = walk.velocity;
 

@@ -9,7 +9,7 @@ walk.velocity1 = [0.1; 0.0];
 walk.velocity = walk.velocity0;
 
 walk.steps(1).type = DS;
-walk.steps(1).len = 1;
+walk.steps(1).len = 2;
 walk.steps(1).theta = 0;
 walk.steps(1).cvel_ref = walk.velocity;        % velocity vector
 
@@ -18,7 +18,7 @@ walk.steps(2).len = walk.ss_len;
 walk.steps(2).theta = 0;
 walk.steps(2).cvel_ref = walk.velocity;
 
-for i = 3:20
+for i = 3:30
     if walk.steps(i-1).type == RSS
         walk.steps(i).type = LSS;
     else
@@ -33,7 +33,7 @@ for i = 3:20
     elseif (i == 8)
         walk.velocity = 2*walk.velocity1;
     elseif (i == 14)
-        walk.velocity = 6*walk.velocity1;
+        walk.velocity = 4*walk.velocity1;
 %    elseif (i == 8)
 %%        walk.velocity = walk.velocity1([2,1]);
 %        walk.velocity = 2*walk.velocity1;

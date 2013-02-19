@@ -36,12 +36,12 @@ while (1)
 
 
 % plot
-%    hold on
-%    plot_steps_fixed_current(robot, simdata);
-%    plot_steps_planned(robot, simdata);
-%    plot_com_zmp_planned(mpc, simdata);
-%    plot_cp_planned(simdata);
-%    hold off
+    hold on
+    plot_steps_fixed_current(robot, simdata);
+    plot_steps_planned(robot, simdata);
+    plot_com_zmp_planned(mpc, simdata);
+    plot_cp_planned(simdata);
+    hold off
     
 
 % next

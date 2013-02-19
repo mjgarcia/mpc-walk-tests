@@ -13,10 +13,12 @@ cpvProfile = [];
 comDist = [];
 disturbProfile = [];
 
+fail_success = [];
 
 for disturb_counter = 1:10
     disturbance = disturbance + delta_dist;
-    disturbProfile = [disturbProfile, max(abs(disturbance))];
+    [_junk, ind]  = max(abs(disturbance));
+    disturbProfile = [disturbProfile, abs(disturbance(ind))];
 
 
     if (flag_first_run == true)
@@ -45,8 +47,23 @@ for disturb_counter = 1:10
     if (INFO.info == 0)
         comDist = [comDist, norm(mpc_state.cstate([1,4]) - mpc_state.p)];
 
+
+        %omega = mpc_state.pwin(1).omega;
+        %Dcpv = [0, 1, 1/omega,   0, 0,       0;
+        %        0, 0,       0,   0, 1, 1/omega];
+        %
+        %cpvProfile = [cpvProfile, norm(Dcpv*mpc_state.cstate)];
+
         cpvProfile = [cpvProfile, norm(simdata.cpvProfile(end-1:end,end))];
         %comDist = [comDist, norm(simdata.cstateProfile([end-5, end-2],end) - simdata.simstep(end).plannedSteps(end).p)];
+
+        if (norm(simdata.cpvProfile(end-1:end,end)) > 1000)
+            fail_success = [fail_success, 0];
+        else
+            fail_success = [fail_success, 1];
+        end
+    else
+        fail_success = [fail_success, 0];
     end
 %    plot_cp_velocity(simdata);
 end
