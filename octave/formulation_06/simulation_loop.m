@@ -12,11 +12,8 @@ while (1)
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
     [Ge ge] = form_equality_constraints_05 (mpc, mpc_state, S0, U, Nfp);
-    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
 
-    tic;
-    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], G, G_ub);
-    exec_time = toc();
+    [X, OBJ, INFO, LAMBDA, lambda_mask] = qpsolver_wrapper([], H, q, Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
 
     if (INFO.info != 0);
         printf("QP failed\n");
@@ -24,7 +21,7 @@ while (1)
     end
 
 
-    [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
+    [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, INFO.exec_time, simdata);
 
 
 % plot

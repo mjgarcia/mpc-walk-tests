@@ -16,12 +16,9 @@ while (1)
     [Gzmp, Gzmp_ub] = form_zmp_constraints_16(robot, mpc, mpc_state, V0c, V, S0z, Uz);
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
     [Gte gte] = form_equality_constraints_04 (mpc, S0, U, Nfp);
-    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Gte, gte);
     [Gb, Gb_ub] = form_feet_constraint_14(robot, mpc, mpc_state, constr, Nfp);
 
-    tic;
-    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], [G; Gb], [G_ub; Gb_ub]);
-    exec_time = toc();
+    [X, OBJ, INFO, LAMBDA, lambda_mask] = qpsolver_wrapper([], H, q, Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gb, Gb_ub, Gte, gte);
 
     if (INFO.info != 0);
         printf("QP with terminal constraints failed\n");
@@ -35,7 +32,7 @@ while (1)
     end
 
 
-    [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
+    [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, INFO.exec_time, simdata);
 
 
 % plot

@@ -1,5 +1,6 @@
 function [X, OBJ, INFO, LAMBDA, LAMBDA_MASK] = qpsolver_wrapper(soltype, H, q, Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gb, Gb_ub, Gte, gte)
     default_soltype = 'qpoases';
+%    default_soltype = 'octave';
     far_min_bound = -10^10;
 
     load_constants;
@@ -72,6 +73,8 @@ function [X, OBJ, INFO, LAMBDA] = qpoases_wrapper(H, q, G, G_ub, Gte, gte, far_m
     tic();
     [X, OBJ, INFO.info, INFO.solveiter, LAMBDA] = qpOASES(H, q, G, [], [], G_lb, G_ub, [], options);
     INFO.exec_time = toc();
+
+    LAMBDA = LAMBDA(length(X)+1:end);
 end
 
 

@@ -22,10 +22,7 @@ while (1)
     [Ge ge] = form_equality_constraints_18 (mpc, mpc_state, S0, U, Nfp, []);
     [Gb, Gb_ub] = form_com_constraint_21(mpc, mpc_state, constr, S0p, Up, Nfp);
 
-    [G_lb, G, G_ub, lambda_mask] = combine_constraints_18 (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
-
-
-    [X, OBJ, INFO.info, INFO.solveiter, LAMBDA] = qpOASES(H, q, [G; Gb], [], [], [G_lb; -10^10*ones(size(Gb_ub))], [G_ub; Gb_ub], [], options);
+    [X, OBJ, INFO, LAMBDA, lambda_mask] = qpsolver_wrapper([], H, q, Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gb, Gb_ub, Ge, ge);
 
     if (INFO.info != 0);
         printf("QP for minimization of w was failed.\n");
@@ -43,10 +40,7 @@ while (1)
     [Ge, ge] = form_equality_constraints_18 (mpc, mpc_state, S0, U, Nfp, w);
     [Gb, Gb_ub] = form_com_constraint(mpc, mpc_state, constr, S0p, Up, Nfp);
 
-    [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], Ge, ge);
-
-    OPTIONS.MaxIter = 5000;
-    [X, OBJ, INFO, LAMBDA] = qp ([], H, q, Ge, ge, [], [], [], [G; Gb], [G_ub; Gb_ub], OPTIONS);
+    [X, OBJ, INFO, LAMBDA, lambda_mask] = qpsolver_wrapper([], H, q, Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gb, Gb_ub, Ge, ge);
 
 
 

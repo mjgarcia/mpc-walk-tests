@@ -6,9 +6,15 @@ mpc.Nu = 2;     % Number of control variables
 mpc.Nz = 2;     % 
 mpc.N = 16;     % length of the preview window (iterations)
 mpc.T = 0.1;    % duration of one iteration (second)
+%{
 mpc.alpha = 1;      %
 mpc.beta = 0.00001;    %   
 mpc.gamma = 0.0001;      %
+%}
+mpc.alpha = 1;      %
+mpc.beta = 0.001;    %   
+mpc.gamma = 0.0001;      %
+
 %mpc.alpha = 1;      %
 %mpc.beta = 0.001;    %   
 %mpc.gamma = 10;      %
