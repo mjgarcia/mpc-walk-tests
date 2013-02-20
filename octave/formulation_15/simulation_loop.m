@@ -1,6 +1,6 @@
 [simdata] = init_simdata(mpc, mpc_state);
 
-constr = init_constraint_02();
+constr = init_constraint_03();
 
 figure
 while (1)

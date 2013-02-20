@@ -22,16 +22,18 @@ for disturb_counter = 1:10
 
 
     if (flag_first_run == true)
-        if (disturb_iter == 16)
-            load ../data/state_form12_counter16.dat;
+        if (disturb_iter == 10)
+            load ../data/state_form12_counter10.dat;
             mpc_state = mpc_state_copy;
             simdata = simdata_copy;
             flag_first_run = false;
+        %{
         elseif (disturb_iter == 9)
             load ../data/state_form12_counter9.dat;
             mpc_state = mpc_state_copy;
             simdata = simdata_copy;
             flag_first_run = false;
+        %}
         else
             printf('Attention! The walk is initialized starting from the initial DS.\n')
             printf('Different formulations may be at different states, when disturbance is applied.\n');
@@ -57,13 +59,13 @@ for disturb_counter = 1:10
         cpvProfile = [cpvProfile, norm(simdata.cpvProfile(end-1:end,end))];
         %comDist = [comDist, norm(simdata.cstateProfile([end-5, end-2],end) - simdata.simstep(end).plannedSteps(end).p)];
 
-        if (norm(simdata.cpvProfile(end-1:end,end)) > 1000)
-            fail_success = [fail_success, 0];
+        if (norm(simdata.cpvProfile(end-1:end,end)) > 100)
+            fail_success = [fail_success, mpc_state.counter];
         else
-            fail_success = [fail_success, 1];
+            fail_success = [fail_success, -1];
         end
     else
-        fail_success = [fail_success, 0];
+        fail_success = [fail_success, mpc_state.counter];
     end
 %    plot_cp_velocity(simdata);
 end

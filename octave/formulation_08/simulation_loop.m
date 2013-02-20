@@ -1,6 +1,6 @@
 [simdata] = init_simdata(mpc, mpc_state);
 
-constr = init_constraint_03();
+constr = init_constraint_01();
 
 figure
 while (1)
@@ -20,6 +20,15 @@ while (1)
         printf("QP failed\n");
         keyboard
     end
+
+    %{
+    [Ge, ge] = form_equality_constraints_05 (mpc, mpc_state, S0, U, Nfp);
+    [X1, OBJ1, INFO1] = qpsolver_wrapper([], H, q, Gzmp, Gzmp_ub, Gfd, Gfd_ub, Gb, Gb_ub, Ge, ge);
+    if (INFO1.info != 0);
+        printf("QP failed\n");
+        keyboard
+    end
+    %}
 
 
     [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, INFO.exec_time, simdata);
@@ -42,7 +51,7 @@ while (1)
         printf("Not enough data to form preview window\n");
         break;
     end
-    sleep(0.1);
+%    sleep(0.1);
 end
 
 %hold on

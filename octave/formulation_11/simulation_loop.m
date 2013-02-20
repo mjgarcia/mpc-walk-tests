@@ -1,6 +1,6 @@
 [simdata] = init_simdata(mpc, mpc_state);
 
-constr = init_constraint_02();
+constr = init_constraint_03();
 
 figure
 while (1)
@@ -41,7 +41,7 @@ while (1)
         printf("Not enough data to form preview window\n");
         break;
     end
-    sleep(0.1);
+%    sleep(0.1);
 end
 
 %hold on

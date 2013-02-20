@@ -3,7 +3,7 @@ simdata = init_simdata(mpc, mpc_state);
 addpath('../qpOASES');
 options = qpOASES_options( 'MPC' );
 
-constr = init_constraint_03();
+constr = init_constraint_02();
 iter = 1;
 
 if (enabled_steps_plot)

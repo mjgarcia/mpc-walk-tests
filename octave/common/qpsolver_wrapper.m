@@ -69,6 +69,7 @@ function [X, OBJ, INFO, LAMBDA] = qpoases_wrapper(H, q, G, G_ub, Gte, gte, far_m
     addpath('../qpOASES');
     options = qpOASES_options( 'MPC' );
     options.enableDriftCorrection = 1;  % without this the error in constraint satisfaction is higher (^-12).
+    options.printLevel = 0;
 
     tic();
     [X, OBJ, INFO.info, INFO.solveiter, LAMBDA] = qpOASES(H, q, G, [], [], G_lb, G_ub, [], options);

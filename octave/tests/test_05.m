@@ -1,7 +1,6 @@
 more off
 for stop_after_iter = [10];
-%    disturb_iter = 9;
-    disturb_iter = 16;
+    disturb_iter = 10;
 
     cd ../formulation_12
     walk_01_06;
