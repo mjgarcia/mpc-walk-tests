@@ -1,3 +1,4 @@
+clear;
 cd ../formulation_01
 walk_04;
 simdata_01 = simdata;

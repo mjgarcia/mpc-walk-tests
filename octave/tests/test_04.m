@@ -1,32 +1,38 @@
+clear;
 more off
-for stop_after_iter = [10];
+for stop_after_iter = [30];
     disturb_iter = 10;
 
     cd ../formulation_12
     walk_01_05;
     comDist_12 = comDist;
     cpvProfile_12 = cpvProfile;
+    fail_success_12 = fail_success;
 
     cd ../formulation_13
     walk_01_05;
     comDist_13 = comDist;
     cpvProfile_13 = cpvProfile;
+    fail_success_13 = fail_success;
 
     cd ../formulation_18
     walk_01_05;
     comDist_18 = comDist;
     cpvProfile_18 = cpvProfile;
+    fail_success_18 = fail_success;
 
     cd ../tests
 
     figure
     hold on
-    plot(disturbProfile(fail_success_12 == 1), 1*ones(sum(fail_success_12 == 1), 1), '.b', 'markersize', 30);
-    plot(disturbProfile(fail_success_12 == 0), 1*ones(sum(fail_success_12 == 0), 1), '.k', 'markersize', 30);
-    plot(disturbProfile(fail_success_13 == 1), 2*ones(sum(fail_success_13 == 1), 1), '.b', 'markersize', 30);
-    plot(disturbProfile(fail_success_13 == 0), 2*ones(sum(fail_success_13 == 0), 1), '.r', 'markersize', 30);
-    plot(disturbProfile(fail_success_18 == 1), 3*ones(sum(fail_success_18 == 1), 1), '.b', 'markersize', 30);
-    plot(disturbProfile(fail_success_18 == 0), 3*ones(sum(fail_success_18 == 0), 1), '.r', 'markersize', 30);
+    plot(disturbProfile(fail_success_12  < 0), 1*ones(sum(fail_success_12  < 0), 1), '.b', 'markersize', 30);
+    plot(disturbProfile(fail_success_13  < 0), 2*ones(sum(fail_success_13  < 0), 1), '.b', 'markersize', 30);
+    plot(disturbProfile(fail_success_18  < 0), 3*ones(sum(fail_success_18  < 0), 1), '.b', 'markersize', 30);
+
+    plot(disturbProfile(fail_success_12  > 0), 1*ones(sum(fail_success_12  > 0), 1), '.k', 'markersize', 30);
+    plot(disturbProfile(fail_success_13  > 0), 2*ones(sum(fail_success_13  > 0), 1), '.r', 'markersize', 30);
+    plot(disturbProfile(fail_success_18  > 0), 3*ones(sum(fail_success_18  > 0), 1), '.r', 'markersize', 30);
+
     set (gca(), 'ylim', [0,4])
     set (gca(), 'ytick', [1,2,3])
     set (gca(), 'yticklabel', 'TC|NTC|RTC')

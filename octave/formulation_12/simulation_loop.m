@@ -13,6 +13,8 @@ while (1)
             flag_first_run = false;
         end
 
+%        [mpc_state.cstate, mpc_state.cstate+disturbance]
+
         mpc_state.cstate += disturbance;
 
         if (enabled_steps_plot)

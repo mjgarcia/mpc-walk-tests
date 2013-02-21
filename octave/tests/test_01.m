@@ -1,3 +1,4 @@
+clear;
 more off
 for stop_after_iter = [30];
     disturb_iter = 10;
