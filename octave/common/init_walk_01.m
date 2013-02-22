@@ -17,7 +17,7 @@ walk.steps(2).len = walk.ss_len;
 walk.steps(2).theta = 0;
 walk.steps(2).cvel_ref = walk.velocity;
 
-for i = 3:17
+for i = 3:10
     if walk.steps(i-1).type == RSS
         walk.steps(i).type = LSS;
     else
