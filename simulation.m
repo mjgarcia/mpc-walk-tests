@@ -15,16 +15,16 @@ axis([0 6 -3 3 0 6]);
 % Center of mass desired position
 Odcm_w = [2; -1; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
-drawAxis(Tdcm_w);
+drawAxis(Tdcm_w,true);
 
 % Camera position with respect of center of mass
-Ocam_cm = [0; 0; 0.8; 0; 90; 0];
+Ocam_cm = [0; 0; 0.8; 0; 90; 45];
 Tcam_cm = computeTransfMatrix(Ocam_cm);
 
 % Desired camera position
 Tdcam_w = Tdcm_w*Tcam_cm;
 Tw_dcam = inv(Tdcam_w);
-drawAxis(Tdcam_w);  
+drawAxis(Tdcam_w,true);
 
 % Projection in the desired position
 Olm_dcam = Tw_dcam*[Olm_w;ones(1,Nlm)];
@@ -63,7 +63,7 @@ for it=1:ITMAX
     plot(lm_proj(2,:),-lm_proj(1,:),'+g','MarkerSize',4);
       
     if it == 1
-        matLinProj = linearizeProjection(Olm_cam);
+        matLinProj = linearizeProjection(Olm_cam,Nlm);
         coeffsLin = matLinProj(:,1:3)*Tcm_cam(1:3,1:3); 
     end
     

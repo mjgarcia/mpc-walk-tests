@@ -1,8 +1,6 @@
-function [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm)
+function [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta)
 
 NuN = mpc.N*mpc.Nu;
-delta = 0.0012;
-%delta = 0.0;
 
 sumH = zeros(NuN, NuN);
 sumq = zeros(NuN,1);

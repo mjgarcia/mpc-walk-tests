@@ -1,5 +1,5 @@
 % Landmark positions
-Olm_w = [[5; -0.1; 1.5] [5; 0.1; 1.5] [5; 0.1; 1.7] [5; -0.1; 1.7]];
+Olm_w = [[5; -0.1; 0.5] [5; 0.1; 0.5] [5; 0.1; 0.7] [5; -0.1; 0.7]];
 %Olm_w = [5; -0.1; 1.5];
 Nlm = 4;
 cm_height = 0.26;
@@ -10,22 +10,22 @@ plot3(Olm_w(1,:),Olm_w(2,:),Olm_w(3,:),'+r');
 % Setup of the scene
 grid on;
 hold on;
-axis([0 6 -3 3 0 6]);
+axis([0 6 -3 3 0 3]);
 
 % Center of mass desired position
 Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
-drawAxis(Tdcm_w);
+drawAxis(Tdcm_w,true);
 
-% Camera position with respect of center of mass
-Ocam_cm = [0; 0; 0.8; 0; 90; 0];
-Tcam_cm = computeTransfMatrix(Ocam_cm);
-Tcm_cam = inv(Tcam_cm);
+% Desired camera position with respect of center of mass
+Odcam_cm = [0; 0; 0.26; 0; 90; -15];
+Tdcam_cm = computeTransfMatrix(Odcam_cm);
+Tcm_dcam = inv(Tdcam_cm);
 
 % Desired camera position
-Tdcam_w = Tdcm_w*Tcam_cm;
+Tdcam_w = Tdcm_w*Tdcam_cm;
 Tw_dcam = inv(Tdcam_w);
-drawAxis(Tdcam_w);  
+drawAxis(Tdcam_w,true);
 
 % Projection in the desired position
 Olm_dcam = Tw_dcam*[Olm_w;ones(1,Nlm)];
