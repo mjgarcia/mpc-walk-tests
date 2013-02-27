@@ -9,17 +9,19 @@ simdata = init_simdata(mpc, mpc_state);
 
 init_visual_servoing
 
-%theta_cam_inc = -0.045;
-theta_cam_inc = -0.0375;
-theta_cam = 0.0;
+theta_cam = degtorad(0.0);
 
-delta = 0.001;
+delta = 0.0001;
 %delta = 0.0;
 
 figFootSteps = figure;
-it = 1;
+it = 0;
 while (1)
     it = it + 1;
+
+    pid_theta_com = apply_angle_controller(pid_theta_com);
+    radtodeg(pid_theta_com.state)
+
     % form matrices
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
     [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
@@ -27,9 +29,8 @@ while (1)
     % Form objective and constraints
     [H, q] = form_objective (mpc, mpc_state, S0v, Uv, S0z, Uz, V0c, V, Nfp);
 
-    theta_cam = theta_cam + theta_cam_inc;
     % Update global transformations
-    [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(mpc_state,cm_height,theta_cam);
+    [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(mpc_state,cm_height,theta_cam,pid_theta_com.state);
     figure(fig3DSim);
     %drawAxis(Tcm_w,false);
     if mod(it,32) == 0
@@ -67,6 +68,8 @@ while (1)
 
     % TODO: Visual servoing contraints
     
+    [mpc_state] = update_rotation_zmp(mpc, mpc_state, pid_theta_com.state);
+
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
 
@@ -97,7 +100,7 @@ while (1)
     end
 
     % Real position of the landmarks with nonlinear model
-    [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w);
+    [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
     for k=1:mpc.N
         plot(lm_real_horizon(1,:,k),lm_real_horizon(2,:,k),'.r','MarkerSize',5);
     end

@@ -1,8 +1,8 @@
 function rotMat = angToRotMat(ang)
 
-sx = sind(ang(1)); cx = cosd(ang(1)); 
-sy = sind(ang(2)); cy = cosd(ang(2)); 
-sz = sind(ang(3)); cz = cosd(ang(3)); 
+sx = sin(ang(1)); cx = cos(ang(1));
+sy = sin(ang(2)); cy = cos(ang(2));
+sz = sin(ang(3)); cz = cos(ang(3));
 
 rx = [  1,   0,   0; ... 
         0,   cx, -sx;... 

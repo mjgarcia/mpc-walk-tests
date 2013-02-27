@@ -1,11 +1,11 @@
-function [lm_real_horizon] = real_landmarks(mpc, simdata,Tcm_cam,cm_height, Olm_w)
+function [lm_real_horizon] = real_landmarks(mpc, simdata,Tcm_cam,cm_height, Olm_w, theta_com)
 s = size(Olm_w);
 
 lm_real_horizon = zeros(2,s(2),mpc.N);
 
 for k = 1:mpc.N
     % Center of mass global state
-    Ocm_w = [simdata.cstateProfile(mpc.Ns*(k-1)+1, end); simdata.cstateProfile(mpc.Ns*(k-1)+4, end); cm_height; 0; 0; 0];
+    Ocm_w = [simdata.cstateProfile(mpc.Ns*(k-1)+1, end); simdata.cstateProfile(mpc.Ns*(k-1)+4, end); cm_height; 0; 0; theta_com];
     Tcm_w = computeTransfMatrix(Ocm_w);
     Tw_cm = inv(Tcm_w);
 

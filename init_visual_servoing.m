@@ -13,12 +13,14 @@ hold on;
 axis([0 6 -3 3 0 3]);
 
 % Center of mass desired position
-Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
+Odcm_w = [3; 1.5; cm_height; 0; 0; degtorad(-15)];
+%Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 drawAxis(Tdcm_w,true);
 
 % Desired camera position with respect of center of mass
-Odcam_cm = [0; 0; 0.26; 0; 90; -15];
+%Odcam_cm = [0; 0; 0.26; degtorad([0; 90; -15])];
+Odcam_cm = [0; 0; 0.26; 0; degtorad(90); 0];
 Tdcam_cm = computeTransfMatrix(Odcam_cm);
 Tcm_dcam = inv(Tdcam_cm);
 
@@ -41,3 +43,14 @@ colors = get(0,'DefaultAxesColorOrder');
 
 weightsMatrix = diag(2.^(0:mpc.N-1));
 %weightsMatrix = eye(mpc.N);
+
+% Angle controller
+pid_theta_com.state = degtorad(0.0);
+pid_theta_com.gain_prop = 0.01;
+pid_theta_com.gain_int = 0.0;
+pid_theta_com.gain_deriv = 0.0;
+pid_theta_com.error = 0.0;
+pid_theta_com.cum_error = 0.0;
+pid_theta_com.diff_error = 0.0;
+pid_theta_com.prev_error = pid_theta_com.error;
+pid_theta_com.reference = Odcm_w(6);
