@@ -13,7 +13,7 @@ hold on;
 axis([0 6 -3 3 0 3]);
 
 % Center of mass desired position
-Odcm_w = [3; 1.5; cm_height; 0; 0; degtorad(-15)];
+Odcm_w = [2; -0.5; cm_height; 0; 0; degtorad(0)];
 %Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 drawAxis(Tdcm_w,true);
@@ -54,3 +54,8 @@ pid_theta_com.cum_error = 0.0;
 pid_theta_com.diff_error = 0.0;
 pid_theta_com.prev_error = pid_theta_com.error;
 pid_theta_com.reference = Odcm_w(6);
+
+vs_limits.u_min = -0.04;
+vs_limits.u_max = inf;
+vs_limits.v_min = -inf;
+vs_limits.v_max = 0.04;

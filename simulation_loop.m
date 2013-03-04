@@ -11,7 +11,8 @@ init_visual_servoing
 
 theta_cam = degtorad(0.0);
 
-delta = 0.0001;
+%delta = 0.0001;
+delta = 0.001;
 %delta = 0.0;
 
 figFootSteps = figure;
@@ -44,7 +45,8 @@ while (1)
     % Real landmarks projected
     lm_proj = projectToImagePlane(Olm_cam);
     figure(fig2DProj);
-    plot(lm_proj(1,:),lm_proj(2,:),'.b','MarkerSize',5);
+    %plot(lm_proj(1,:),lm_proj(2,:),'.b','MarkerSize',5);
+    plot(lm_proj(1,:),lm_proj(2,:),'.b');
 
     % Linearize projection around current landmark positions
     matProjLin = linearizeProjection(Olm_cam,Nlm);
@@ -57,26 +59,32 @@ while (1)
     su = zeros(Nlm);
     sv = zeros(Nlm);
 
-    for l=1:Nlm
-        su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
-        sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
-    end
-    plot(su,sv,'.r','MarkerSize',4);
+%     for l=1:Nlm
+%         su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
+%         sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
+%     end
+%     plot(su,sv,'.r','MarkerSize',4);
 
     % Add visual servoing parameters to the objective
     [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta);
 
-    % TODO: Visual servoing contraints
-    
+    % Rotaion of the foot steps
     [mpc_state] = update_rotation_zmp(mpc, mpc_state, pid_theta_com.state);
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
+
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
+
+    % Visual servoing contraints
+    [Gvs, Gvs_ub] = compute_vs_contraints(mpc, Du, Dv, Cu, Cv, S0p, Up, vs_limits, Nlm, Nfp);
 
     % Combine constraints:
     %   Ge * X = ge
     %   G * X <= G_ub
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
+
+    % Add visual constraints
+    [G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
 
     % run solver
     tic;
@@ -93,17 +101,17 @@ while (1)
     % Collect data.
     [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
     
-    % Simulate position of the landmarks with linear model
-    [su sv] = simulate_landmarks(mpc, simdata, vs_params);
-    for l=1:Nlm
-        plot(su(:,l),sv(:,l),'.-g','MarkerSize',5);
-    end
+%     % Simulate position of the landmarks with linear model
+%     [su sv] = simulate_landmarks(mpc, simdata, vs_params);
+%     for l=1:Nlm
+%         plot(su(:,l),sv(:,l),'.-g','MarkerSize',5);
+%     end
 
-    % Real position of the landmarks with nonlinear model
-    [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
-    for k=1:mpc.N
-        plot(lm_real_horizon(1,:,k),lm_real_horizon(2,:,k),'.r','MarkerSize',5);
-    end
+%     % Real position of the landmarks with nonlinear model
+%     [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
+%     for k=1:mpc.N
+%         plot(lm_real_horizon(1,:,k),lm_real_horizon(2,:,k),'.r','MarkerSize',5);
+%     end
 
 % plot
     % Plotting during simulation, comment the following lines out, if you want it to work faster.
