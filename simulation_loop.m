@@ -11,14 +11,23 @@ init_visual_servoing
 
 theta_cam = degtorad(0.0);
 
-%delta = 0.0001;
-delta = 0.001;
+%delta = 0.001;
+delta = 0.0001;
 %delta = 0.0;
 
 figFootSteps = figure;
 it = 0;
 while (1)
     it = it + 1;
+
+    % Perturbation of the center of mass
+    if it == 5
+    mpc_state.cstate(1) = mpc_state.cstate(1) + 0.0;
+    mpc_state.cstate(4) = mpc_state.cstate(4) + 0.05;
+    disp('Perturbation');
+    mpc_state.cstate(1)
+    mpc_state.cstate(4)
+    end
 
     pid_theta_com = apply_angle_controller(pid_theta_com);
     radtodeg(pid_theta_com.state)
@@ -44,29 +53,35 @@ while (1)
     Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
     % Real landmarks projected
     lm_proj = projectToImagePlane(Olm_cam);
+    %Add noise
+    sigma = 0.001;
+    lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
     figure(fig2DProj);
     %plot(lm_proj(1,:),lm_proj(2,:),'.b','MarkerSize',5);
     plot(lm_proj(1,:),lm_proj(2,:),'.b');
+    plot(lm_proj_noisy(1,:),lm_proj_noisy(2,:),'.m');
 
     % Linearize projection around current landmark positions
     matProjLin = linearizeProjection(Olm_cam,Nlm);
+    matProjLinNoisy = linearizeProjectionUsingUV(lm_proj_noisy,Olm_cam(3,:),Nlm);
 
     % Compute visual servoing matrices
     [Du Dv Cu Cv vs_params] = visual_servoing_matrices(mpc,matProjLin,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
+    [DuNoisy DvNoisy CuNoisy CvNoisy vs_paramsNoisy] = visual_servoing_matrices(mpc,matProjLinNoisy,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
 
     %lm_proj_lin = matProjLin*Olm_cam;
     %plot(lm_proj_lin(2,:),-lm_proj_lin(1,:),'.r');
     su = zeros(Nlm);
     sv = zeros(Nlm);
 
-%     for l=1:Nlm
-%         su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
-%         sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
-%     end
-%     plot(su,sv,'.r','MarkerSize',4);
+    for l=1:Nlm
+        su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
+        sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
+    end
+    plot(su,sv,'.r','MarkerSize',4);
 
     % Add visual servoing parameters to the objective
-    [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta);
+    %[H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta);
 
     % Rotaion of the foot steps
     [mpc_state] = update_rotation_zmp(mpc, mpc_state, pid_theta_com.state);
@@ -84,7 +99,7 @@ while (1)
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
 
     % Add visual constraints
-    [G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
+    %[G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
 
     % run solver
     tic;
@@ -101,17 +116,19 @@ while (1)
     % Collect data.
     [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
     
-%     % Simulate position of the landmarks with linear model
-%     [su sv] = simulate_landmarks(mpc, simdata, vs_params);
-%     for l=1:Nlm
-%         plot(su(:,l),sv(:,l),'.-g','MarkerSize',5);
-%     end
+    % Simulate position of the landmarks with linear model
+    [su sv] = simulate_landmarks(mpc, simdata, vs_params);
+    [suNoisy svNoisy] = simulate_landmarks(mpc, simdata, vs_paramsNoisy);
+    for l=1:Nlm
+        plot(su(:,l),sv(:,l),'.-g','MarkerSize',5);
+        plot(suNoisy(:,l),svNoisy(:,l),'.-k','MarkerSize',5);
+    end
 
-%     % Real position of the landmarks with nonlinear model
-%     [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
-%     for k=1:mpc.N
-%         plot(lm_real_horizon(1,:,k),lm_real_horizon(2,:,k),'.r','MarkerSize',5);
-%     end
+    % Real position of the landmarks with nonlinear model
+    [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
+    for k=1:mpc.N
+        plot(lm_real_horizon(1,:,k),lm_real_horizon(2,:,k),'.r','MarkerSize',5);
+    end
 
 % plot
     % Plotting during simulation, comment the following lines out, if you want it to work faster.
