@@ -14,24 +14,29 @@ init_visual_servoing
 theta_cam = degtorad(0.0);
 
 %delta = 0.001;
-delta = 0.0001;
+delta = 0.00005;
 %delta = 0.0;
 
 figFootSteps = figure;
+figFeaturesHorizon = figure;
 it = 0;
+
+lm_proj_all = [];
+obj_all = [];
+lm_proj_errors_all= [];
 while (1)
     it = it + 1;
 
-    % Perturbation of the center of mass
-    if it == 22
-        plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
-    mpc_state.cstate(1) = mpc_state.cstate(1) + 0.05;
-    mpc_state.cstate(4) = mpc_state.cstate(4) + 0.025;
-    %mpc_state.cstate(6) = mpc_state.cstate(6) - 4;
-    disp('Perturbation');
-    plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
-    %pause;
-    end
+%     % Perturbation of the center of mass
+%     if it == 22
+%         plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
+%     mpc_state.cstate(1) = mpc_state.cstate(1) + 0.05;
+%     mpc_state.cstate(4) = mpc_state.cstate(4) + 0.025;
+%     %mpc_state.cstate(6) = mpc_state.cstate(6) - 4;
+%     disp('Perturbation');
+%     plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
+%     %pause;
+%     end
 
     pid_theta_com = apply_angle_controller(pid_theta_com);
     radtodeg(pid_theta_com.state)
@@ -61,9 +66,11 @@ while (1)
     %sigma = 0.0001;
     sigma = 0.0;
     lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
-    figure(fig2DProj);
+    %figure(fig2DProj);
     %plot(lm_proj(1,:),lm_proj(2,:),'.b','MarkerSize',5);
-    plot(lm_proj(1,:),lm_proj(2,:),'.b');
+    lm_proj_all = [lm_proj_all; lm_proj];
+    lm_proj_errors_all = [lm_proj_errors_all; lm_proj - lmd_proj];
+    %plot(-lm_proj(2,:),-lm_proj(1,:),'.b');
     %plot(lm_proj_noisy(1,:),lm_proj_noisy(2,:),'.m');
 
     % Linearize projection around current landmark positions
@@ -112,7 +119,7 @@ while (1)
     options = optimset('LargeScale','off');
     [X, OBJ, EXITFLAG, OUTPUT, LAMBDA] = quadprog (H, q, G, G_ub, Ge, ge,[],[],[],options);
     exec_time = toc();
-
+    obj_all = [obj_all OBJ];
     if (EXITFLAG ~= 1);
         disp('QP failed');
         %keyboard;
@@ -121,20 +128,33 @@ while (1)
     % Collect data.
     [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
     
+    figure(figFeaturesHorizon);
     % Simulate position of the landmarks with linear model
     [su sv] = simulate_landmarks(mpc, simdata, vs_params);
     [suNoisy svNoisy] = simulate_landmarks(mpc, simdata, vs_paramsNoisy);
+    
+    plot([-sv(1,:) -sv(1,1)],[-su(1,:) -su(1,1)],':b');
+    hold('on');
+    plot([-sv(end,:) -sv(end,1)],[-su(end,:) -su(end,1)],':g');
+    %plot(suNoisy(:,l),svNoisy(:,l),'.-k','MarkerSize',5);
+    
     for l=1:Nlm
-        %plot(su(:,l),sv(:,l),'.-g','MarkerSize',5);
+        plot(-sv(:,l),-su(:,l),'-g','MarkerSize',5);
         %plot(suNoisy(:,l),svNoisy(:,l),'.-k','MarkerSize',5);
     end
-
+    
     % Real position of the landmarks with nonlinear model
-%     [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
-%     for k=1:mpc.N
-%         plot(lm_real_horizon(1,:,k),lm_real_horizon(2,:,k),'.r','MarkerSize',5);
-%     end
-
+    [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
+    plot([-lm_real_horizon(2,:,mpc.N) -lm_real_horizon(2,1,mpc.N)],[-lm_real_horizon(1,:,mpc.N) -lm_real_horizon(1,1,mpc.N)],':r','MarkerSize',5);
+    
+    for l=1:Nlm
+        tmpU = lm_real_horizon(1,l,:);
+        tmpV = lm_real_horizon(2,l,:);
+        tmpU = reshape(tmpU,[1 mpc.N]);
+        tmpV = reshape(tmpV,[1 mpc.N]);
+        plot(-tmpV,-tmpU,'-r','MarkerSize',5);
+    end
+    hold('off');
 % plot
     % Plotting during simulation, comment the following lines out, if you want it to work faster.
     figure(figFootSteps);
@@ -153,6 +173,33 @@ while (1)
 
     % Without this line Octave does not plot results during simulation.
     %pause(0.1);
+end
+
+% Features trajectories
+figure(fig2DProj);
+for l=1:Nlm
+    plot(-lm_proj_all(2:2:end,l),-lm_proj_all(1:2:end,l),'-.g');
+end
+
+% Evolution of velocities
+len = length(simdata.cstateProfile(2,1:end-1));
+time = 0.0:mpc.T:mpc.T*(len-1);
+figure;
+plot(time,simdata.cstateProfile(2,1:end-1),'r');
+hold('on');
+plot(time,simdata.cstateProfile(5,1:end-1),'g');
+plot(time,zeros(1,len),'b');
+
+% Evolution of cost functions
+figure;
+plot(time,obj_all,'b');
+
+% Evolution of the errors
+figure;
+hold('on');
+for l=1:Nlm
+    plot(time,lm_proj_errors_all(1:2:end,l),'LineStyle','--','Color',colors(l,:));
+    plot(time,lm_proj_errors_all(2:2:end,l),'LineStyle','-.','Color',colors(l,:));
 end
 
 % Plot result of the simulation (the positions that were actually used)

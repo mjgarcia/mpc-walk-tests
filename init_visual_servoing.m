@@ -1,5 +1,6 @@
 % Landmark positions
-Olm_w = [[5; -0.1; 0.5] [5; 0.1; 0.5] [5; 0.1; 0.7] [5; -0.1; 0.7]];
+Olm_w = [[5; -0.5; 0.2] [5; 0.5; 0.2] [5; 0.5; 1.2] [5; -0.5; 1.2]];
+%Olm_w = [[5; -0.2; 0.4] [5; 0.2; 0.4] [5; 0.2; .8] [5; -0.2; .8]];
 %Olm_w = [5; -0.1; 1.5];
 Nlm = 4;
 cm_height = 0.26;
@@ -17,7 +18,7 @@ Ocm_w = [0; 0.0; cm_height; 0; 0; degtorad(0)];
 Tcm_w = computeTransfMatrix(Ocm_w);
 
 % Center of mass desired position
-Odcm_w = [0.5; 0.5; cm_height; 0; 0; degtorad(0)];
+Odcm_w = [2.0; 0.5; cm_height; 0; 0; degtorad(0)];
 %Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 %drawAxis(Tdcm_w,true);
@@ -45,9 +46,9 @@ Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
 lm_proj = projectToImagePlane(Olm_cam);
 
 fig2DProj = figure;
-plot([lm_proj(1,:) lm_proj(1,1)],[lm_proj(2,:) lm_proj(2,1)],'-r','LineWidth',1);
+plot([-lm_proj(2,:) -lm_proj(2,1)],[-lm_proj(1,:) -lm_proj(1,1)],'-r');
 hold on;
-plot([lmd_proj(1,:) lmd_proj(1,1)],[lmd_proj(2,:) lmd_proj(2,1)],'-c','LineWidth',1);
+plot([-lmd_proj(2,:) -lmd_proj(2,1)],[-lmd_proj(1,:) -lmd_proj(1,1)],'-b');
 %axis([-0.4 0.0 -0.2 0.2 ])
 
 colors = get(0,'DefaultAxesColorOrder');
