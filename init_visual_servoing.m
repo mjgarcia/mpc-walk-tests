@@ -18,7 +18,7 @@ Ocm_w = [0; 0.0; cm_height; 0; 0; degtorad(0)];
 Tcm_w = computeTransfMatrix(Ocm_w);
 
 % Center of mass desired position
-Odcm_w = [2.0; 0.5; cm_height; 0; 0; degtorad(0)];
+Odcm_w = [2.0; 0.5; cm_height; 0; 0; degtorad(-15)];
 %Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 %drawAxis(Tdcm_w,true);
@@ -58,9 +58,11 @@ weightsMatrix = diag(2.^(0:mpc.N-1));
 
 % Angle controller
 pid_theta_com.state = degtorad(0.0);
-pid_theta_com.gain_prop = 0.015;
-pid_theta_com.gain_int = 0.0;
-pid_theta_com.gain_deriv = 0.0;
+pid_theta_com.vel = 0.0;
+pid_theta_com.vel_all = pid_theta_com.vel;
+pid_theta_com.gain_prop = 0.2;
+pid_theta_com.gain_int = 0.002;
+pid_theta_com.gain_deriv = 0.01;
 pid_theta_com.error = 0.0;
 pid_theta_com.cum_error = 0.0;
 pid_theta_com.diff_error = 0.0;

@@ -23,7 +23,9 @@ it = 0;
 
 lm_proj_all = [];
 obj_all = [];
-lm_proj_errors_all= [];
+lm_proj_errors_all = [];
+errors_horizon_all = [];
+
 while (1)
     it = it + 1;
 
@@ -38,7 +40,7 @@ while (1)
 %     %pause;
 %     end
 
-    pid_theta_com = apply_angle_controller(pid_theta_com);
+    pid_theta_com = apply_angle_controller(pid_theta_com,mpc);
     radtodeg(pid_theta_com.state)
 
     % form matrices
@@ -128,11 +130,20 @@ while (1)
     % Collect data.
     [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
     
-    figure(figFeaturesHorizon);
     % Simulate position of the landmarks with linear model
     [su sv] = simulate_landmarks(mpc, simdata, vs_params);
     [suNoisy svNoisy] = simulate_landmarks(mpc, simdata, vs_paramsNoisy);
     
+    errorsHorizon = zeros(2,Nlm);
+    for l=1:Nlm
+        errorsHorizonU = su(:,l) - repmat(lmd_proj(1,l),mpc.N,1);
+        errorsHorizon(1,l) = norm(errorsHorizonU);
+        errorsHorizonV = sv(:,l) - repmat(lmd_proj(2,l),mpc.N,1);
+        errorsHorizon(2,l) = norm(errorsHorizonV);
+    end
+    errors_horizon_all = [errors_horizon_all; errorsHorizon];
+    
+    figure(figFeaturesHorizon);
     plot([-sv(1,:) -sv(1,1)],[-su(1,:) -su(1,1)],':b');
     hold('on');
     plot([-sv(end,:) -sv(end,1)],[-su(end,:) -su(end,1)],':g');
@@ -188,18 +199,26 @@ figure;
 plot(time,simdata.cstateProfile(2,1:end-1),'r');
 hold('on');
 plot(time,simdata.cstateProfile(5,1:end-1),'g');
-plot(time,zeros(1,len),'b');
+plot(time,pid_theta_com.vel_all(1:end-1),'b');
 
 % Evolution of cost functions
 figure;
 plot(time,obj_all,'b');
 
-% Evolution of the errors
+% Evolution of the instantaneus errors
 figure;
 hold('on');
 for l=1:Nlm
     plot(time,lm_proj_errors_all(1:2:end,l),'LineStyle','--','Color',colors(l,:));
     plot(time,lm_proj_errors_all(2:2:end,l),'LineStyle','-.','Color',colors(l,:));
+end
+
+% Evolution of the errors in the horizon
+figure;
+hold('on');
+for l=1:Nlm
+    plot(time,errors_horizon_all(1:2:end,l),'LineStyle','--','Color',colors(l,:));
+    plot(time,errors_horizon_all(2:2:end,l),'LineStyle','-.','Color',colors(l,:));
 end
 
 % Plot result of the simulation (the positions that were actually used)
