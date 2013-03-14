@@ -1,7 +1,7 @@
-function [Tw_cm, Tcm_w ,Tw_cam, Tcam_w, Tcm_cam, Tcam_cm] = updateGlobalTransformations(mpc_state,cm_height,theta_cam,theta_com)
+function [Tw_cm, Tcm_w ,Tw_cam, Tcam_w, Tcm_cam, Tcam_cm] = updateGlobalTransformations(state,cm_height,theta_cam,theta_com)
 
 % Center of mass global state
-Ocm_w = [mpc_state.cstate(1); mpc_state.cstate(4); cm_height; 0; 0; theta_com];
+Ocm_w = [state(1); state(4); cm_height; 0; 0; theta_com];
 Tcm_w = computeTransfMatrix(Ocm_w);
 Tw_cm = inv(Tcm_w);
 

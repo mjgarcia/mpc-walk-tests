@@ -1,5 +1,5 @@
 % Landmark positions
-Olm_w = [[5; -0.5; 0.2] [5; 0.5; 0.2] [5; 0.5; 1.2] [5; -0.5; 1.2]];
+Olm_w = [[4; -0.5; 0.2] [4; 0.5; 0.2] [4; 0.5; 1.2] [4; -0.5; 1.2]];
 %Olm_w = [[5; -0.2; 0.4] [5; 0.2; 0.4] [5; 0.2; .8] [5; -0.2; .8]];
 %Olm_w = [5; -0.1; 1.5];
 Nlm = 4;
@@ -18,7 +18,7 @@ Ocm_w = [0; 0.0; cm_height; 0; 0; degtorad(0)];
 Tcm_w = computeTransfMatrix(Ocm_w);
 
 % Center of mass desired position
-Odcm_w = [2.0; 0.5; cm_height; 0; 0; degtorad(-15)];
+Odcm_w = [2.0; 1; cm_height; 0; 0; degtorad(30)];
 %Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 %drawAxis(Tdcm_w,true);
@@ -43,12 +43,7 @@ lmd_proj = projectToImagePlane(Olm_dcam);
 
 % Projection in the initial position
 Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
-lm_proj = projectToImagePlane(Olm_cam);
-
-fig2DProj = figure;
-plot([-lm_proj(2,:) -lm_proj(2,1)],[-lm_proj(1,:) -lm_proj(1,1)],'-r');
-hold on;
-plot([-lmd_proj(2,:) -lmd_proj(2,1)],[-lmd_proj(1,:) -lmd_proj(1,1)],'-b');
+lm_proj_init = projectToImagePlane(Olm_cam);
 %axis([-0.4 0.0 -0.2 0.2 ])
 
 colors = get(0,'DefaultAxesColorOrder');
@@ -57,12 +52,13 @@ weightsMatrix = diag(2.^(0:mpc.N-1));
 %weightsMatrix = eye(mpc.N);
 
 % Angle controller
-pid_theta_com.state = degtorad(0.0);
+pid_theta_com.state = Ocm_w(6);
+pid_theta_com.state_all = pid_theta_com.state;
 pid_theta_com.vel = 0.0;
 pid_theta_com.vel_all = pid_theta_com.vel;
-pid_theta_com.gain_prop = 0.2;
-pid_theta_com.gain_int = 0.002;
-pid_theta_com.gain_deriv = 0.01;
+pid_theta_com.gain_prop = 0.3;
+pid_theta_com.gain_int = 0.0;
+pid_theta_com.gain_deriv = 0.0;
 pid_theta_com.error = 0.0;
 pid_theta_com.cum_error = 0.0;
 pid_theta_com.diff_error = 0.0;
