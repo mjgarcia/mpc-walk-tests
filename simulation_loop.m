@@ -13,13 +13,10 @@ init_visual_servoing
 
 theta_cam = degtorad(0.0);
 
-%delta = 0.001;
-%delta = 0.001;
-delta = 0.00000001;
+delta = .000006;
+%delta = .000001;
 
 figure;
-subplot(1,2,2);
-axis([-0.1 2.4 -0.1 1.4]);
 
 lm_proj_all = [];
 obj_all = [];
@@ -28,19 +25,21 @@ errors_horizon_all = [];
 
 it = 0;
 itPert = 54;
+%itPert = -1;
+handlesAxesSteps = zeros(5,1);
 
 while (1)
     it = it + 1;
 
     % Perturbation of the center of mass
     if it == itPert
-    plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
+    %plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
     com_undist = mpc_state.cstate;
-    mpc_state.cstate(1) = mpc_state.cstate(1) + 0.005;
-    mpc_state.cstate(4) = mpc_state.cstate(4) + 0.01;
+    mpc_state.cstate(1) = mpc_state.cstate(1) + 0.02;
+    mpc_state.cstate(4) = mpc_state.cstate(4) + 0.04;
     %mpc_state.cstate(6) = mpc_state.cstate(6) - 4;
     disp('Perturbation');
-    plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
+    %plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
     %pause;
     end
 
@@ -73,7 +72,7 @@ while (1)
     sigma = 0.0;
     lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
     lm_proj_all = [lm_proj_all; lm_proj];
-    lm_proj_errors_all = [lm_proj_errors_all; lm_proj - lmd_proj];
+    lm_proj_errors_all = [lm_proj_errors_all; abs(lm_proj - lmd_proj)];
 
     % Linearize projection around current landmark positions
     matProjLin = linearizeProjection(Olm_cam,Nlm);
@@ -141,64 +140,13 @@ while (1)
         errorsHorizonV = sv(:,l) - repmat(lmd_proj(2,l),mpc.N,1);
         errorsHorizon(2,l) = norm(errorsHorizonV);
     end
-    errors_horizon_all = [errors_horizon_all; errorsHorizon];
+    errors_horizon_all = [errors_horizon_all; errorsHorizon/sqrt(mpc.N)];
 
     % Real position of the landmarks with nonlinear model
     [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
 
-    %figure(figFeaturesHorizon);
-    subplot(1,2,1);
-    plot([-lm_proj_init(2,:) -lm_proj_init(2,1)],[-lm_proj_init(1,:) -lm_proj_init(1,1)],'-r');
-    axis([-0.4 2.0 -0.4 0.6]);
-    hold('on');
-    plot([-lmd_proj(2,:) -lmd_proj(2,1)],[-lmd_proj(1,:) -lmd_proj(1,1)],'-b');
-    for l=1:Nlm
-        plot(-lm_proj_all(2:2:end,l),-lm_proj_all(1:2:end,l),'-.m');
-    end
-    plot([-sv(1,:) -sv(1,1)],[-su(1,:) -su(1,1)],':b');
-    plot([-sv(end,:) -sv(end,1)],[-su(end,:) -su(end,1)],':g');
-    %plot(suNoisy(:,l),svNoisy(:,l),'.-k','MarkerSize',5);
-    for l=1:Nlm
-        plot(-sv(:,l),-su(:,l),'-g');
-        %plot(suNoisy(:,l),svNoisy(:,l),'.-k','MarkerSize',5);
-    end
-    plot([-lm_real_horizon(2,:,mpc.N) -lm_real_horizon(2,1,mpc.N)],[-lm_real_horizon(1,:,mpc.N) -lm_real_horizon(1,1,mpc.N)],':r');
-    for l=1:Nlm
-        tmpU = lm_real_horizon(1,l,:);
-        tmpV = lm_real_horizon(2,l,:);
-        tmpU = reshape(tmpU,[1 mpc.N]);
-        tmpV = reshape(tmpV,[1 mpc.N]);
-        plot(-tmpV,-tmpU,'-r');
-    end
-
-    % Perturbation of the center of mass
-    if it == itPert
-    [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(com_undist,cm_height,theta_cam,pid_theta_com.state);
-    % Position of the landmark in camera frame
-    Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
-    % Real landmarks projected
-    lm_proj = projectToImagePlane(Olm_cam);
-    plot([-lm_proj(2,:) -lm_proj(2,1)],[-lm_proj(1,:) -lm_proj(1,1)],'-b');
-    disp('Perturbation');
-    pause;
-    end
-
-    hold('off');
-
-% plot
-    % Plotting during simulation, comment the following lines out, if you want it to work faster.
-    subplot(1,2,2);
-    hold on
-    plot_steps_fixed_current(robot, simdata);
-    plot_steps_planned(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
-
-    %r = 150; % pixels per inch
-    %set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 1080 480]/r);
-    %print(gcf,'-dpng',sprintf('-r%d',r), ['video/fig' num2str(it,'%0.3i') '.png']);
-    %export_fig(['video/fig' num2str(it,'%0.3i') '.png'],gcf);
-    %hold off
-
+    plot_current
+    
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);
@@ -207,59 +155,8 @@ while (1)
     end
 
     % Without this line Octave does not plot results during simulation.
-    %pause(0.1);
+    %pause(0.01);
 
 end
 
-% Features trajectories
-figure;
-plot([-lm_proj(2,:) -lm_proj(2,1)],[-lm_proj(1,:) -lm_proj(1,1)],'-r');
-hold on;
-plot([-lmd_proj(2,:) -lmd_proj(2,1)],[-lmd_proj(1,:) -lmd_proj(1,1)],'-b');
-for l=1:Nlm
-    plot(-lm_proj_all(2:2:end,l),-lm_proj_all(1:2:end,l),'-.m');
-end
-
-% Evolution of velocities
-len = length(simdata.cstateProfile(2,1:end-1));
-time = 0.0:mpc.T:mpc.T*(len-1);
-figure;
-plot(time,simdata.cstateProfile(2,1:end-1),'r');
-hold('on');
-plot(time,simdata.cstateProfile(5,1:end-1),'b');
-plot(time,pid_theta_com.vel_all(1:end-1),'m');
-hline = refline([0 0]);
-set(hline,'Color','k','LineStyle','--');
-
-% Evolution of cost functions
-figure;
-plot(time,obj_all,'b');
-hline = refline([0 0]);
-set(hline,'Color','k','LineStyle','--');
-
-% Evolution of the instantaneus errors
-figure;
-hold('on');
-for l=1:Nlm
-    plot(time,lm_proj_errors_all(1:2:end,l),'LineStyle','--','Color',colors(l,:));
-    plot(time,lm_proj_errors_all(2:2:end,l),'LineStyle','-.','Color',colors(l,:));
-end
-hline = refline([0 0]);
-set(hline,'Color','k','LineStyle','--');
-
-% Evolution of the errors in the horizon
-figure;
-hold('on');
-for l=1:Nlm
-    plot(time,errors_horizon_all(1:2:end,l),'LineStyle','--','Color',colors(l,:));
-    plot(time,errors_horizon_all(2:2:end,l),'LineStyle','-.','Color',colors(l,:));
-end
-hline = refline([0 0]);
-set(hline,'Color','k','LineStyle','--');
-
-% Plot result of the simulation (the positions that were actually used)
-figure
-hold on
-plot_com_zmp_all(simdata);
-plot_steps_fixed_all(robot, simdata);
-hold off
+plot_all
