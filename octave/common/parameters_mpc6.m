@@ -12,7 +12,7 @@ mpc.beta = 0.00001;    %
 mpc.gamma = 0.0001;      %
 %}
 mpc.alpha = 1;      %
-mpc.beta = 0.001;    %   
+mpc.beta = 0.00001;    %   
 mpc.gamma = 0.0001;      %
 
 %mpc.alpha = 1;      %

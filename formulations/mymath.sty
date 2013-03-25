@@ -22,6 +22,7 @@
 
 % norm
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\normE}[1]{\left\lVert#1\right\rVert^2}
 
 % fix font in \dddot and \ddddot
 % might be necessary, if the fonts are changed
@@ -45,9 +46,10 @@
 \usepackage{color}
 
 %COLORS
-\definecolor{gray}{rgb}{0.8,0.8,0.8}\newcommand{\gray}{\color{gray}}
-\definecolor{darkgray}{rgb}{0.6,0.6,0.6}\newcommand{\darkgray}{\color{darkgray}}
-\definecolor{white}{rgb}{1.0,1.0,1.0}\newcommand{\white}{\color{white}}
+\definecolor{gray}{rgb}{0.8,0.8,0.8}\newcommand{\gray}[1]{{\color{gray} #1}}
+\definecolor{darkgray}{rgb}{0.6,0.6,0.6}\newcommand{\darkgray}[1]{{\color{darkgray} #1}}
+\definecolor{white}{rgb}{1.0,1.0,1.0}\newcommand{\white}[1]{{\color{white} #1}}
+\definecolor{red}{rgb}{1.0,0.0,0.0}\newcommand{\red}[1]{{\color{red} #1}}
 
 % gray box
 \newcommand{\gbox}[1]{

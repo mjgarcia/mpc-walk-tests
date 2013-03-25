@@ -9,17 +9,19 @@ stop_iter = -1;
 QP_fail_iter = [];
 max_state_val = [];
 disturbance = [0.0; 
-               0.5;
                0.0;
                0.0;
                0.0;
+               -0.0536;
                0.0];
-for disturb_iter = 1:20
+%for disturb_iter = 1:20
+    disturb_iter = 10;
+    stop_iter = -1;
     flag_first_run = true;
     init_walk_01
     simulation_loop
     max_state_val = [max_state_val, max(abs(mpc_state.cstate))];
-end
+%end
 
 QP_fail_iter
 max_state_val

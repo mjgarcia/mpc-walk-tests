@@ -27,7 +27,7 @@ while (1)
 
         if (enabled_steps_plot)
             hold on
-            plot_com_zmp_current(mpc_state);
+%            plot_com_zmp_current(mpc_state);
             hold off
         end
     end
@@ -52,7 +52,6 @@ while (1)
     end
 
     w = X(end-1:end);
-
 
 % minimize default objective
     [H, q] = form_objective (mpc, mpc_state, S0v, Uv, S0z, Uz, V0c, V, Nfp);
@@ -106,10 +105,10 @@ if (enabled_steps_plot)
     plot_com_zmp_all(simdata)
 %    title (num2str(disturb_iter))
 %    plot_cp_all(simdata)
-    plot_cp_planned(simdata);
-    plot_cp_all_planned(simdata);
-    plot_steps_planned(robot, simdata);
+%    plot_cp_planned(simdata);
+%    plot_cp_all_planned(simdata);
+%    plot_steps_planned(robot, simdata);
 %    plot_steps_planned_convhull(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
+%    plot_com_zmp_planned(mpc, simdata);
     hold off
 end

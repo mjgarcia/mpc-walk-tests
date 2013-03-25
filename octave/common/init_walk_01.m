@@ -17,7 +17,7 @@ walk.steps(2).len = walk.ss_len;
 walk.steps(2).theta = 0;
 walk.steps(2).cvel_ref = walk.velocity;
 
-for i = 3:10
+for i = 3:9
     if walk.steps(i-1).type == RSS
         walk.steps(i).type = LSS;
     else
@@ -29,7 +29,7 @@ for i = 3:10
 end
 
 walk.steps(end+1).type = DS;
-walk.steps(end).len = mpc.N*2;
+walk.steps(end).len = mpc.N*3;
 walk.steps(end).theta = 0;
 walk.steps(end).cvel_ref = [0; 0];
 %%

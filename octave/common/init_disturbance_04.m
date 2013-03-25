@@ -1,6 +1,6 @@
 function [dist, delta_dist] = init_disturbance_04()
     dist = [0.0;
-            0.284;
+            0.17;
             0.0;
             0.0;
             0.0;

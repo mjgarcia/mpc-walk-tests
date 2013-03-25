@@ -3,7 +3,7 @@ function [dist, delta_dist] = init_disturbance_02()
             0.0;
             0.0;
             0.0;
-            -0.0536;
+            -0.0518;
             0.0];
 
     delta_dist = [0.0;

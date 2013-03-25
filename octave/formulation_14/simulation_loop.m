@@ -3,7 +3,7 @@
 QP_stab_fail_iter = [];
 iter = 1;
 
-constr = init_constraint_03();
+constr = init_constraint_02();
 
 figure
 while (1)
@@ -68,8 +68,8 @@ end
 hold on
 plot_steps_fixed_all(robot, simdata)
 plot_com_zmp_all(simdata)
-set(gca(), 'xlim', [-0.1, 0.6])
-draw_line(constr, 'r', 3);
+%set(gca(), 'xlim', [-0.1, 0.6])
+%draw_line(constr, 'r', 3);
 hold off
 axis equal
 xlabel('x (meter)')

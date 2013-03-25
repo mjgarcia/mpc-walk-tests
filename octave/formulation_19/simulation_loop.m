@@ -3,7 +3,8 @@ simdata = init_simdata(mpc, mpc_state);
 addpath('../qpOASES');
 options = qpOASES_options( 'MPC' );
 
-constr = init_constraint_02();
+%constr = init_constraint_04();
+constr = init_constraint_05();
 iter = 1;
 
 if (enabled_steps_plot)
@@ -84,10 +85,14 @@ if (enabled_steps_plot)
     plot_com_zmp_all(simdata)
 %    title (num2str(disturb_iter))
 %    plot_cp_all(simdata)
-    plot_cp_planned(simdata);
-    plot_cp_all_planned(simdata);
-    plot_steps_planned(robot, simdata);
-    plot_com_zmp_planned(mpc, simdata);
+%    plot_cp_planned(simdata);
+%    plot_cp_all_planned(simdata);
+%    plot_steps_planned(robot, simdata);
+%    plot_com_zmp_planned(mpc, simdata);
     draw_line(constr, 'r', 3);
+    set(gca(), 'xlim', [-0.1, 0.6])
+    axis equal
+    xlabel('x (m)')
+    ylabel('y (m)')
     hold off
 end
