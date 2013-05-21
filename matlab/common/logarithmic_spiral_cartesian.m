@@ -1,4 +1,4 @@
-function [x y rho theta] = logaritmic_spiral_cartesian(tanPhi,p,q,step)
+function [x y rho theta] = logarithmic_spiral_cartesian(tanPhi,p,q,step)
 
 diff = p-q;
 rho0 = norm(diff);
@@ -8,7 +8,7 @@ if theta0 < 0
 end
 
 theta = theta0:step:theta0-pi;
-rho = logaritmic_spiral_polar(rho0,theta0,tanPhi, theta);
+rho = logarithmic_spiral_polar(rho0,theta0,tanPhi, theta);
 
 x = rho.*cos(theta) + q(1);
 y = rho.*sin(theta) + q(2);

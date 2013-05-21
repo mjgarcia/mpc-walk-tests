@@ -1,3 +1,3 @@
-function [rho] = logaritmic_spiral_polar(rho0,theta0,tanPhi, theta)
+function [rho] = logarithmic_spiral_polar(rho0,theta0,tanPhi, theta)
 
 rho = rho0.*exp((theta - theta0)/tanPhi);
