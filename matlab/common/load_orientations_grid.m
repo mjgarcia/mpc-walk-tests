@@ -22,6 +22,7 @@ fullWidth = 2*grid.width + 1;
 grid.orientations = orientationsGrid.data(:,3);
 grid.orientations = reshape(grid.orientations,fullWidth,fullWidth);
 grid.orientations = fliplr(grid.orientations);
+grid.orientations = wrapToPi(grid.orientations);
 
 grid.x = orientationsGrid.data(:,1);
 grid.x = reshape(grid.x,fullWidth,fullWidth);
