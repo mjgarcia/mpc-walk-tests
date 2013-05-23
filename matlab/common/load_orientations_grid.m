@@ -1,6 +1,6 @@
 function grid = load_orientations_grid()
 
-grid.file = 'grid.txt';
+grid.file = 'grid1.txt';
 orientationsGrid = importdata(grid.file,' ',4);
 text = orientationsGrid.textdata;
 text = regexp(text,' ','split');
@@ -34,8 +34,17 @@ grid.y = reshape(grid.y,fullWidth,fullWidth);
 grid.y = fliplr(grid.y);
 %ys = reshape(ys,fullWidth*fullWidth,1);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% pointInWorld = [-0.5; 1];
+orthogonal = grid.orientations + pi/2;
+slopes = tan(orthogonal);
+xx = grid.scale*grid.x;
+yy = grid.scale*grid.y;
+b = yy - slopes.*xx;
+
+grid.forward_backward = sign(grid.orientations).*(grid.finalInWorld(2) - slopes.*grid.finalInWorld(1) -b) > 0;
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %pointInWorld = [-0.5; 1];
+% pointInWorld = [-4; 3];
 % pointInGrid = pointInWorld/grid.scale;
 % pointInGrid = grid.rotationMatrix'*(pointInGrid - grid.finalInGrid);
 % index = round(pointInGrid/grid.delta);
@@ -44,18 +53,59 @@ grid.y = fliplr(grid.y);
 % 
 % index = grid.width + 1 - index;
 % indexLin = fullWidth*(index(1)-1) + index(2);
-% angle = orientationsGrid.data(indexLin,3);
 % 
-% plot(grid.scale*orientationsGrid.data(:,1),grid.scale*orientationsGrid.data(:,2),'.');
-% hold('on');
-% %plot(grid.scale*xs(1),grid.scale*ys(1),'.m');
-% %plot(grid.scale*xs(fullWidth),grid.scale*ys(fullWidth),'.m');
-% %plot(grid.scale*xs(fullWidth+1),grid.scale*ys(fullWidth+1),'.m');
+% % plot(grid.scale*orientationsGrid.data(:,1),grid.scale*orientationsGrid.data(:,2),'.');
+% % plot(grid.scale*xs(1),grid.scale*ys(1),'.m');
+% % plot(grid.scale*xs(fullWidth),grid.scale*ys(fullWidth),'.m');
+% % plot(grid.scale*xs(fullWidth+1),grid.scale*ys(fullWidth+1),'.m');
 % plot(grid.scale*grid.landMarkInGrid(1),grid.scale*grid.landMarkInGrid(2),'*r');
+% hold('on');
+% axis('equal');
+% quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
 % plot(grid.scale*grid.finalInGrid(1),grid.scale*grid.finalInGrid(2),'*g');
 % plot(pointInWorld(1),pointInWorld(2),'*c');
 % plot(grid.scale*orientationsGrid.data(indexLin,1),grid.scale*orientationsGrid.data(indexLin,2),'*m');
-% plot(grid.scale*xs(index1(1),index1(2)),grid.scale*ys(index1(1),index1(2)),'om')
+% plot(grid.scale*grid.x(index1(1),index1(2)),grid.scale*grid.y(index1(1),index1(2)),'om')
+% 
+% % angle = grid.orientations(index1(1),index1(2));
+% % if(angle < 0)
+% % m = tan(angle+pi/2);
+% % else
+% % m = tan(angle-pi/2);    
+% % end
+% % xx = grid.scale*grid.x(index1(1),index1(2));
+% % yy = grid.scale*grid.y(index1(1),index1(2));
+% % b = yy - m*xx;
+% % %hline = refline(m,b);
+% % x = xx-1:0.1:xx+1;
+% % y = m*x+b;
+% % plot(x,y,'r');
+% % pointTest = [-4 3.1];
+% % plot(pointTest(1),pointTest(2),'r*');
+% % pointTest(2) - m*pointTest(1) - b > 0
+% 
+% % orthogonal = grid.orientations + pi/2;
+% % positives = grid.orientations > 0;
+% % orthogonal(positives) = grid.orientations(positives) - pi/2;
+% % orthogonal(~positives) = grid.orientations(~positives) - pi/2;
+% 
+% %pointTest = [-4 3.1];
+% pointTest = grid.finalInWorld;
+% %indexTest = [10,10];
+% indexTest = [70,70];
+% plot(pointTest(1),pointTest(2),'r*');
+% plot(xx(indexTest(1),indexTest(2)),yy(indexTest(1),indexTest(2)),'r*');
+% sign(grid.orientations(indexTest(1),indexTest(2)))*(pointTest(2) - slopes(indexTest(1),indexTest(2))*pointTest(1) - b(indexTest(1),indexTest(2))) > 0
+% radtodeg(grid.orientations(indexTest(1),indexTest(2)))
+% radtodeg(orthogonal(indexTest(1),indexTest(2)))
+% slopes(indexTest(1),indexTest(2))
+% 
+% x = xx(indexTest(1),indexTest(2))-1:0.1:xx(indexTest(1),indexTest(2))+1;
+% y = slopes(indexTest(1),indexTest(2))*x+b(indexTest(1),indexTest(2));
+% plot(x,y,'r');
+% 
+% plot(grid.forward_backward.*xx,grid.forward_backward.*yy,'r*');
+% 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [dir_df_dx dir_df_dy] = gradient(grid.orientations,grid.delta*grid.scale,grid.delta*grid.scale);
@@ -69,4 +119,3 @@ grid.df_dy = dir_df_dx*y_direction(1) + dir_df_dy*y_direction(2);
 % quiver(grid.scale*xs,grid.scale*ys,grid.df_dx,grid.df_dy);
 % figure;
 % quiver(grid.scale*xs,grid.scale*ys,dir_df_dx,dir_df_dy);
-%quiver(grid.scale*xs,grid.scale*ys,cos(grid.orientations),sin(grid.orientations));

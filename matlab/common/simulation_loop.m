@@ -5,8 +5,9 @@ parameters_robot
 parameters_mpc6
 parameters_mpc_rot
 
-initPos = [-2; 1; degtorad(-65)];
-%initPos = [-2; 4.5; degtorad(-100)];
+initPos = [-4; 2; degtorad(-58)];
+%initPos = [0; 2; degtorad(-129)];
+%initPos = [1; 4; degtorad(-100)];
 mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
 mpc_state.p = initPos(1:2);                               % Position of the initial support
 
@@ -32,7 +33,8 @@ grid = load_orientations_grid();
 lm_proj_all = [];
 
 subplot(1,2,2);
-quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
+quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations),'color', [0.9 0.9 0.9]);
+%quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
 hold('on');
 
 it = 0;
@@ -45,15 +47,24 @@ while (1)
     angle_optimal = grid.orientations(indexGrid(1),indexGrid(2));    
     dangle(1) = grid.df_dx(indexGrid(1),indexGrid(2));
     dangle(2) = grid.df_dy(indexGrid(1),indexGrid(2));
+    forward_backward = grid.forward_backward(indexGrid(1),indexGrid(2));
+    
+    if forward_backward == 0
+        forward_backward = -1;
+    end
+    
+    if(any(abs(dangle) > 1)) 
+        dangle = prev_dangle;
+        forward_backward = prev_forward_backward;
+        angle_optimal = prev_angle_optimal;
+    end
+    prev_dangle = dangle;
+    prev_forward_backward = forward_backward;
+    prev_angle_optimal = angle_optimal;
     
     mpc_state_rot.ref_pos = angle_optimal;
     disp(['angle ' num2str(radtodeg(mpc_state_rot.ref_pos))]);
     
-    if(any(abs(dangle) > 1)) 
-        dangle = prev_dangle;
-    end
-    prev_dangle = dangle;
-
     % form matrices
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
     [S, S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
@@ -72,21 +83,17 @@ while (1)
     %cState_rot_p = S0p_rot + Up*X_rot;
     cState_rot = S0_rot + U*X_rot;
     mpc_state_rot.cstate = cState_rot(1:6);
-    radtodeg(cState_rot(4:6:end))
     
     %disp(['rot ' num2str(mpc_state_rot.cstate')]);
-    radtodeg(mpc_state_rot.cstate)
     
       % Update global transformations
     [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(mpc_state.cstate,robot.h,mpc_state_rot.cstate(1),mpc_state_rot.cstate(1));
 
     % Position of the landmark in camera frame
     Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
-    Olm_cam 
     
     % Real landmarks projected
     lm_proj = projectToImagePlane(Olm_cam);
-    lm_proj
     
     %Add noise
     %sigma = 0.0001;
@@ -115,7 +122,7 @@ while (1)
     % Rotaion of the foot steps
     [mpc_state] = update_rotation_zmp(mpc, mpc_state, cState_rot(4:6:end));
 
-    [AB0xy Vel0] =  form_planner_matrices(planner,mpc,mpc_state_rot.ref_pos,dangle,p_current);
+    [AB0xy Vel0] =  form_planner_matrices(planner,mpc,mpc_state_rot.ref_pos,dangle,p_current,forward_backward);
     
     % Form objective and constraints
     [H, q] = form_objective (mpc,S0p, Up, S0v, Uv, S0z, Uz, V0c, V, AB0xy, Vel0, Nfp);
@@ -160,7 +167,11 @@ while (1)
 
 
     plot_current
-
+    % Without this line Octave does not plot results during simulation.
+    % if mod(it,4) == 0
+     pause(0.01);
+    % end
+    
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);
@@ -168,10 +179,6 @@ while (1)
         break;
     end
 
-    % Without this line Octave does not plot results during simulation.
-    if it == 37
-    pause(0.01);
-    end
 
 end
 
