@@ -15,7 +15,7 @@ function [S,U] = form_S_U(A, B, mpc, mpc_state)
         ind_x = Nx*(i-1)+1:Nx*i;
         S(ind_x,:) = eye(Nx);
         for k = 1:i
-            S(ind_x,:) = A(mpc_state.pwin(Ni + k).T)*S(ind_x,:);
+            S(ind_x,:) = A(mpc_state.T)*S(ind_x,:);
         end
     end
 
@@ -25,9 +25,9 @@ function [S,U] = form_S_U(A, B, mpc, mpc_state)
         ind_u = Nu*(i-1)+1:Nu*i;
         for j = i:N % row
             ind_x = Nx*(j-1)+1:Nx*j;
-            U(ind_x,ind_u) = B(mpc_state.pwin(Ni + i).T);
+            U(ind_x,ind_u) = B(mpc_state.T);
             for k = i+1:j
-                U(ind_x,ind_u) = A(mpc_state.pwin(Ni + k).T)*U(ind_x,ind_u);
+                U(ind_x,ind_u) = A(mpc_state.T)*U(ind_x,ind_u);
             end
         end
     end

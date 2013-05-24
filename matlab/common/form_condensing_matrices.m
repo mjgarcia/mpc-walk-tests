@@ -22,8 +22,8 @@ function [Cz] = form_state_to_zmp_matrix (mpc, mpc_state)
     Cz = [];
     Ni = mpc_state.counter;
     for i = 1:mpc.N;
-        Czi = [1   0   -mpc_state.pwin(Ni + i).hg     0   0   0;
-               0   0   0                    1   0   -mpc_state.pwin(Ni + i).hg];
+        Czi = [1   0   -mpc_state.hg     0   0   0;
+               0   0   0                    1   0   -mpc_state.hg];
         Cz = blkdiag (Cz, Czi);
     end
 end

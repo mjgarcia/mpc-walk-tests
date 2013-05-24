@@ -23,9 +23,9 @@ quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orien
 hold('on');
 
 stop = 0;
+callStop = 1;
 while (~stop)
-    stop = update_walk(mpc_state.counter);
-
+    
     p_current = [mpc_state.cstate(1); mpc_state.cstate(4)];
     indexGrid = index_in_grid(grid,p_current);
     
@@ -158,6 +158,8 @@ while (~stop)
     % end
     
 % next
+    stop = update_walk(mpc_state,callStop,walk,indices);
+
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);
         disp('Not enough data to form preview window');

@@ -63,7 +63,7 @@ subplot(1,2,2);
 %axis(limits_steps);
 hold on
 handlesAxesSteps(1:2) = plot_com_zmp_planned(mpc, simdata);
-handlesAxesSteps(3:5) = plot_steps_fixed_current(robot, simdata,handlesAxesSteps(3:5));
+%handlesAxesSteps(3:5) = plot_steps_fixed_current(robot, simdata,handlesAxesSteps(3:5));
 handlesAxesSteps(3:5) = plot_steps_planned(robot, simdata,handlesAxesSteps(3:5));
 h_legend = legend(handlesAxesSteps,'CoM trajectory','CoP trajectory',...
             'Double support','Single left','Single right',...

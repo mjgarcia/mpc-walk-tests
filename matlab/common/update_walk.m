@@ -1,33 +1,21 @@
-function mpc_state = update_walk(state_counter, stop, walk)
+function mpc_state = update_walk(mpc_state, callStop, walk,indices)
 
-if(stop)
-    walk.steps.type = DS;
-    walk.steps.len = mpc.N;
-    walk.steps.theta = walk.steps.prev_theta;
-    mpc_state.stop = 1;
-    return;
+if mod(mpc_state.counter-1,8) ~= 0 || mpc_state.stopping
+    return
 end
 
-switch state_counter
-    case 1
-        % Support type
-        walk.steps.type = DS;
-        % Duration (iterations)
-        walk.steps.len = 1;
-        % Orientation of the support (angle, global)
-        walk.steps.theta = initPos(3);
-    case 2
-        walk.steps.type = RSS;
-        walk.steps.len = walk.ss_len;
-        walk.steps.theta = initPos(3);
-    otherwise
-        if walk.steps.prev_type == RSS
-            walk.steps.type = LSS;
-        else
-            walk.steps.type = RSS;
-        end
-        walk.steps.len = walk.ss_len;
-        %walk.steps.theta = 0;
+if(callStop)
+    walk.steps(walk.indices(3)).type = DS;
+    walk.steps(walk.indices(3)).len = mpc.N;
+    mpc_state.stopping = 1;
+else
+    if walk.steps(walk.indices(2)).type == RSS
+        walk.steps(walk.indices(3)).type = LSS;
+    else
+        walk.steps(walk.indices(3)).type = RSS;
+    end
+    walk.steps(walk.indices(3)).len = walk.ss_len;
 end
 
-mpc_state = form_preview_data(robot, mpc_state, mpc, walk);
+mpc_state = form_preview_data(robot, mpc_state, walk, indices);
+walk.indices = circshift(walk.indices,[0 -1]);

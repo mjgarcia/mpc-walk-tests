@@ -19,7 +19,7 @@ function [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, lamb
 
 % capture point
     Ni = mpc_state.counter + mpc.N;
-    omega = mpc_state.pwin(Ni).omega;
+    omega = mpc_state.omega;
 
     Dcp = [1, 1/omega, 0,   0, 0,       0;
            0, 0,       0,   1, 1/omega, 0];
