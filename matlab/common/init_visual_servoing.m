@@ -24,3 +24,5 @@ vs_limits.u_min = tan(phi1);
 vs_limits.u_max = tan(phi2);
 vs_limits.v_min = tan(phi1);
 vs_limits.v_max = tan(phi2);
+
+lm_proj_all = [];

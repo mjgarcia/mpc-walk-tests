@@ -8,7 +8,7 @@ function [simdata] = init_simdata(mpc, mpc_state)
 
     simdata.execTime = [];
 
-    simdata.fixedSteps(1).p = mpc_state.p;
-    simdata.fixedSteps(1).R = mpc_state.pwin(1).R;
-    simdata.fixedSteps(1).support_type = mpc_state.pwin(1).support_type;
+    %simdata.fixedSteps(1).p = mpc_state.p;
+    %simdata.fixedSteps(1).R = mpc_state.pwin(1).R;
+    %simdata.fixedSteps(1).support_type = mpc_state.pwin(1).support_type;
 end

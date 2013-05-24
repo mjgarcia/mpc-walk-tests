@@ -1,45 +1,30 @@
+% Clear memory
 clear;
 clc;
 
+% Load parameters
 parameters_robot
 parameters_mpc6
 parameters_mpc_rot
-
-initPos = [-4; 2; degtorad(-58)];
-%initPos = [0; 2; degtorad(-129)];
-%initPos = [1; 4; degtorad(-100)];
-mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
-mpc_state.p = initPos(1:2);                               % Position of the initial support
-
-init_walk_01
-
 parameters_planner
 
+% Initialization
+initPos = [-4; 2; degtorad(-58)];
+init_walk_01
 simdata = init_simdata(mpc, mpc_state);
-
 init_visual_servoing
 
-mpc_state_rot.cstate = [initPos(3); 0; 0; initPos(3); 0; 0];
-
-mpc_state_rot.theta_max_feet_com = deg2rad(10*ones(mpc_rot.N,1));
-mpc_state_rot.theta_margin = degtorad(0);
-mpc_state_rot.max_vel = 100;
-
 handlesAxesSteps = zeros(5,1);
-
 grid = load_orientations_grid();
-
-%quiver(grid.scale*grid.x,grid.scale*grid.y,grid.df_dx,grid.df_dy);
-lm_proj_all = [];
 
 subplot(1,2,2);
 quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations),'color', [0.9 0.9 0.9]);
 %quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
 hold('on');
 
-it = 0;
-while (1)
-    it = it + 1;
+stop = 0;
+while (~stop)
+    stop = update_walk(mpc_state.counter);
 
     p_current = [mpc_state.cstate(1); mpc_state.cstate(4)];
     indexGrid = index_in_grid(grid,p_current);
