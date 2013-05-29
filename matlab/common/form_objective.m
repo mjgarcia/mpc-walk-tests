@@ -18,8 +18,8 @@ function [H, q] = form_objective (mpc, S0p, Up, S0v, Uv, S0z, Uz, V0c, V, AB0xy,
     H(NuN+1:end, 1:NuN) =  H(1:NuN, NuN+1:end)';
 
     q(1:NuN) = mpc.alpha * (Up'*AB0xy'*(AB0xy*S0p + Vel0 + S0v) + Uv'*(AB0xy*S0p + Vel0 + S0v))' ...
-            +  mpc.gamma * S0z' * Uz  -  mpc.gamma * V0c' * Uz;
+            +  mpc.gamma * (S0z - V0c)' * Uz;
 
-    q(NuN+1:end) = mpc.gamma * V0c' * V  -  mpc.gamma * S0z' * V;
+    q(NuN+1:end) = mpc.gamma * (V0c - S0z)' * V;
 end
 
