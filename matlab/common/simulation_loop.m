@@ -5,8 +5,8 @@ parameters_robot
 parameters_mpc6
 parameters_mpc_rot
 
-initPos = [-4; 2; degtorad(-58)];
-%initPos = [0; 2; degtorad(-129)];
+%initPos = [-4; 2; degtorad(-58)];
+initPos = [-1.5; 0.5; degtorad(-57)];
 %initPos = [1; 4; degtorad(-100)];
 mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
 mpc_state.p = initPos(1:2);                               % Position of the initial support
@@ -32,7 +32,7 @@ grid = load_orientations_grid();
 %quiver(grid.scale*grid.x,grid.scale*grid.y,grid.df_dx,grid.df_dy);
 lm_proj_all = [];
 
-subplot(1,2,2);
+%subplot(1,2,2);
 quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations),'color', [0.9 0.9 0.9]);
 %quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
 hold('on');
@@ -41,7 +41,16 @@ it = 0;
 while (1)
     it = it + 1;
 
-    p_current = [mpc_state.cstate(1); mpc_state.cstate(4)];
+    [mpc_state mpc_state_rot] = add_localization_noise(mpc_state,mpc_state_rot);
+    mpc_state.p
+    mpc_state.cstate_noisy
+
+    if mpc_state.use_noisy
+        p_current = [mpc_state.cstate_noisy(1); mpc_state.cstate_noisy(4)];
+    else
+        p_current = [mpc_state.cstate(1); mpc_state.cstate(4)];
+    end
+
     indexGrid = index_in_grid(grid,p_current);
     
     angle_optimal = grid.orientations(indexGrid(1),indexGrid(2));    
@@ -62,7 +71,7 @@ while (1)
     prev_forward_backward = forward_backward;
     prev_angle_optimal = angle_optimal;
     
-    mpc_state_rot.ref_pos = angle_optimal;
+    mpc_state_rot.ref_pos = angle_optimal + mpc_state_rot.noise_rot;
     disp(['angle ' num2str(radtodeg(mpc_state_rot.ref_pos))]);
     
     % form matrices
@@ -169,9 +178,9 @@ while (1)
     plot_current
     % Without this line Octave does not plot results during simulation.
     % if mod(it,4) == 0
-     pause(0.01);
+    % pause(0.01);
     % end
-    
+
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
     if (mpc_state.stop == 1);
