@@ -6,8 +6,8 @@ parameters_mpc6
 parameters_mpc_rot
 
 %initPos = [-4; 2; degtorad(-58)];
-initPos = [-1.5; 0.5; degtorad(-57)];
-%initPos = [1; 4; degtorad(-100)];
+%initPos = [-1.5; 0.5; degtorad(-57)];
+initPos = [-1.2; 0.2; degtorad(-49)];
 mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
 mpc_state.p = initPos(1:2);                               % Position of the initial support
 
@@ -57,11 +57,19 @@ while (1)
     dangle(1) = grid.df_dx(indexGrid(1),indexGrid(2));
     dangle(2) = grid.df_dy(indexGrid(1),indexGrid(2));
     forward_backward = grid.forward_backward(indexGrid(1),indexGrid(2));
+    nhWeight = grid.nhWeight(indexGrid(1),indexGrid(2));
     
-    if forward_backward == 0
-        forward_backward = -1;
-    end
-    
+    %if nhWeight == 1
+        if forward_backward == 0
+            backward_holonomic_forward = -1;
+        else
+            backward_holonomic_forward = 1;
+        end
+    %else
+    %    backward_holonomic_forward = 0;
+    %end
+    backward_holonomic_forward
+
     if(any(abs(dangle) > 1)) 
         dangle = prev_dangle;
         forward_backward = prev_forward_backward;
@@ -131,10 +139,10 @@ while (1)
     % Rotaion of the foot steps
     [mpc_state] = update_rotation_zmp(mpc, mpc_state, cState_rot(4:6:end));
 
-    [AB0xy Vel0] =  form_planner_matrices(planner,mpc,mpc_state_rot.ref_pos,dangle,p_current,forward_backward);
+    [AB0xy Vel0] =  form_planner_matrices(planner,mpc,mpc_state_rot.ref_pos,dangle,p_current,backward_holonomic_forward);
     
     % Form objective and constraints
-    [H, q] = form_objective (mpc,S0p, Up, S0v, Uv, S0z, Uz, V0c, V, AB0xy, Vel0, Nfp);
+    [H, q] = form_objective (mpc,S0p, Up, S0v, Uv, S0z, Uz, V0c, V, AB0xy, Vel0, Nfp, backward_holonomic_forward);
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
 

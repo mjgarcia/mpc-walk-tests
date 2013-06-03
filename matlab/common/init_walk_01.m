@@ -53,7 +53,7 @@ mpc_state.counter = 0;                  % Number of iterations % Do not change
 %mpc_state.cstate = [0; 0; 0; 0; 0; 0];  % Initial CoM state
 %mpc_state.p = [0; 0];                   % Position of the initial support
 mpc_state.stop = 0;                     % Stop flag for simulation % Do not change
-mpc_state.use_noisy = true;
+mpc_state.use_noisy = false;
 %%
 
 

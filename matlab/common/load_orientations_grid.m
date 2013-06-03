@@ -1,6 +1,6 @@
 function grid = load_orientations_grid()
 
-grid.file = 'grid1.txt';
+grid.file = 'gridh.txt';
 orientationsGrid = importdata(grid.file,' ',4);
 text = orientationsGrid.textdata;
 text = regexp(text,' ','split');
@@ -33,6 +33,11 @@ grid.y = orientationsGrid.data(:,2);
 grid.y = reshape(grid.y,fullWidth,fullWidth);
 grid.y = fliplr(grid.y);
 %ys = reshape(ys,fullWidth*fullWidth,1);
+
+grid.nhWeight = orientationsGrid.data(:,4);
+grid.nhWeight = reshape(grid.nhWeight,fullWidth,fullWidth);
+grid.nhWeight = fliplr(grid.nhWeight);
+grid.nhWeight(grid.nhWeight < 0 ) = 0;
 
 orthogonal = grid.orientations + pi/2;
 slopes = tan(orthogonal);
@@ -104,7 +109,8 @@ grid.forward_backward = sign(grid.orientations).*(grid.finalInWorld(2) - slopes.
 % y = slopes(indexTest(1),indexTest(2))*x+b(indexTest(1),indexTest(2));
 % plot(x,y,'r');
 % 
-% plot(grid.forward_backward.*xx,grid.forward_backward.*yy,'r*');
+% %plot(grid.forward_backward.*xx,grid.forward_backward.*yy,'r*');
+% plot(grid.nhWeight.*xx,grid.nhWeight.*yy,'r*');
 % 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
