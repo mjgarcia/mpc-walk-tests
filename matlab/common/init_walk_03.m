@@ -4,8 +4,8 @@ clear walk;
 load_constants
 
 walk.ss_len = 8; % duration of one SS (iterations)
-walk.theta_inc = -0.05;
-walk.velocity = [0.01; 0.0];
+walk.theta_inc = 0.2;
+walk.velocity = [0.2; 0.0];
 
 walk.steps(1).type = DS;
 walk.steps(1).len = 1;
@@ -17,7 +17,7 @@ walk.steps(2).len = walk.ss_len;
 walk.steps(2).theta = 0.0;
 walk.steps(2).cvel_ref = walk.velocity; 
 
-for i = 3:10
+for i = 3:8
     if walk.steps(i-1).type == RSS
         walk.steps(i).type = LSS;
     else

@@ -14,7 +14,7 @@ function [mpc_state] = form_preview_data(robot, mpc_state, mpc, walk)
             mpc_state.pwin(k).R = [
                     cos(walk.steps(i).theta), -sin(walk.steps(i).theta);
                     sin(walk.steps(i).theta), cos(walk.steps(i).theta)];
-            %mpc_state.pwin(k).cvel_ref = mpc_state.pwin(k).R * mpc_state.pwin(k).cvel_ref;
+            mpc_state.pwin(k).cvel_ref = mpc_state.pwin(k).R * mpc_state.pwin(k).cvel_ref;
             
             mpc_state.pwin(k).support_type = walk.steps(i).type;    % type
             mpc_state.pwin(k).support_len = j;                      % the number of remaining iterations in this ss
