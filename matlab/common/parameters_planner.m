@@ -6,3 +6,4 @@ planner.tanPhi = tand(phiDeg);
 planner.step = -0.01;
 
 planner.vel = 0.1; %m/s
+planner.holonomic_vel = 0.05;

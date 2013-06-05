@@ -29,12 +29,9 @@ handlesAxesSteps = zeros(5,1);
 
 grid = load_orientations_grid();
 
-%quiver(grid.scale*grid.x,grid.scale*grid.y,grid.df_dx,grid.df_dy);
 lm_proj_all = [];
 
-%subplot(1,2,2);
 quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations),'color', [0.9 0.9 0.9]);
-%quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
 hold('on');
 
 it = 0;
@@ -42,8 +39,6 @@ while (1)
     it = it + 1;
 
     [mpc_state mpc_state_rot] = add_localization_noise(mpc_state,mpc_state_rot);
-    mpc_state.p
-    mpc_state.cstate_noisy
 
     if mpc_state.use_noisy
         p_current = [mpc_state.cstate_noisy(1); mpc_state.cstate_noisy(4)];
@@ -59,22 +54,24 @@ while (1)
     forward_backward = grid.forward_backward(indexGrid(1),indexGrid(2));
     nhWeight = grid.nhWeight(indexGrid(1),indexGrid(2));
     
-    %if nhWeight == 1
+    if nhWeight == 1
         if forward_backward == 0
             backward_holonomic_forward = -1;
         else
             backward_holonomic_forward = 1;
         end
-    %else
-    %    backward_holonomic_forward = 0;
-    %end
+    else
+        backward_holonomic_forward = 0;
+        angle_optimal = pi + angle_optimal;
+    end
     backward_holonomic_forward
 
-    if(any(abs(dangle) > 1)) 
+    if(backward_holonomic_forward ~= 0 && any(abs(dangle) > 1))
         dangle = prev_dangle;
         forward_backward = prev_forward_backward;
         angle_optimal = prev_angle_optimal;
     end
+
     prev_dangle = dangle;
     prev_forward_backward = forward_backward;
     prev_angle_optimal = angle_optimal;
@@ -94,14 +91,11 @@ while (1)
     [G_rot, G_rot_ub] = form_rot_constraints (mpc_rot, mpc_state_rot, D1, D2, Up, S0p_rot, Uv, S0v_rot);
 
     options = optimset('LargeScale','off');
-    %[X_rot, fval] = quadprog (H_rot, q_rot,G_rot,G_rot_ub,[],[],[],-1e20*ones(2*mpc.N,1),1e20*ones(2*mpc.N,1),options);
     [X_rot, fval] = quadprog (H_rot, q_rot,G_rot,G_rot_ub,[],[],[],[],[],options);
 
-    %cState_rot_p = S0p_rot + Up*X_rot;
     cState_rot = S0_rot + U*X_rot;
     mpc_state_rot.cstate = cState_rot(1:6);
-    
-    %disp(['rot ' num2str(mpc_state_rot.cstate')]);
+    radtodeg(mpc_state_rot.cstate)
     
       % Update global transformations
     [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(mpc_state.cstate,robot.h,mpc_state_rot.cstate(1),mpc_state_rot.cstate(1));
@@ -157,7 +151,7 @@ while (1)
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
 
     % Add visual constraints
-    [G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
+    %[G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
     
     % run solver
     tic;

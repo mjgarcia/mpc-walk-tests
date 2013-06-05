@@ -11,8 +11,8 @@ function [H, q] = form_objective (mpc, S0p, Up, S0v, Uv, S0z, Uz, V0c, V, AB0xy,
         Hvel = mpc.alpha * ((Uv'*Uv) + tmp1 + tmp1'+ (tmp2'*tmp2));
         qvel = mpc.alpha * (Up'*AB0xy'*(AB0xy*S0p + Vel0 + S0v) + Uv'*(AB0xy*S0p + Vel0 + S0v))';
     else
-        Hvel = 10000*mpc.alpha * (Uv'*Uv);
-        qvel = 10000*mpc.alpha * (S0v - Vel0)' * Uv;
+        Hvel = mpc.alpha * (Uv'*Uv);
+        qvel = mpc.alpha * (S0v - Vel0)' * Uv;
     end
 
     % Terms of the jerk and zmp centering
