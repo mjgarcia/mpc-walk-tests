@@ -1,6 +1,6 @@
 function grid = load_orientations_grid()
 
-grid.file = 'grid1.txt';
+grid.file = 'grid10.txt';
 orientationsGrid = importdata(grid.file,' ',4);
 text = orientationsGrid.textdata;
 text = regexp(text,' ','split');
@@ -22,17 +22,23 @@ fullWidth = 2*grid.width + 1;
 grid.orientations = orientationsGrid.data(:,3);
 grid.orientations = reshape(grid.orientations,fullWidth,fullWidth);
 grid.orientations = fliplr(grid.orientations);
+grid.orientations = circshift(grid.orientations,[1 0]);
 grid.orientations = wrapToPi(grid.orientations);
 
 grid.x = orientationsGrid.data(:,1);
 grid.x = reshape(grid.x,fullWidth,fullWidth);
 grid.x = fliplr(grid.x);
-%xs = reshape(xs,fullWidth*fullWidth,1);
+%grid.x = circshift(grid.x,[1 0]);
 
 grid.y = orientationsGrid.data(:,2);
 grid.y = reshape(grid.y,fullWidth,fullWidth);
 grid.y = fliplr(grid.y);
-%ys = reshape(ys,fullWidth*fullWidth,1);
+%grid.y = circshift(grid.y,[1 0]);
+
+grid.partition = orientationsGrid.data(:,4);
+grid.partition = reshape(grid.partition,fullWidth,fullWidth);
+grid.partition = fliplr(grid.partition);
+grid.partition= circshift(grid.partition,[1 0]);
 
 orthogonal = grid.orientations + pi/2;
 slopes = tan(orthogonal);

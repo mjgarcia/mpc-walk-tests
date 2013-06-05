@@ -25,7 +25,7 @@ walk.steps(2).theta = initPos(3);
 walk.steps(2).cvel_ref = walk.velocity;
 
 % Semiautomatic footstep generation.
-for i = 3:30
+for i = 3:73
     if walk.steps(i-1).type == RSS
         walk.steps(i).type = LSS;
     else
@@ -53,7 +53,7 @@ mpc_state.counter = 0;                  % Number of iterations % Do not change
 %mpc_state.cstate = [0; 0; 0; 0; 0; 0];  % Initial CoM state
 %mpc_state.p = [0; 0];                   % Position of the initial support
 mpc_state.stop = 0;                     % Stop flag for simulation % Do not change
-mpc_state.use_noisy = true;
+mpc_state.use_noisy = false;
 %%
 
 

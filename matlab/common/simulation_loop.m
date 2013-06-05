@@ -5,9 +5,8 @@ parameters_robot
 parameters_mpc6
 parameters_mpc_rot
 
-%initPos = [-4; 2; degtorad(-58)];
-initPos = [-1.5; 0.5; degtorad(-57)];
-%initPos = [1; 4; degtorad(-100)];
+initPos = [-.5; 3.5; degtorad(-127)];
+%initPos = [0.5; 2.5; degtorad(-138)];
 mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
 mpc_state.p = initPos(1:2);                               % Position of the initial support
 
@@ -28,18 +27,11 @@ mpc_state_rot.max_vel = 100;
 handlesAxesSteps = zeros(5,1);
 
 grid = load_orientations_grid();
+plot_partition_grid(grid);
 
-%quiver(grid.scale*grid.x,grid.scale*grid.y,grid.df_dx,grid.df_dy);
 lm_proj_all = [];
 
-%subplot(1,2,2);
-quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations),'color', [0.9 0.9 0.9]);
-%quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations));
-hold('on');
-
-it = 0;
 while (1)
-    it = it + 1;
 
     [mpc_state mpc_state_rot] = add_localization_noise(mpc_state,mpc_state_rot);
     mpc_state.p
@@ -149,7 +141,7 @@ while (1)
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
 
     % Add visual constraints
-    [G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
+    %[G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
     
     % run solver
     tic;
@@ -175,11 +167,12 @@ while (1)
     [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, robot.h, Olm_w, mpc_state_rot.cstate(1));
 
 
-    plot_current
+    %plot_current
+
     % Without this line Octave does not plot results during simulation.
-    % if mod(it,4) == 0
-    % pause(0.01);
-    % end
+    %if mod(mpc_state.counter,8) == 0
+    %    pause(0.01);
+    %end
 
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);

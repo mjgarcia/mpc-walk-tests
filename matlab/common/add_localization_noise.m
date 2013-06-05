@@ -1,5 +1,5 @@
 function [mpc_state mpc_state_rot] = add_localization_noise(mpc_state,mpc_state_rot)
-std_pos = 0.3;
+std_pos = 0.2;
 sigma_pos = std_pos^2;
 noise_pos = normrnd(0,sigma_pos,2,1);
 
