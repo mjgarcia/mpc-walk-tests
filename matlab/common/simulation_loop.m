@@ -7,7 +7,7 @@ parameters_mpc_rot
 
 %initPos = [-4; 2; degtorad(-58)];
 %initPos = [-1.5; 0.5; degtorad(-57)];
-initPos = [-1.2; 0.2; degtorad(-49)];
+initPos = [-1.1; 0.1; degtorad(-46)];
 mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
 mpc_state.p = initPos(1:2);                               % Position of the initial support
 
@@ -65,17 +65,25 @@ while (1)
         angle_optimal = pi + angle_optimal;
     end
     backward_holonomic_forward
+    dangle
 
-    if(backward_holonomic_forward ~= 0 && any(abs(dangle) > 1))
-        dangle = prev_dangle;
-        forward_backward = prev_forward_backward;
-        angle_optimal = prev_angle_optimal;
+    if(any(abs(dangle) > 2))
+        if backward_holonomic_forward ~= 0
+            dangle = prev_dangle;
+            forward_backward = prev_forward_backward;
+            angle_optimal = prev_angle_optimal;
+        end
+        if prev_backward_holonomic_forward == 0
+            backward_holonomic_forward = prev_backward_holonomic_forward;
+        end
     end
+    backward_holonomic_forward
 
+    prev_backward_holonomic_forward = backward_holonomic_forward;
     prev_dangle = dangle;
     prev_forward_backward = forward_backward;
     prev_angle_optimal = angle_optimal;
-    
+
     mpc_state_rot.ref_pos = angle_optimal + mpc_state_rot.noise_rot;
     disp(['angle ' num2str(radtodeg(mpc_state_rot.ref_pos))]);
     

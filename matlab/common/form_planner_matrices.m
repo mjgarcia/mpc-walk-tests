@@ -24,6 +24,6 @@ if backward_holonomic_forward ~= 0
     Vel0 = repmat([vel0x; vel0y],mpc.N,1);
 
 else
-    holonomic_vel_ref = planner.holonomic_vel*[-sine; cosine];
+    holonomic_vel_ref = -planner.holonomic_vel*[-sine; cosine];
     Vel0 = repmat(holonomic_vel_ref,mpc.N,1);
 end
