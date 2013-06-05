@@ -5,9 +5,8 @@ parameters_robot
 parameters_mpc6
 parameters_mpc_rot
 
-%initPos = [-4; 2; degtorad(-58)];
-%initPos = [-1.5; 0.5; degtorad(-57)];
-initPos = [-1.1; 0.1; degtorad(-46)];
+initPos = [-.5; 3.5; degtorad(-127)];
+%initPos = [0.5; 2.5; degtorad(-138)];
 mpc_state.cstate = [initPos(1); 0; 0; initPos(2); 0; 0];  % Initial CoM state
 mpc_state.p = initPos(1:2);                               % Position of the initial support
 
@@ -28,15 +27,11 @@ mpc_state_rot.max_vel = 100;
 handlesAxesSteps = zeros(5,1);
 
 grid = load_orientations_grid();
+plot_partition_grid(grid);
 
 lm_proj_all = [];
 
-quiver(grid.scale*grid.x,grid.scale*grid.y,cos(grid.orientations),sin(grid.orientations),'color', [0.9 0.9 0.9]);
-hold('on');
-
-it = 0;
 while (1)
-    it = it + 1;
 
     [mpc_state mpc_state_rot] = add_localization_noise(mpc_state,mpc_state_rot);
 
@@ -187,9 +182,9 @@ while (1)
 
     plot_current
     % Without this line Octave does not plot results during simulation.
-    % if mod(it,4) == 0
-    % pause(0.01);
-    % end
+    %if mod(mpc_state.counter,8) == 0
+    %    pause(0.01);
+    %end
 
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);

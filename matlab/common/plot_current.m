@@ -65,9 +65,14 @@ hold on
 handlesAxesSteps(1:2) = plot_com_zmp_planned(mpc, simdata);
 handlesAxesSteps(3:5) = plot_steps_fixed_current(robot, simdata,handlesAxesSteps(3:5));
 handlesAxesSteps(3:5) = plot_steps_planned(robot, simdata,handlesAxesSteps(3:5));
-plot(mpc_state.cstate_noisy(1),mpc_state.cstate_noisy(4),'*k');
+plot(0,0,'or','MarkerSize',15,'MarkerFaceColor','y');
+
+if mpc_state.use_noisy
+    plot(mpc_state.cstate_noisy(1),mpc_state.cstate_noisy(4),'*k');
+end
+
 h_legend = legend(handlesAxesSteps,'CoM trajectory','CoP trajectory',...
-            'Double support','Single left','Single right',...
+            'Double support','Left support','Right support',...
             'Location','NorthWest');
 set(h_legend,'FontSize',8);
 print_res = 150; % pixels per inch

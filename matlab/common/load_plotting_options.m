@@ -10,7 +10,7 @@ RSS_planned_fmt = 'r';
 fixed_linewidth = 1;
 planned_linewidth = 1;
 
-com_trajectory_fmt = 'c';
+com_trajectory_fmt = 'k';
 zmp_trajectory_fmt = 'm';
 
 capture_point_fmt = 'xr';
