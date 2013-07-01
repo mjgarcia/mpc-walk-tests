@@ -12,13 +12,13 @@ mkdir(dir);
 clf;
 subplot(2,1,1);
 handles1 = zeros(3,1);
-handles1(1) = plot([-lm_proj_init(2,:) -lm_proj_init(2,1)],[-lm_proj_init(1,:) -lm_proj_init(1,1)],'-g');
+handles1(1) = plot([lm_proj_init(1,:) lm_proj_init(1,1)],[-lm_proj_init(2,:) -lm_proj_init(2,1)],'-g');
 axis(limits_features);
 hold('on');
-handles1(2) = plot([-lmd_proj(2,:) -lmd_proj(2,1)],[-lmd_proj(1,:) -lmd_proj(1,1)],'-r');
-handles1(3) = plot(-lm_proj_all(2:2:end,1),-lm_proj_all(1:2:end,1),'-b');
+handles1(2) = plot([lmd_proj(1,:) lmd_proj(1,1)],[-lmd_proj(2,:) -lmd_proj(2,1)],'-r');
+handles1(3) = plot(lm_proj_all(1:2:end,1),-lm_proj_all(2:2:end,1),'-b');
 for l=2:Nlm
-    plot(-lm_proj_all(2:2:end,l),-lm_proj_all(1:2:end,l),'-b');
+    plot(lm_proj_all(1:2:end,l),-lm_proj_all(2:2:end,l),'-b');
 end
 h_legend = legend(handles1,'Initial position','Final position','Trajectory','Location','NorthWest');
 set(h_legend,'FontSize',8);
@@ -40,12 +40,12 @@ print(gcf,'-dbmp16m',sprintf('-r%d',print_res), ['video/imgFinal.bmp']);
 
 % Features trajectories
 figure;
-plot([-lm_proj_init(2,:) -lm_proj_init(2,1)],[-lm_proj_init(1,:) -lm_proj_init(1,1)],'-r');
+plot([lm_proj_init(1,:) lm_proj_init(1,1)],[-lm_proj_init(2,:) -lm_proj_init(2,1)],'-r');
 axis(limits_features);
 hold('on');
-plot([-lmd_proj(2,:) -lmd_proj(2,1)],[-lmd_proj(1,:) -lmd_proj(1,1)],'-m');
+plot([lmd_proj(1,:) lmd_proj(1,1)],[-lmd_proj(2,:) -lmd_proj(2,1)],'-m');
 for l=1:Nlm
-    plot(-lm_proj_all(2:2:end,l),-lm_proj_all(1:2:end,l),'-b');
+    plot(lm_proj_all(1:2:end,l),-lm_proj_all(2:2:end,l),'-b');
 end
 print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/features.eps']);
 

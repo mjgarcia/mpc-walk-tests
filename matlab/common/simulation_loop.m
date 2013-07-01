@@ -23,8 +23,8 @@ lm_proj_errors_all = [];
 errors_horizon_all = [];
 
 it = 0;
-itPert = 54;
-%itPert = -1;
+%itPert = 54;
+itPert = -1;
 handlesAxesSteps = zeros(5,1);
 
 while (1)
@@ -144,7 +144,7 @@ while (1)
     % Real position of the landmarks with nonlinear model
     [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
 
-    plot_current
+    %plot_current
     
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);

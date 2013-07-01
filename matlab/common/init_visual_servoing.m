@@ -25,7 +25,7 @@ Tdcm_w = computeTransfMatrix(Odcm_w);
 
 % Desired camera position with respect of center of mass
 %Odcam_cm = [0; 0; 0.26; degtorad([0; 90; -15])];
-Odcam_cm = [0; 0; cm_height; 0; degtorad(90); 0];
+Odcam_cm = [0; 0; cm_height; 0; degtorad(90); degtorad(-90)];
 Tdcam_cm = computeTransfMatrix(Odcam_cm);
 Tcm_dcam = inv(Tdcam_cm);
 

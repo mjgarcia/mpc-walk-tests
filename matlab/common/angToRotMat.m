@@ -16,4 +16,5 @@ rz = [  cz,  -sz,  0; ...
         sz,  cz,  0; ... 
          0,   0,  1]; 
 
-rotMat = rz*ry*rx;
+%rotMat = rz*ry*rx;
+rotMat = rx*ry*rz;
