@@ -1,3 +1,0 @@
-In order to run the functionalities of this library you have first to get the following library and set the path to the common directory in the simulation_loop.m file:
-
-https://github.com/asherikov/mpc-walk-tests/tree/mg_branch
