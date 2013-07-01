@@ -1,6 +1,5 @@
 clear;
 clc;
-addpath('/home/mauricio/Developer/mpc-walk-tests-mg_branch/matlab/common');
 
 parameters_robot
 parameters_mpc6

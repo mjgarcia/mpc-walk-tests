@@ -1,4 +1,4 @@
-function [S, S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state)
+function [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state)
     [S, U]  = form_S_U(@A, @B, mpc, mpc_state);
 
     S0 = S*mpc_state.cstate;
