@@ -12,8 +12,7 @@ init_visual_servoing
 
 theta_cam = degtorad(0.0);
 
-delta = .000006;
-%delta = .000001;
+delta = 0.0;
 
 figure;
 
@@ -42,6 +41,34 @@ while (1)
     %pause;
     end
 
+    %%
+    
+    e          = p-pdes;                       % compute the error  
+    e = reshape(e,2*Nbpts,1);
+  
+    %-----------------------------------------------------------%/
+    % Compute the correction 
+    if(OPT_L_COURANT)
+        L          = matIntMire6ddl(p,Z);              % compute the interaction matrix
+    end 
+    eprec      = e;
+    corre      = dt*L*(vcamReal-vcam)';
+    integrale  = integrale + corre ;
+   
+    if (OPT_CORR)
+        meanint = mean(INTEGRALE,2);
+        erreurCourante=e-integrale+meanint;
+        normecorr = norm(erreurCourante);
+        NORMECORR=[NORMECORR normecorr];
+    else
+        erreurCourante=e;
+    end 
+    vcam        = computeVelocity(lambda, L,erreurCourante);
+ 
+    %%
+    
+    vcom = Tcam_cm(1:3,1:3)*vcam(1:3)';
+    
     pid_theta_com = apply_angle_controller(pid_theta_com,mpc.T);
     radtodeg(pid_theta_com.state)
 
@@ -49,6 +76,9 @@ while (1)
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
     [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
 
+    % Rotaion of the foot steps
+    [mpc_state] = update_rotation_zmp(mpc, mpc_state, pid_theta_com.state, vcom(1:2));
+    
     % Form objective and constraints
     [H, q] = form_objective (mpc, mpc_state, S0v, Uv, S0z, Uz, V0c, V, Nfp);
 
@@ -63,47 +93,44 @@ while (1)
 %     end
 
     % Position of the landmark in camera frame
-    Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
+    %Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
     % Real landmarks projected
-    lm_proj = projectToImagePlane(Olm_cam);
+    %lm_proj = projectToImagePlane(Olm_cam);
     %Add noise
     %sigma = 0.0001;
-    sigma = 0.0;
-    lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
-    lm_proj_all = [lm_proj_all; lm_proj];
-    lm_proj_errors_all = [lm_proj_errors_all; abs(lm_proj - lmd_proj)];
+    %sigma = 0.0;
+    %lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
+    %lm_proj_all = [lm_proj_all; lm_proj];
+    %lm_proj_errors_all = [lm_proj_errors_all; abs(lm_proj - lmd_proj)];
 
     % Linearize projection around current landmark positions
-    matProjLin = linearizeProjection(Olm_cam,Nlm);
-    matProjLinNoisy = linearizeProjectionUsingUV(lm_proj_noisy,Olm_cam(3,:),Nlm);
+    %matProjLin = linearizeProjection(Olm_cam,Nlm);
+    %matProjLinNoisy = linearizeProjectionUsingUV(lm_proj_noisy,Olm_cam(3,:),Nlm);
 
     % Compute visual servoing matrices
-    [Du Dv Cu Cv vs_params] = visual_servoing_matrices(mpc,matProjLin,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
-    [DuNoisy DvNoisy CuNoisy CvNoisy vs_paramsNoisy] = visual_servoing_matrices(mpc,matProjLinNoisy,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
+    %[Du Dv Cu Cv vs_params] = visual_servoing_matrices(mpc,matProjLin,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
+    %[DuNoisy DvNoisy CuNoisy CvNoisy vs_paramsNoisy] = visual_servoing_matrices(mpc,matProjLinNoisy,Tcm_cam,Tcm_w,Tw_cam,Olm_w,Nlm);
 
     %lm_proj_lin = matProjLin*Olm_cam;
     %plot(lm_proj_lin(2,:),-lm_proj_lin(1,:),'.r');
-    su = zeros(Nlm);
-    sv = zeros(Nlm);
+    %su = zeros(Nlm);
+    %sv = zeros(Nlm);
 
-    for l=1:Nlm
-        su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
-        sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
-    end
+    %for l=1:Nlm
+    %    su(l) = vs_params.au(l)*Tcm_w(1,4) + vs_params.bu(l)*Tcm_w(2,4) + vs_params.cu(l);
+    %    sv(l) = vs_params.av(l)*Tcm_w(1,4) + vs_params.bv(l)*Tcm_w(2,4) + vs_params.cv(l);
+    %end
     %plot(su,sv,'.r','MarkerSize',4);
 
     % Add visual servoing parameters to the objective
-    [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta);
-
-    % Rotaion of the foot steps
-    [mpc_state] = update_rotation_zmp(mpc, mpc_state, pid_theta_com.state);
+    %[H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta);
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
 
     [Gfd, Gfd_ub] = form_fd_constraints (robot, mpc, mpc_state, Nfp);
 
     % Visual servoing contraints
-    [Gvs, Gvs_ub] = compute_vs_contraints(mpc, Du, Dv, Cu, Cv, S0p, Up, vs_limits, Nlm, Nfp);
+    %[Gvs, Gvs_ub] = compute_vs_contraints(mpc, Du, Dv, Cu, Cv, S0p, Up, vs_limits, Nlm, Nfp);
 
     % Combine constraints:
     %   Ge * X = ge
@@ -111,7 +138,7 @@ while (1)
     [Ge, ge, G, G_ub, lambda_mask] = combine_constraints (Gzmp, Gzmp_ub, Gfd, Gfd_ub, [], [], [], []);
 
     % Add visual constraints
-    [G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
+    %[G, G_ub] = add_vs_constraints (G, G_ub, Gvs, Gvs_ub);
 
     % run solver
     tic;
@@ -129,22 +156,35 @@ while (1)
     [simdata] = update_simdata(mpc, mpc_state, S0, U, S0z, Uz, Nfp, X, LAMBDA, lambda_mask, exec_time, simdata);
 
     % Simulate position of the landmarks with linear model
-    [su sv] = simulate_landmarks(mpc, simdata, vs_params);
-    [suNoisy svNoisy] = simulate_landmarks(mpc, simdata, vs_paramsNoisy);
+    %[su sv] = simulate_landmarks(mpc, simdata, vs_params);
+    %[suNoisy svNoisy] = simulate_landmarks(mpc, simdata, vs_paramsNoisy);
 
-    errorsHorizon = zeros(2,Nlm);
-    for l=1:Nlm
-        errorsHorizonU = su(:,l) - repmat(lmd_proj(1,l),mpc.N,1);
-        errorsHorizon(1,l) = norm(errorsHorizonU);
-        errorsHorizonV = sv(:,l) - repmat(lmd_proj(2,l),mpc.N,1);
-        errorsHorizon(2,l) = norm(errorsHorizonV);
-    end
-    errors_horizon_all = [errors_horizon_all; errorsHorizon/sqrt(mpc.N)];
+    %errorsHorizon = zeros(2,Nlm);
+    %for l=1:Nlm
+    %    errorsHorizonU = su(:,l) - repmat(lmd_proj(1,l),mpc.N,1);
+    %    errorsHorizon(1,l) = norm(errorsHorizonU);
+    %    errorsHorizonV = sv(:,l) - repmat(lmd_proj(2,l),mpc.N,1);
+    %    errorsHorizon(2,l) = norm(errorsHorizonV);
+    %end
+    %errors_horizon_all = [errors_horizon_all; errorsHorizon/sqrt(mpc.N)];
 
     % Real position of the landmarks with nonlinear model
-    [lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
+    %[lm_real_horizon] = real_landmarks(mpc, simdata, Tcm_cam, cm_height, Olm_w, pid_theta_com.state);
 
-    %plot_current
+    %%
+    vcomReal   = vcom;
+    vcomReal(1) = simdata.cstateProfile(2,end);
+    vcomReal(2) = simdata.cstateProfile(5,end);
+    
+    vcamReal = vcam;
+    vcamReal(1:3) = Tcm_cam(1:3,1:3)*vcomReal;
+    
+    c1Mc2      = expMapDirectRxRyRz(vcamReal,dt);
+    cMo        = inv(c1Mc2)*cMo;
+    cMo        = cMo.*(abs(cMo)>1e-10);
+    %%
+    
+    plot_current
     
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
@@ -156,6 +196,37 @@ while (1)
     % Without this line Octave does not plot results during simulation.
     %pause(0.01);
 
+    %%
+    %----------------------------------------------------%
+    % update the position    
+    %save the 2D position
+    %-----------------------------------------------------%
+    % Update variables
+    VDes       =[VDes;vcam];
+    VReal      =[VReal;vcamReal];
+    balancement= vcamReal-vcam;
+    cP         = cMo*[oP; ones(1,Nbpts)]; % compute the 3D points
+    p          = projectToImagePlane(cP);   % compute the 2D points
+    Z          = cP(3:3:length(cP));      % compute Z
+
+    tmp = reshape(p,1,2*Nbpts);
+    P          = [P; tmp]; %preel
+    Pcorr      = [Pcorr; corre']; %pcorrected
+    E          = [E; e']; %error
+    Ecorr      = [Ecorr; reshape(p-pdes,1,2*Nbpts)]; 
+    INTEGRALE  = [INTEGRALE integrale];
+    posec      = pFromHomogeneousMatrix(inv(cMo));
+    Xc         = [Xc;posec(1)];
+    Yc         = [Yc;posec(2)]; 
+    Zc         = [Zc;posec(3)];
+
+    NORME      = [NORME;norm(e)];
+
+    if(norm(e)<threshold) 
+        STOP_CRITERION=true;
+    end 
+    %%
 end
+
 
 plot_all
