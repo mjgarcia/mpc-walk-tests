@@ -34,7 +34,7 @@ end
 figure;
 hold('on');
 title('Error(plain lines)/correction (doted lines)');
-if(iter>2)
+if(it>2)
   plot(E,'r');
   plot(Ecorr,'g');
 end
@@ -140,6 +140,7 @@ plot(time,simdata.cstateProfile(2,1:end-1),'r');
 hold('on');
 plot(time,simdata.cstateProfile(5,1:end-1),'b');
 plot(time,pid_theta_com.vel_all(1:end-1),'m');
+title('Velocites done')
 hline = refline([0 0]);
 set(hline,'Color','k','LineStyle','--');
 print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/velocities.eps']);
