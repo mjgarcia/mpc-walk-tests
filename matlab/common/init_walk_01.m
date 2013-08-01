@@ -25,7 +25,7 @@ walk.steps(2).theta = 0;
 walk.steps(2).cvel_ref = walk.velocity;
 
 % Semiautomatic footstep generation.
-for i = 3:20
+for i = 3:30
     if walk.steps(i-1).type == RSS
         walk.steps(i).type = LSS;
     else

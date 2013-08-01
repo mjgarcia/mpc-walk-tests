@@ -62,7 +62,8 @@ while (1)
         NORMECORR=[NORMECORR normecorr];
     else
         erreurCourante=e;
-    end 
+    end
+
     vcam        = computeVelocity(lambda, L,erreurCourante);
  
     %%
@@ -184,7 +185,7 @@ while (1)
     cMo        = cMo.*(abs(cMo)>1e-10);
     %%
     
-    plot_current
+    %plot_current
     
 % next
     [mpc_state] = shift_mpc_state(mpc, mpc_state, simdata);
@@ -213,7 +214,8 @@ while (1)
     P          = [P; tmp]; %preel
     Pcorr      = [Pcorr; corre']; %pcorrected
     E          = [E; e']; %error
-    Ecorr      = [Ecorr; reshape(p-pdes,1,2*Nbpts)]; 
+    %Ecorr      = [Ecorr; reshape(p-pdes,1,2*Nbpts)]; 
+    Ecorr      = [Ecorr; erreurCourante']; 
     INTEGRALE  = [INTEGRALE integrale];
     posec      = pFromHomogeneousMatrix(inv(cMo));
     Xc         = [Xc;posec(1)];

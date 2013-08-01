@@ -5,20 +5,22 @@ clk(clk==' ')=[];
 dir = ['tests/' clk];
 mkdir(dir);
 
-    limits_features = [-0.4 1.6 -0.3 0.7];
-    limits_steps = [-0.2 2.6 -0.1 1.2];
+limits_features = [-0.8 0.8 -0.3 0.3];
+limits_steps = [-0.4 3.4 -0.4 0.4];
     
-    
-%%
-% ---------------------------------------------%
-% Display the results 
-figure;
-hold('on');
-title('Point 2D');
-for i=1:Nbpts
-    plot(Pcorr(:,2*(i-1)+1),Pcorr(:,2*(i-1)+2),'b');
-    plot(P(:,2*(i-1)+1),P(:,2*(i-1)+2),'r');
-end
+len = length(simdata.cstateProfile(2,1:end-1));
+time = 0.0:mpc.T:mpc.T*(len-1);
+
+% %%
+% % ---------------------------------------------%
+% % Display the results 
+% figure;
+% hold('on');
+% title('Point 2D');
+% for i=1:Nbpts
+%     plot(Pcorr(:,2*(i-1)+1),Pcorr(:,2*(i-1)+2),'b');
+%     plot(P(:,2*(i-1)+1),P(:,2*(i-1)+2),'r');
+% end
 
 % hf_2            = createFigure3D(2,'Camera Motion',2);
 % Camera3DDrawColor(0.1,oMcfirst,3);% display the first camera
@@ -33,11 +35,11 @@ end
 
 figure;
 hold('on');
-title('Error(plain lines)/correction (doted lines)');
-if(it>2)
-  plot(E,'r');
-  plot(Ecorr,'g');
-end
+title('Errors');
+%plot(E,'r');
+plot(time,abs(Ecorr(:,1)),'k--');
+plot(time,abs(Ecorr(:,3)),'r--');
+plot(time,abs(Ecorr(:,2)),'b--');
 
 figure;
 hold('on');
@@ -111,16 +113,16 @@ set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 1800 1400]/print_res);
 %print(gcf,'-dbmp16m',sprintf('-r%d',print_res), ['video/imgFinal.bmp']);
 %print(gcf,'-dpng',sprintf('-r%d',print_res), 'video/imgFinal.png');
 
-% % Features trajectories
-% figure;
-% plot([lm_proj_init(1,:) lm_proj_init(1,1)],[-lm_proj_init(2,:) -lm_proj_init(2,1)],'-r');
-% axis(limits_features);
-% hold('on');
-% plot([lmd_proj(1,:) lmd_proj(1,1)],[-lmd_proj(2,:) -lmd_proj(2,1)],'-m');
-% for l=1:Nlm
-%     plot(lm_proj_all(1:2:end,l),-lm_proj_all(2:2:end,l),'-b');
-% end
-% print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/features.eps']);
+% Features trajectories
+figure;
+plot([lm_proj_init(1,:) lm_proj_init(1,1)],[-lm_proj_init(2,:) -lm_proj_init(2,1)],'-r');
+axis(limits_features);
+hold('on');
+plot([lmd_proj(1,:) lmd_proj(1,1)],[-lmd_proj(2,:) -lmd_proj(2,1)],'-b');
+for l=1:Nlm
+    plot(P(:,2*(l-1)+1),P(:,2*(l-1)+2),'k');
+end
+%print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/features.eps']);
 
 % Plot result of the simulation (the positions that were actually used)
 figure;
@@ -133,17 +135,15 @@ set(gcf,'PaperPosition', [pos(1:2),8,4]);
 print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/steps.eps']);
 
 % Evolution of velocities
-len = length(simdata.cstateProfile(2,1:end-1));
-time = 0.0:mpc.T:mpc.T*(len-1);
 figure;
-plot(time,simdata.cstateProfile(2,1:end-1),'r');
+plot(time,simdata.cstateProfile(2,1:end-1),'b--');
 hold('on');
-plot(time,simdata.cstateProfile(5,1:end-1),'b');
-plot(time,pid_theta_com.vel_all(1:end-1),'m');
-title('Velocites done')
-hline = refline([0 0]);
-set(hline,'Color','k','LineStyle','--');
-print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/velocities.eps']);
+plot(time,simdata.cstateProfile(5,1:end-1),'r--');
+%plot(time,pid_theta_com.vel_all(1:end-1),'m');
+%title('Velocites')
+%hline = refline([0 0]);
+%set(hline,'Color','k','LineStyle','--');
+%print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/velocities.eps']);
 
 % Evolution of cost functions
 figure;
