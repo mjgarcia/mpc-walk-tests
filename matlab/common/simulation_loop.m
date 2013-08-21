@@ -3,17 +3,30 @@ clc;
 
 parameters_robot
 parameters_mpc6
+parameters_mpc_rot
+
+init_visual_servoing
+
+mpc_state.cstate = [Ocm_w(1); 0; 0; Ocm_w(2); 0; 0];  % Initial CoM state
+mpc_state.p = Ocm_w(1:2);                               % Position of the initial support
 
 init_walk_01
 
 simdata = init_simdata(mpc, mpc_state);
 
-init_visual_servoing
+mpc_state_rot.cstate = [0; 0; 0; 0; 0; 0];
+
+mpc_state_rot.theta_max_feet_com = deg2rad(10*ones(mpc_rot.N,1));
+mpc_state_rot.theta_margin = degtorad(0);
+mpc_state_rot.max_vel = 100;
+
 
 theta_cam = degtorad(0.0);
 
-delta = .000006;
-%delta = .000001;
+delta_initial = .0001;
+delta_final = .0001;
+%delta = .0005;
+delta = .0001;
 
 figure;
 
@@ -21,9 +34,10 @@ lm_proj_all = [];
 obj_all = [];
 lm_proj_errors_all = [];
 errors_horizon_all = [];
+theta_vel_all = [];
 
 it = 0;
-%itPert = 54;
+%itPert = 40;
 itPert = -1;
 handlesAxesSteps = zeros(5,1);
 
@@ -34,26 +48,41 @@ while (1)
     if it == itPert
     %plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
     com_undist = mpc_state.cstate;
-    mpc_state.cstate(1) = mpc_state.cstate(1) + 0.02;
-    mpc_state.cstate(4) = mpc_state.cstate(4) + 0.04;
+    mpc_state.cstate(1) = mpc_state.cstate(1) + 0.01;
+    mpc_state.cstate(4) = mpc_state.cstate(4) + 0.07;
     %mpc_state.cstate(6) = mpc_state.cstate(6) - 4;
-    disp('Perturbation');
+    %disp('Perturbation');
+    %subplot(2,1,2);
     %plot(mpc_state.cstate(1),mpc_state.cstate(4),'+g','MarkerSize',5);
+    %hold off;
     %pause;
     end
 
-    pid_theta_com = apply_angle_controller(pid_theta_com,mpc.T);
-    radtodeg(pid_theta_com.state)
+    mpc_state_rot.ref_pos = Odcm_w(6);
 
     % form matrices
     [Nfp, V0c, V] = form_foot_pos_matrices(mpc, mpc_state);
-    [S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
+    [S, S0, U, S0p, Up, S0v, Uv, S0z, Uz] = form_condensing_matrices(mpc, mpc_state);
+
+    [S0_rot, S0p_rot, S0v_rot, S0a_rot, D1, D2] = form_condensing_matrices_rot(mpc_rot, mpc_state_rot, S);
+
+    % Rotation angle optimization
+    [H_rot, q_rot, S0p_rot, Up_rot] = form_objective_rot (mpc_rot, mpc_state_rot, S0p_rot, Up, S0v_rot, Uv, D1, D2);
+
+    [G_rot, G_rot_ub] = form_rot_constraints (mpc_rot, mpc_state_rot, D1, D2, Up, S0p_rot, Uv, S0v_rot);
+
+    options = optimset('LargeScale','off');
+    [X_rot, fval] = quadprog (H_rot, q_rot,G_rot,G_rot_ub,[],[],[],[],[],options);
+
+    cState_rot = S0_rot + U*X_rot;
+    mpc_state_rot.cstate = cState_rot(1:6);
+    theta_vel_all = [theta_vel_all cState_rot(2)];
 
     % Form objective and constraints
     [H, q] = form_objective (mpc, mpc_state, S0v, Uv, S0z, Uz, V0c, V, Nfp);
 
     % Update global transformations
-    [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(mpc_state.cstate,cm_height,theta_cam,pid_theta_com.state);
+    [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam, Tcam_cm, Ocm_w] = updateGlobalTransformations(mpc_state.cstate,cm_height,theta_cam,mpc_state_rot.cstate(1));
     %figure(fig3DSim);
     %drawAxis(Tcm_w,false);
 %     if mod(it,32) == 0
@@ -92,11 +121,14 @@ while (1)
     end
     %plot(su,sv,'.r','MarkerSize',4);
 
+    %dist = norm(Ocm_w - Odcm_w);
+    %delta = delta_initial/(dist^3)
+
     % Add visual servoing parameters to the objective
     [H, q] = addVisualServoingToObjective(mpc, H, q, Du, Dv, Cu, Cv, lmd_proj, weightsMatrix, S0p, Up, Nlm, delta);
 
     % Rotaion of the foot steps
-    [mpc_state] = update_rotation_zmp(mpc, mpc_state, pid_theta_com.state);
+    [mpc_state] = update_rotation_zmp(mpc, mpc_state, cState_rot(4:6:end));
 
     [Gzmp, Gzmp_ub] = form_zmp_constraints(robot, mpc, mpc_state, V0c, V, S0z, Uz);
 

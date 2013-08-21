@@ -1,5 +1,5 @@
     limits_features = [-0.4 1.6 -0.3 0.7];
-    limits_steps = [-0.2 2.6 -0.1 1.2];
+    limits_steps = [-0.2 3.6 -0.1 3.2];
 
 
     subplot(2,1,1);
@@ -76,4 +76,4 @@
     set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 1800 1400]/print_res);
     %print(gcf,'-dpng',sprintf('-r%d',print_res), ['video/img' num2str(it,'%0.3i') '.png']);
     print(gcf,'-dbmp16m',sprintf('-r%d',print_res), ['video/img' num2str(it,'%0.3i') '.bmp']);
-    hold off
+    hold off;

@@ -1,9 +1,9 @@
-% Landmark positions
-Olm_w = [[5; -0.5; 0.2] [5; 0.5; 0.2] [5; 0.5; 1.2] [5; -0.5; 1.2]];
-%Olm_w = [[8; -0.2; 0.4] [8; 0.2; 0.4] [8; 0.2; .8] [8; -0.2; .8]];
-%Olm_w = [5; -0.1; 1.5];
 Nlm = 4;
 cm_height = robot.h;
+%cm_height = 0.711691;
+
+% Landmark positions
+Olm_w = [[5; -0.5; 2*cm_height - 0.5] [5; 0.5; 2*cm_height - 0.5] [5; 0.5; 2*cm_height + 0.5] [5; -0.5; 2*cm_height + 0.5]];
 
 % fig3DSim = figure;
 % plot3(Olm_w(1,:),Olm_w(2,:),Olm_w(3,:),'+r');
@@ -18,8 +18,7 @@ Ocm_w = [0; 0.0; cm_height; 0; 0; degtorad(0)];
 Tcm_w = computeTransfMatrix(Ocm_w);
 
 % Center of mass desired position
-Odcm_w = [2.0; 1.0; cm_height; 0; 0; degtorad(30)];
-%Odcm_w = [1; 0.5; cm_height; 0; 0; 0];
+Odcm_w = [2.0; 1.0; cm_height; 0; 0; degtorad(0)];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 %drawAxis(Tdcm_w,true);
 

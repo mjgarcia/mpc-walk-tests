@@ -8,9 +8,10 @@ mpc.T = 0.1;        % duration of one iteration (second)
 %mpc.alpha = 1;      % Velocity tracking
 mpc.alpha = 0.0;      % Velocity tracking
 %mpc.beta = 0.00001; % Jerk penalty
-mpc.beta = 0.0001; % Jerk penalty
+%mpc.beta = 0.001; % Jerk penalty
+mpc.beta = 0.001; % Jerk penalty
 %mpc.gamma = 0.0001; % ZMP centering
-mpc.gamma = 10; % ZMP centering
+mpc.gamma = 1; % ZMP centering
 %%
 
 

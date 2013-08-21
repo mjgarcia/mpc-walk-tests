@@ -1,14 +1,23 @@
 %%
 % Robot
 %%%
+% clear robot;
+% robot.max_step_len = 0.4;
+% robot.min_feet_dist = 0.10;
+% robot.max_feet_dist = 0.15;
+% robot.feet_dist_default = 0.10;
+% robot.h = 0.26; % Height of the CoM
+% robot.foot_len = 0.1;
+% robot.foot_width = 0.06;
+
 clear robot;
-robot.max_step_len = 0.4;
-robot.min_feet_dist = 0.10;
-robot.max_feet_dist = 0.15;
-robot.feet_dist_default = 0.10;
-robot.h = 0.26; % Height of the CoM
-robot.foot_len = 0.1;
-robot.foot_width = 0.06;
+robot.max_step_len = 0.2;
+robot.min_feet_dist = 0.19;
+robot.max_feet_dist = 0.29;
+robot.feet_dist_default = 0.19;
+robot.h = 0.711691; % Height of the CoM
+robot.foot_len = 0.25;
+robot.foot_width = 0.14;
 
 %%%
 robot.ss_zmp_bounds = [
