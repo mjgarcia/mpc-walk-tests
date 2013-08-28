@@ -37,14 +37,14 @@
     end
     handles1(6) = plot([su(end,:) su(end,1)],[-sv(end,:) -sv(end,1)],':m');
     
-    h_legend = legend(handles1,'Initial position','Final position','Trajectory so far','Current position',...
-    'Trajectory horizon linearized','Final position horizon linearized','Trajectory horizon non-linearized',...
-    'Final position horizon non-linearized','Location','NorthWest');
-     %set(h_legend,'units','pixels');
-     %lp=get(h_legend,'outerposition');
-     %set(h_legend,'outerposition',[lp(1:2),0.1,0.1]);
-     set(h_legend,'FontSize',8);
-
+%     h_legend = legend(handles1,'Initial position','Final position','Trajectory so far','Current position',...
+%     'Trajectory horizon linearized','Final position horizon linearized','Trajectory horizon non-linearized',...
+%     'Final position horizon non-linearized','Location','NorthWest');
+%      %set(h_legend,'units','pixels');
+%      %lp=get(h_legend,'outerposition');
+%      %set(h_legend,'outerposition',[lp(1:2),0.1,0.1]);
+%      set(h_legend,'FontSize',8);
+%
 %     % Perturbation of the center of mass
 %     if it == itPert
 %     [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam] = updateGlobalTransformations(com_undist,cm_height,theta_cam,pid_theta_com.state);

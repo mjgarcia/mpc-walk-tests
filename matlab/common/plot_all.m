@@ -99,8 +99,8 @@ plot(time,lm_proj_errors_all(2:2:end,1),'b--');
 %print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/instantaneus_errors.eps']);
 
 % Evolution of the errors in the horizon
-figure;
-hold('on');
+%figure;
+%hold('on');
 plot(time,errors_horizon_all(1:2:end,1),'k-');
 plot(time,errors_horizon_all(1:2:end,2),'r-');
 plot(time,errors_horizon_all(2:2:end,1),'b-');

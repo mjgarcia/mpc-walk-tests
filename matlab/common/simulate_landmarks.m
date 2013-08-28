@@ -1,13 +1,15 @@
-function [su, sv] = simulate_landmarks(mpc, simdata, vs_params)
+function [su, sv] = simulate_landmarks(mpc, simdata, vs_params, lm_proj, Nlm)
 
-x = simdata.cstateProfile(1:mpc.Ns:end, end);
-y = simdata.cstateProfile(4:mpc.Ns:end, end);
+vx = simdata.cstateProfile(2:mpc.Ns:end, end);
+vy = simdata.cstateProfile(5:mpc.Ns:end, end);
 
-Nlm = length(vs_params.cu);
+integralVX = cumsum(vx);
+integralVY = cumsum(vy);
+
 su = zeros(mpc.N, Nlm);
 sv = zeros(mpc.N, Nlm);
 
 for l=1:Nlm
-    su(:,l) = vs_params.au(l)*x + vs_params.bu(l)*y + vs_params.cu(l);
-    sv(:,l) = vs_params.av(l)*x + vs_params.bv(l)*y + vs_params.cv(l);
+    su(:,l) = vs_params.au(l)*integralVX + vs_params.bu(l)*integralVY + lm_proj(1,l);
+    sv(:,l) = vs_params.av(l)*integralVX + vs_params.bv(l)*integralVY + lm_proj(2,l);
 end
