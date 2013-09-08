@@ -14,17 +14,17 @@ Olm_w = [[5; -0.5; 2*cm_height - 0.5] [5; 0.5; 2*cm_height - 0.5] [5; 0.5; 2*cm_
 % axis([0 6 -3 3 0 3]);
 
 % Center of mass initial position
-Ocm_w = [0; 0.0; cm_height; 0; 0; degtorad(0)];
+Ocm_w = [0; 0.0; cm_height; 0; 0; 0.0];
 Tcm_w = computeTransfMatrix(Ocm_w);
 
 % Center of mass desired position
-Odcm_w = [2.0; 1.0; cm_height; 0; 0; degtorad(30)];
+Odcm_w = [2.0; 1.0; cm_height; 0; 0; deg2rad(30)];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 %drawAxis(Tdcm_w,true);
 
 % Desired camera position with respect of center of mass
 %Odcam_cm = [0; 0; 0.26; degtorad([0; 90; -15])];
-Ocam_cm = [0; 0; cm_height; 0; degtorad(90); degtorad(-90)];
+Ocam_cm = [0; 0; cm_height; 0; deg2rad(90); deg2rad(-90)];
 Tcam_cm = computeTransfMatrix(Ocam_cm);
 Tcm_cam = inv(Tcam_cm);
 
