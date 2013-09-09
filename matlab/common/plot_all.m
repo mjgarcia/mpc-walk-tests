@@ -1,4 +1,4 @@
-format shortg;
+% format shortg;
 clk = fix(clock);
 clk=num2str(clk,'%0.2d');
 clk(clk==' ')=[];
@@ -26,6 +26,7 @@ set(h_legend,'FontSize',8);
 subplot(2,1,2);
 handlesAxesSteps = zeros(5,1);
 hold on
+% ZMP data
 handlesAxesSteps(1:2) = plot_com_zmp_all(simdata);
 axis(limits_steps);
 handlesAxesSteps(3:5) = plot_steps_fixed_all(robot, simdata,handlesAxesSteps(3:5));
@@ -56,7 +57,7 @@ hold on
 plot_steps_fixed_all(robot, simdata,handlesAxesSteps(3:5));
 axis(limits_steps);
 plot_com_zmp_all(simdata);
-%title('Footsteps')
+title('Footsteps')
 pos = get(gcf,'PaperPosition');
 set(gcf,'PaperPosition', [pos(1:2),8,4]);
 print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/steps.eps']);
@@ -70,7 +71,7 @@ plot(time,simdata.cstateProfile(2,1:end-1),'b-');
 hold('on');
 plot(time,simdata.cstateProfile(5,1:end-1),'r-');
 plot(time,theta_vel_all(1:end),'m');
-%title('Velocities');
+title('Velocities');
 %hline = refline([0 0]);
 %set(hline,'Color','k','LineStyle','--');
 %print(gcf,'-depsc2',sprintf('-r%d',print_res), [dir '/velocities.eps']);

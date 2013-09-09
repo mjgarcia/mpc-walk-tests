@@ -10,6 +10,9 @@ function [H_rot, q_rot] = form_objective_rot (mpc_rot, S0v_rot, Uv, ...
 
     trig = tril(ones(mpc_rot.N,mpc_rot.N)); 
     crec = trig * ones(mpc_rot.N,1);
+    
+    fact = 0.1;
+
     for l=1:Nlm
 
         tmp1 = (mpc_rot.T*L(2*l-1,:)*twistMatrix_cm_cam(:,6));
