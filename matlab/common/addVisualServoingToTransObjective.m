@@ -10,7 +10,7 @@ sumq = zeros(NuN,1);
 
 trig = tril(ones(mpc.N,mpc.N)); 
 crec = trig * ones(mpc.N,1);
-fact = 0.1;
+fact = 0.015;
 
 for l=1:Nlm
     tmp1x =  fact*mpc.T*L(2*l-1,:)*(twistMatrix_cm_cam(:,1));

@@ -5,7 +5,7 @@ NuN = mpc.N*mpc.Nu;
 sumH = zeros(NuN, NuN);
 sumq = zeros(NuN,1);
 
-fact = 0.01;
+fact = 0.05;
 
 for l=1:Nlm
     sumH = sumH + delta*(fact*Uv'*Du(:,:,l)'*weightsMatrix*Du(:,:,l)*Uv + Uv'*Dv(:,:,l)'*weightsMatrix*Dv(:,:,l)*Uv);

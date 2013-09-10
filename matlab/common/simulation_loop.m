@@ -26,8 +26,8 @@ theta_cam = 0.0;
 %deltaInitial = .00005;
 %deltaFinal = .005;
 
-deltaInitial = .005;
-deltaFinal = .05;
+deltaInitial = .015;
+deltaFinal = .035;
 
 errors = lm_proj - lmd_proj;
 normErrorInit = norm(errors);
@@ -72,7 +72,7 @@ while (1)
     %% UPDATE (TRUE) TARGET POSITION AND ITS PROJECTION 
     % Update global transformations
     [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam, Tcam_cm, Ocm_w] = ...
-        updateGlobalTransformations(mpc_state.cstate,cm_height,theta_cam,mpc_state_rot.cstate(1)) 
+        updateGlobalTransformations(mpc_state.cstate,cm_height,theta_cam,mpc_state_rot.cstate(1)); 
     % Position of the landmark in camera frame
     Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
     % Real landmarks projected
@@ -113,31 +113,31 @@ while (1)
     
     %% UPDATE (TRUE) TARGET POSITION AND ITS PROJECTION 
     % Update global transformations
-    %[Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam, Tcam_cm, Ocm_w] = ...
-    %    updateGlobalTransformations(mpc_state.cstate,cm_height,theta_cam,mpc_state_rot.cstate(1)) 
+    [Tw_cm, Tcm_w, Tw_cam, Tcam_w, Tcm_cam, Tcam_cm, Ocm_w] = ...
+        updateGlobalTransformations(mpc_state.cstate,cm_height,theta_cam,mpc_state_rot.cstate(1)); 
     % Position of the landmark in camera frame
-    %Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
+    Olm_cam = Tw_cam*[Olm_w;ones(1,Nlm)];
     % Real landmarks projected
-    %lm_proj = projectToImagePlane(Olm_cam);
+    lm_proj = projectToImagePlane(Olm_cam);
     %Add noise
     %sigma = 0.0000;
-    %sigma = 0.0;
-    %lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
+    sigma = 0.0;
+    lm_proj_noisy = lm_proj + sigma*randn(size(lm_proj));
     lm_proj_all = [lm_proj_all; lm_proj];
     lm_proj_errors_all = [lm_proj_errors_all; abs(lm_proj - lmd_proj)];
     % Compute visual servoing matrices
     [Du Dv vs_params] = visual_servoing_matrices(mpc,L,twistMatrix_cm_cam,D1,D2,Nlm);
     % Update errors
-    % errors = lm_proj_noisy - lmd_proj;
+    errors = lm_proj_noisy - lmd_proj;
     %normError = norm(errors)
     %if normError < threshError
     %    disp('Error is less than threshold');
     %end
 
     %% OPTIMIZATION 2: UPDATE WEIGHT OF FEATURES
-    %delta = -((deltaFinal - deltaInitial)/normErrorInit)*(normError - normErrorInit) + deltaInitial;
+    delta = -((deltaFinal - deltaInitial)/normErrorInit)*(normError - normErrorInit) + deltaInitial;
     %delta = 0.0005/normError^2;
-    delta  = 0.0005;
+    %delta  = 0.0005;
     
     %% OPTIMIZATION 2: UPDATE OBJECTIVE AND FORM CONSTRAINTS
     % Add visual servoing parameters to the objective

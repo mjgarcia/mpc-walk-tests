@@ -6,7 +6,7 @@ dir = ['tests/' clk];
 mkdir(dir);
 
 limits_features = [-0.8 0.8 -0.3 0.3];
-limits_steps = [-0.4 2.4 -0.4 1.4];
+limits_steps = [-0.4 3.5 -0.4 1.4];
     
 % Features trajectories
 clf;

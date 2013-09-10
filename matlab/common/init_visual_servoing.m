@@ -18,7 +18,7 @@ Ocm_w = [0; 0.0; cm_height; 0; 0; 0.0];
 Tcm_w = computeTransfMatrix(Ocm_w);
 
 % Center of mass desired position
-Odcm_w = [2.0; -0.5; cm_height; 0; 0; deg2rad(-0)];
+Odcm_w = [2.8; 0.65; cm_height; 0; 0; deg2rad(2.5)];
 Tdcm_w = computeTransfMatrix(Odcm_w);
 %drawAxis(Tdcm_w,true);
 

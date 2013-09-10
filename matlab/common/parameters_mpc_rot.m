@@ -5,7 +5,7 @@ mpc_rot.N = 16;         % length of the preview window (iterations)
 mpc_rot.T = 0.1;        % duration of one iteration (second)
 % 
 % gains
-mpc_rot.alpha = 0.00001;      % Features errors minimization
+mpc_rot.alpha = 0.00000015;      % Features errors minimization
 mpc_rot.beta = 10; % Jerk penalty
 mpc_rot.gamma = 1; % Feet and CoM angles difference
 %%
